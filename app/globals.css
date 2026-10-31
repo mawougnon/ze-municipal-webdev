@@ -4,7 +4,7 @@
 
 @custom-variant dark (&:is(.dark *), @media (prefers-color-scheme: dark));
 
-/* ─── Theme tokens ─────────────────────────────────────────────────────────── */
+/* Theme tokens */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -49,7 +49,7 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* ─── Light mode ────────────────────────────────────────────────────────────── */
+/* Light mode */
 :root {
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -85,7 +85,7 @@
   --sidebar-ring: oklch(0.708 0 0);
 }
 
-/* ─── Dark mode (system preference + .dark class) ───────────────────────────── */
+/* Dark mode (system preference + .dark class) */
 @media (prefers-color-scheme: dark) {
   :root {
     --background: oklch(0.145 0 0);
@@ -126,7 +126,7 @@
   color-scheme: dark;
 }
 
-/* ─── Base resets ───────────────────────────────────────────────────────────── */
+/* Base resets */
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -136,7 +136,7 @@
   }
 }
 
-/* ─── Interactivity ─────────────────────────────────────────────────────────── */
+/* Interactivity */
 img {
   user-select: none;
   -webkit-user-drag: none;
@@ -144,10 +144,10 @@ img {
 a, button, [role="button"] { cursor: pointer; }
 input, textarea { cursor: text; }
 
-/* ─── Global readable defaults (override Tailwind / theme inheritance) ────────
+/* Global readable defaults (override Tailwind / theme inheritance)
    Forces dark text on white for body, inputs, and buttons in both light and dark
    system themes. The editor and form fields must always be legible.
-────────────────────────────────────────────────────────────────────────────── */
+ */
 body {
   color: #111827;
   background-color: #ffffff;
@@ -167,10 +167,10 @@ textarea::placeholder {
   color: #9ca3af !important;
 }
 
-/* ─── TipTap / ProseMirror editor ──────────────────────────────────────────────
+/* TipTap / ProseMirror editor
    The editor container (.editor-wrapper) forces a white canvas so the rich text
    content is always readable, even when the OS is in dark mode.
-────────────────────────────────────────────────────────────────────────────── */
+ */
 .editor-wrapper {
   background-color: #ffffff !important;
 }
@@ -191,7 +191,7 @@ textarea::placeholder {
   color: #111827 !important;
 }
 
-/* ─── Article public content styling ──────────────────────────────────────── */
+/* Article public content styling */
 .article-content h1,
 .article-content h2,
 .article-content h3 {
@@ -241,7 +241,7 @@ textarea::placeholder {
   font-style: italic;
 }
 
-/* ─── Dark mode overrides ───────────────────────────────────────────────────── */
+/* Dark mode overrides */
 @media (prefers-color-scheme: dark) {
   body {
     background-color: #0f1a12;
@@ -263,7 +263,7 @@ textarea::placeholder {
     background-color: transparent !important;
   }
 
-  /* Cancel / secondary buttons — explicit colors so they don't vanish */
+  /* Cancel / secondary buttons: explicit colors so they don't vanish */
   button[class*="border-gray"] {
     color: #374151 !important;
     background-color: #ffffff !important;

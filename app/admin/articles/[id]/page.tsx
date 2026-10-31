@@ -29,7 +29,7 @@ export default function ArticleFormPage() {
     if (isEditing) {
       fetch(`/api/articles/${id}`)
         .then((res) => {
-          if (!res.ok) throw new Error("Failed to fetch article");
+          if (!res.ok) throw new Error("Impossible de charger l'article.");
           return res.json();
         })
         .then((data) => {
@@ -73,23 +73,23 @@ export default function ArticleFormPage() {
         body: JSON.stringify({ title, content, coverImageUrl, published }),
       });
 
-      if (!res.ok) throw new Error("Error during saving process.");
+      if (!res.ok) throw new Error("Échec de l'enregistrement.");
 
-      // Success: redirect and refresh the data
+      // Succès : redirection puis rafraîchissement des données
       router.push("/admin/articles");
       router.refresh();
     } catch {
-      setError("An error occurred. Please try again.");
+      setError("Une erreur est survenue. Veuillez réessayer.");
     } finally {
       setIsSaving(false);
     }
   }
 
-  // Toolbar configuration
+  // Configuration de la barre d'outils
   const toolbarButtons = [
-    { label: <strong>B</strong>, action: () => editor?.chain().focus().toggleBold().run(), title: "Bold" },
-    { label: <em>I</em>, action: () => editor?.chain().focus().toggleItalic().run(), title: "Italic" },
-    { label: "• List", action: () => editor?.chain().focus().toggleBulletList().run(), title: "Bullet List" },
+    { label: <strong>B</strong>, action: () => editor?.chain().focus().toggleBold().run(), title: "Gras" },
+    { label: <em>I</em>, action: () => editor?.chain().focus().toggleItalic().run(), title: "Italique" },
+    { label: "• Liste", action: () => editor?.chain().focus().toggleBulletList().run(), title: "Liste à puces" },
   ];
 
   if (loading) return <div className="p-8 text-center">Chargement des données de l'article...</div>;
@@ -98,7 +98,7 @@ export default function ArticleFormPage() {
     <main className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-3xl mx-auto">
         <h1 className="text-2xl font-bold text-gray-800 mb-8">
-          {isEditing ? "Edit Article" : "New Article"}
+          {isEditing ? "Modifier l'article" : "Nouvel article"}
         </h1>
 
         <form onSubmit={handleSubmit} className="space-y-6">

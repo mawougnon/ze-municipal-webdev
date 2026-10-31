@@ -3,7 +3,7 @@ import { auth } from "@/auth";
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache"; // 1. Importer l'outil
 
-// GET — fetch the single PTA document
+// GET: fetch the single PTA document
 export async function GET() {
   const doc = await prisma.ptaDocument.findFirst({
     orderBy: { updatedAt: "desc" },
@@ -11,10 +11,10 @@ export async function GET() {
   return NextResponse.json(doc);
 }
 
-// POST — create or update the PTA document (admin only)
+// POST: create or update the PTA document (admin only)
 export async function POST(req: Request) {
   const session = await auth();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session) return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
 
   const { pdfUrl, year } = await req.json();
 
@@ -28,7 +28,7 @@ export async function POST(req: Request) {
 
 export async function DELETE() {
   const session = await auth();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session) return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
   
   await prisma.ptaDocument.deleteMany();
 

@@ -77,7 +77,7 @@ export default async function AdminPage() {
             Bonjour, {session?.user?.name} 👋
           </h1>
           <p className="text-gray-400 text-sm mt-1">
-            Mairie des Jeunes de Zè — Espace Administration
+            Mairie des Jeunes de Zè · Espace Administration
           </p>
         </div>
 

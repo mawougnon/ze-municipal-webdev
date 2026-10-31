@@ -95,7 +95,7 @@ model PtaDocument {
   updatedAt DateTime @updatedAt
 }
 
-// Security audit log — tracks login attempts and admin actions
+// Security audit log: tracks login attempts and admin actions
 model AuditLog {
   id        String   @id @default(cuid())
   action    String   // e.g. "LOGIN_SUCCESS", "LOGIN_FAILED", "ARTICLE_DELETED"

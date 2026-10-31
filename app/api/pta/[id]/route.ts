@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session) return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
   
   const { id } = await params;
   const { year, title, description, status } = await req.json();
@@ -21,13 +21,13 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
 
     return NextResponse.json(activity);
   } catch { 
-    return NextResponse.json({ error: "Not found" }, { status: 404 }); 
+    return NextResponse.json({ error: "Introuvable." }, { status: 404 }); 
   }
 }
 
 export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session) return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
   
   const { id } = await params;
   
@@ -40,7 +40,7 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
 
     return NextResponse.json({ success: true });
   } catch { 
-    return NextResponse.json({ error: "Not found" }, { status: 404 }); 
+    return NextResponse.json({ error: "Introuvable." }, { status: 404 }); 
   }
 }
 
@@ -48,7 +48,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
   const { id } = await params;
   const activity = await prisma.ptaActivity.findUnique({ where: { id } });
   
-  if (!activity) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  if (!activity) return NextResponse.json({ error: "Introuvable." }, { status: 404 });
   
   return NextResponse.json(activity);
 }

@@ -3,7 +3,7 @@ import { auth } from "@/auth";
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 
-// GET /api/articles — fetch all articles
+// GET /api/articles: fetch all articles
 export async function GET() {
   // Drafts are only returned to a logged-in admin
   const session = await auth();
@@ -15,15 +15,15 @@ export async function GET() {
   return NextResponse.json(articles);
 }
 
-// POST /api/articles — create a new article
+// POST /api/articles: create a new article
 export async function POST(req: Request) {
   const session = await auth();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session) return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
 
   const { title, content, coverImageUrl, published } = await req.json();
 
   if (!title || !content) {
-    return NextResponse.json({ error: "Title and content are required" }, { status: 400 });
+    return NextResponse.json({ error: "Le titre et le contenu sont obligatoires." }, { status: 400 });
   }
 
   const article = await prisma.article.create({

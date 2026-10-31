@@ -23,7 +23,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         const user = await prisma.user.findUnique({ where: { email } });
         if (!user) return null;
 
-        // ── PATH A: OTP login (all roles) ────────────────────────────
+        // PATH A: OTP login (all roles)
         if (otp) {
           if (!user.otpHash || !user.otpExpires) return null;
 
@@ -71,7 +71,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           return { id: user.id, email: user.email, name: user.name, role: user.role };
         }
 
-        // ── PATH B: Password login (SUPERADMIN only) ─────────────────
+        // PATH B: Password login (SUPERADMIN only)
         if (password) {
           // Only SUPERADMIN can use password login
           if (user.role !== "SUPERADMIN") return null;

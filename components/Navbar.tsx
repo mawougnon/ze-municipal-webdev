@@ -29,7 +29,7 @@ export default function Navbar() {
           className="object-contain h-10 md:h-12 w-auto" />
       </div>
 
-      {/* Navigation mobile — barre scrollable */}
+      {/* Navigation mobile: barre scrollable */}
       <div className="md:hidden border-t border-gray-100 px-4 py-2 flex gap-5 overflow-x-auto text-xs font-medium text-gray-500 whitespace-nowrap scrollbar-hide">
         <Link href="/" className="hover:text-green-700 shrink-0">Accueil</Link>
         <Link href="/articles" className="hover:text-green-700 shrink-0">Actualités</Link>

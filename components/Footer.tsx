@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { FaWhatsapp, FaFacebook, FaEnvelope, FaUsers } from "react-icons/fa";
 
-// Footer — shown on all public pages
+// Footer: shown on all public pages
 export default function Footer() {
   return (
     <footer className="bg-green-800 text-green-100 py-10 px-6">
@@ -11,7 +11,7 @@ export default function Footer() {
         {/* Identity */}
         <div>
           <Image src="/logo-association-mj-ze.jpg" alt="Mairie des Jeunes de Zè" width={140} height={50} className="object-contain mb-3" />
-          <p className="text-sm text-green-200">Initiative — Engagement — Développement</p>
+          <p className="text-sm text-green-200">Initiative · Engagement · Développement</p>
           <p className="text-sm text-green-300 mt-1">Zè, Département de l'Atlantique, Bénin</p>
         </div>
 

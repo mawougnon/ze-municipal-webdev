@@ -18,12 +18,12 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
 
     // A draft is reported as missing unless an admin is logged in
     if (!article || (!article.published && !(await auth()))) {
-      return NextResponse.json({ error: "Article not found" }, { status: 404 });
+      return NextResponse.json({ error: "Article introuvable." }, { status: 404 });
     }
 
     return NextResponse.json(article);
   } catch (error) {
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json({ error: "Erreur serveur." }, { status: 500 });
   }
 }
 
@@ -35,7 +35,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
   const session = await auth();
   
   if (!session) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
   }
 
   try {
@@ -53,7 +53,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
 
     return NextResponse.json(article);
   } catch (error) {
-    return NextResponse.json({ error: "Failed to update article" }, { status: 500 });
+    return NextResponse.json({ error: "Échec de la mise à jour de l'article." }, { status: 500 });
   }
 }
 
@@ -65,7 +65,7 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
   const session = await auth();
 
   if (!session) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
   }
 
   try {
@@ -80,6 +80,6 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
 
     return NextResponse.json({ success: true, message: "Article deleted" });
   } catch (error) {
-    return NextResponse.json({ error: "Article not found or already deleted" }, { status: 404 });
+    return NextResponse.json({ error: "Article introuvable ou déjà supprimé." }, { status: 404 });
   }
 }

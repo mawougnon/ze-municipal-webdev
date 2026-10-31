@@ -170,7 +170,7 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
       <div className="bg-green-50 border border-green-200 rounded-xl p-8 text-center">
         <p className="text-green-700 font-bold text-lg">✅ Candidature reçue !</p>
         
-        {/* Payment message — only shown for paid opportunities */}
+        {/* Payment message: only shown for paid opportunities */}
         {!isFree && (
           <p className="text-gray-600 mt-3 leading-relaxed">
             Pour finaliser votre candidature, nos services vous contacteront 
@@ -197,7 +197,7 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
       {wantsToUploadCV && (
         <div>
           <p className="text-sm text-gray-500 mb-2">
-            Formats acceptés : PDF, Word, images — max 5 fichiers, 5MB chacun
+            Formats acceptés : PDF, Word, images (max 5 fichiers, 5MB chacun)
           </p>
           <input
             type="file" multiple
@@ -218,12 +218,12 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
   return (
     <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
       <h2 className="font-bold text-gray-800 text-lg mb-6">
-        {isFree ? "Postuler gratuitement" : `Postuler — ${price?.toLocaleString()} XOF`}
+        {isFree ? "Postuler gratuitement" : `Postuler (${price?.toLocaleString()} XOF)`}
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-5" noValidate>
 
-        {/* Full name — letters only */}
+        {/* Full name: letters only */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Nom complet <span className="text-red-500">*</span>
@@ -234,7 +234,7 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
           {errors.fullName && <p className="text-red-500 text-xs mt-1">{errors.fullName}</p>}
         </div>
 
-        {/* WhatsApp — Benin format */}
+        {/* WhatsApp: Benin format */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Numéro WhatsApp <span className="text-red-500">*</span>
@@ -246,7 +246,7 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
           {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
         </div>
 
-        {/* Email — optional */}
+        {/* Email: optional */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Adresse email (optionnel)
@@ -257,7 +257,7 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
           {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
         </div>
 
-        {/* Message — optional */}
+        {/* Message: optional */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Message de motivation (optionnel)
@@ -268,7 +268,7 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
           {errors.message && <p className="text-red-500 text-xs mt-1">{errors.message}</p>}
         </div>
 
-        {/* File upload — optional, toggled */}
+        {/* File upload: optional, toggled */}
         {type === "JOB" && uploadSection("Je souhaite joindre des documents (CV, lettre de motivation...)")}
         {type === "TRAINING" && uploadSection("Je souhaite joindre des documents (attestations, diplômes...)")}
 

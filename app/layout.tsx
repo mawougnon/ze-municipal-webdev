@@ -10,7 +10,7 @@ const geist = Geist({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Mairie des Jeunes de Zè",
-  description: "Initiative — Engagement — Développement",
+  description: "Initiative · Engagement · Développement",
 };
 
 export default function RootLayout({

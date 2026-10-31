@@ -15,7 +15,7 @@ export default async function PtaPublicPage() {
       {/* Header with official PTA document download button */}
       <section className="bg-green-700 text-white py-12 px-6 text-center">
         <h1 className="text-3xl font-bold">Plan de Travail Annuel</h1>
-        <p className="text-green-300 mt-2">Mandature 2025–2030 · Suivi en temps réel des activités</p>
+        <p className="text-green-300 mt-2">Mandature 2025-2030 · Suivi en temps réel des activités</p>
         
         {ptaDoc && (
           <a href={ptaDoc.pdfUrl} target="_blank" rel="noopener noreferrer"
@@ -27,10 +27,10 @@ export default async function PtaPublicPage() {
 
       <section className="max-w-4xl mx-auto px-6 py-12">
 
-        {/* Global progress bar */}
+        {/* Barre de progression globale */}
         <div className="bg-gray-50 rounded-xl p-6 mb-10 border border-gray-100">
           <div className="flex justify-between mb-2">
-            <span className="font-semibold text-gray-700">Global progress</span>
+            <span className="font-semibold text-gray-700">Progression globale</span>
             <span className="font-bold text-green-700">{progressPercent}%</span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-4">
@@ -40,7 +40,7 @@ export default async function PtaPublicPage() {
           <p className="text-gray-400 text-sm mt-2">{completed} activités achevées sur {total}</p>
         </div>
 
-        {/* Activities list */}
+        {/* Liste des activités */}
         <div className="space-y-4">
           {activities.map((a) => (
             <div key={a.id} className="bg-gray-50 rounded-xl p-6 border border-gray-100">
@@ -48,14 +48,14 @@ export default async function PtaPublicPage() {
                 <div>
                   <h2 className="font-semibold text-gray-800">{a.title}</h2>
                   <p className="text-gray-500 text-sm mt-1">{a.description}</p>
-                  <p className="text-gray-400 text-xs mt-2">Year: {a.year}</p>
+                  <p className="text-gray-400 text-xs mt-2">Année {a.year}</p>
                 </div>
                 <span className={`text-xs px-3 py-1 rounded-full ml-4 shrink-0 ${
                   a.status === "COMPLETED" ? "bg-green-100 text-green-700" :
                   a.status === "CANCELLED" ? "bg-red-100 text-red-700" :
                   "bg-yellow-100 text-yellow-700"
                 }`}>
-                  {a.status === "COMPLETED" ? "Completed" : a.status === "CANCELLED" ? "Cancelled" : "In Progress"}
+                  {a.status === "COMPLETED" ? "Terminé" : a.status === "CANCELLED" ? "Annulé" : "En cours"}
                 </span>
               </div>
             </div>

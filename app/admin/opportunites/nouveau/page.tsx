@@ -65,7 +65,7 @@ export default function NouvelleOpportunitePage() {
               className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
 
-          {/* Free or paid toggle - Pointer cursor added */}
+          {/* Free or paid toggle: pointer cursor added */}
           <div className="flex items-center gap-3 cursor-pointer group w-fit" onClick={() => setIsFree(!isFree)}>
             <input type="checkbox" checked={isFree} onChange={(e) => setIsFree(e.target.checked)} className="w-4 h-4 cursor-pointer" />
             <span className="text-sm text-gray-700 cursor-pointer select-none">Gratuit</span>

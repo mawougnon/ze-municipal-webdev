@@ -26,7 +26,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
           {article.title}
         </h1>
 
-        {/* Cover image — shown if available */}
+        {/* Cover image: shown if available */}
         {article.coverImageUrl && (
           <div className="relative w-full h-72 mb-8 overflow-hidden rounded-xl">
             <img

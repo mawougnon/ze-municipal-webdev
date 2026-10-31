@@ -18,7 +18,7 @@ export default function LoginPage() {
   const [error, setError]             = useState("");
   const router = useRouter();
 
-  // Step 1 — send OTP to email
+  // Step 1: send OTP to email
   async function handleSendOtp(e: React.FormEvent) {
     e.preventDefault();
     setError("");
@@ -48,7 +48,7 @@ export default function LoginPage() {
     }
   }
 
-  // Step 2 — verify OTP or password
+  // Step 2: verify OTP or password
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     setError("");
@@ -101,7 +101,7 @@ export default function LoginPage() {
               Mairie des Jeunes de Zè
             </h1>
             <p className="mt-1 text-xs uppercase tracking-widest text-white/40">
-              Administration — Accès Restreint
+              Administration · Accès Restreint
             </p>
           </div>
 
@@ -156,7 +156,7 @@ export default function LoginPage() {
                       inputMode="numeric"
                       value={otp}
                       onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
-                      placeholder="— — — — — —"
+                      placeholder="000000"
                       maxLength={6}
                       required
                       className="w-full px-4 py-4 rounded-lg border border-gray-200 text-center text-3xl font-bold tracking-[0.4em] text-[#1a3a2a] placeholder:text-gray-200 focus:outline-none focus:border-[#1a3a2a] transition-colors"

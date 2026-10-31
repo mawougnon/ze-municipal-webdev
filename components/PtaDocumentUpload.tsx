@@ -44,7 +44,7 @@ export default function PtaDocumentUpload({ currentPdfUrl, currentYear }: Props)
         <div className="flex items-center justify-between bg-green-50 border border-green-200 rounded-lg px-4 py-3">
           <a href={pdfUrl} target="_blank" rel="noopener noreferrer"
             className="text-green-700 hover:underline text-sm font-medium">
-            📄 PTA {year} — Voir le document actuel
+            📄 PTA {year} : voir le document actuel
           </a>
           <div className="flex gap-2">
             <button onClick={handleDelete} disabled={deleting}

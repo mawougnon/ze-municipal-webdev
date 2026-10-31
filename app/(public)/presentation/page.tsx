@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 
-// Static presentation page — mission, vision, values, history
+// Static presentation page: mission, vision, values, history
 export default function PresentationPage() {
   const valeurs = [
     { titre: "Engagement citoyen", desc: "Implication active des jeunes dans la vie de la communauté." },
@@ -103,7 +103,7 @@ export default function PresentationPage() {
       <section className="bg-[#D4AF37] py-12 px-6 text-center">
         <p className="text-black/60 uppercase tracking-widest text-xs font-semibold mb-3">Notre Devise</p>
         <h2 className="text-4xl font-serif font-bold text-black">
-          Initiative — Engagement — Développement
+          Initiative · Engagement · Développement
         </h2>
       </section>
 

@@ -39,11 +39,11 @@ export default async function HomePage() {
   return (
     <main className="min-h-screen bg-[#FAFAF7]">
 
-      {/* ── HERO ── full viewport, site historique background */}
+      {/* HERO: full viewport, site historique background */}
       <section className="relative h-screen flex flex-col items-center justify-center overflow-hidden">
         <Image src="/population-ze.png" alt="Commune de Zè" fill
           className="object-cover scale-105" priority />
-        {/* Gradient overlay — dark bottom, slightly lighter top */}
+        {/* Gradient overlay: dark bottom, slightly lighter top */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/55 to-black/80" />
 
         <div className="relative z-10 text-center text-white px-6 max-w-4xl mx-auto">
@@ -65,7 +65,7 @@ export default async function HomePage() {
 
           {/* Eyebrow */}
           <p className="text-[#D4AF37] font-semibold tracking-[0.3em] uppercase text-xs mb-4">
-            Mandature 2025 — 2030
+            Mandature 2025-2030
           </p>
 
           <h1 className="text-3xl md:text-6xl font-serif font-bold leading-tight mb-4">
@@ -74,7 +74,7 @@ export default async function HomePage() {
           </h1>
 
           <p className="text-base md:text-xl text-gray-200 mb-2 italic">
-            « Initiative — Engagement — Développement »
+            « Initiative · Engagement · Développement »
           </p>
 
           <div className="flex justify-center gap-4 flex-wrap">
@@ -100,7 +100,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ── DEVISE BAND ── */}
+      {/* DEVISE BAND */}
       <section className="bg-green-800 py-5 px-6">
         <div className="max-w-6xl mx-auto flex flex-wrap justify-center gap-8 text-white text-sm font-medium tracking-widest uppercase">
           {["Initiative", "Engagement", "Développement"].map((word, i) => (
@@ -112,7 +112,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ── BUREAU ── Bigger size for the mayor */}
+      {/* BUREAU: Bigger size for the mayor */}
       <section className="py-20 px-6 bg-[#FAFAF7]">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-14">
@@ -138,7 +138,7 @@ export default async function HomePage() {
               </h3>
             </div>
 
-            {/* Mayor — center */}
+            {/* Mayor: center */}
             <div className="text-center group order-1 md:order-2">
               <div className="relative w-48 h-60 md:w-64 md:h-72 mx-auto mb-4 overflow-hidden border-4 border-[#D4AF37] shadow-2xl">
                 <Image src="/maire.jpg" alt="Marius Salanon" fill
@@ -170,7 +170,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ── AMJB PRESIDENT & THE GODFATHER ── */}
+      {/* AMJB PRESIDENT & THE GODFATHER */}
       <section className="py-12 px-6 bg-green-900 text-white">
         <div className="max-w-6xl mx-auto"> {/* Augmenté à 6xl pour plus d'espace */}
           <div className="text-center mb-10">
@@ -225,7 +225,7 @@ export default async function HomePage() {
                   className="object-cover object-top" />
               </div>
               <p className="text-[#D4AF37] text-[10px] md:text-xs uppercase tracking-widest font-bold min-h-[32px] flex items-center justify-center px-2">
-                Préfet des Jeunes de l’Atlantique <br /> — Chargé de Mission —
+                Préfet des Jeunes de l’Atlantique <br /> Chargé de Mission
               </p>
               <p className="text-white text-sm md:text-base font-serif font-bold mt-2">
                 Fabrice LOKOSSOU
@@ -236,14 +236,14 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ── PTA PROGRESS ── */}
+      {/* PTA PROGRESS */}
       <section className="py-20 px-6 bg-green-900 text-white">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
             <div>
               <p className="text-[#D4AF37] uppercase tracking-widest text-xs font-semibold mb-2">Transparence</p>
               <h2 className="text-4xl font-serif font-bold">Plan de Travail Annuel</h2>
-              <p className="text-green-300 mt-2">Mandature 2025–2030 · Suivi en temps réel</p>
+              <p className="text-green-300 mt-2">Mandature 2025-2030 · Suivi en temps réel</p>
             </div>
             <Link href="/pta" className="text-[#D4AF37] hover:underline text-sm uppercase tracking-widest">
               Voir tout le PTA →
@@ -283,7 +283,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ── COMMUNE IDENTITY ── */}
+      {/* COMMUNE IDENTITY */}
       <section className="py-20 px-6 bg-[#FAFAF7]">
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
           <div>
@@ -311,7 +311,7 @@ export default async function HomePage() {
             </Link>
           </div>
 
-          {/* Grid 6 photos — 2 colums, 3 rows */}
+          {/* Grid 6 photos: 2 colums, 3 rows */}
           <div className="grid grid-cols-2 gap-3">
             <div className="relative h-44 overflow-hidden">
               <Image src="/culture-ananas.png" alt="Ananas de Zè" fill
@@ -341,7 +341,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ── ARTICLES ── */}
+      {/* ARTICLES */}
       <section className="py-20 px-6 bg-white border-t border-gray-100">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-end justify-between mb-12">
@@ -373,7 +373,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ── OPPORTUNITIES ── */}
+      {/* OPPORTUNITIES */}
       {opportunities.length > 0 && (
         <section className="py-20 px-6 bg-[#FAFAF7]">
           <div className="max-w-6xl mx-auto">

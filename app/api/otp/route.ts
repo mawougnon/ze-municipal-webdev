@@ -54,7 +54,7 @@ export async function POST(req: Request) {
       },
     });
 
-    // isSuperAdmin determined from DB role — never from client input
+    // isSuperAdmin determined from DB role: never from client input
     const isSuperAdmin = user.role === "SUPERADMIN";
 
     // Send OTP via Resend
@@ -62,11 +62,11 @@ export async function POST(req: Request) {
     const { error: sendError } = await resend.emails.send({
       from: "Mairie de Zè <onboarding@resend.dev>",
       to: email,
-      subject: "Code de vérification — Mairie des Jeunes de Zè",
+      subject: "Mairie des Jeunes de Zè : votre code de vérification",
       html: `
         <div style="font-family: sans-serif; max-width: 480px; margin: auto; padding: 32px 24px; border: 1px solid #e5e7eb; border-radius: 8px;">
           <h2 style="color: #1a3a2a; margin: 0 0 8px;">Mairie des Jeunes de Zè</h2>
-          <p style="color: #6b7280; font-size: 13px; margin: 0 0 24px;">Espace Administration — Accès Restreint</p>
+          <p style="color: #6b7280; font-size: 13px; margin: 0 0 24px;">Espace Administration · Accès restreint</p>
           <p style="margin: 0 0 16px; color: #111827;">Votre code de connexion :</p>
           <div style="background: #f3f4f6; border-radius: 8px; padding: 20px; text-align: center; margin-bottom: 24px;">
             <span style="font-size: 32px; font-weight: 700; letter-spacing: 0.3em; color: #1a3a2a;">${otp}</span>

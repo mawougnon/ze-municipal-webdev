@@ -116,7 +116,7 @@ export default function NouvelArticlePage() {
               Contenu
             </label>
 
-            {/* Toolbar — explicit text color so buttons are always visible */}
+            {/* Toolbar: explicit text color so buttons are always visible */}
             <div className="flex gap-2 mb-2">
               {toolbarButtons.map((btn) => (
                 <button
@@ -131,7 +131,7 @@ export default function NouvelArticlePage() {
               ))}
             </div>
 
-            {/* Editor wrapper — white background + dark text forced so ProseMirror content is always readable */}
+            {/* Editor wrapper: white background + dark text forced so ProseMirror content is always readable */}
             <div className="border border-gray-300 rounded-lg p-4 min-h-[200px] bg-white focus-within:ring-2 focus-within:ring-blue-500 editor-wrapper">
               <EditorContent editor={editor} />
             </div>
