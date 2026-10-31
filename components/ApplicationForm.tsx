@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { z } from "zod";
+import { BENIN_PHONE, normalizeBeninPhone } from "@/lib/phone";
 
 interface Props {
   opportunityId: string;
@@ -22,12 +23,8 @@ const schema = z.object({
 
   phone: z
     .string()
-    .trim()
-    .transform((val) => val.replace(/\s+/g, "")) 
-    .pipe(
-      z.string()
-       .regex(/^01[0-9]{8}$/, "Le numéro doit comporter 10 chiffres et commencer par 01.")
-    ),
+    .transform(normalizeBeninPhone)
+    .pipe(z.string().regex(BENIN_PHONE, "Le numéro doit comporter 10 chiffres et commencer par 01.")),
 
   email: z
     .string()
@@ -241,7 +238,7 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
           </label>
           <input type="tel" name="phone" required
             onChange={handleChange} onBlur={handleBlur}
-            placeholder="+229 XX XX XX XX"
+            placeholder="01 XX XX XX XX"
             className={`w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${errors.phone ? "border-red-400" : "border-gray-300"}`} />
           {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
         </div>

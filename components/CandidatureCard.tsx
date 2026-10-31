@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { Application, Opportunity } from "@prisma/client";
+import { whatsappLink } from "@/lib/phone";
 
 type CandidatureWithOpportunity = Application & {
   opportunity: Pick<Opportunity, "title" | "type">;
@@ -40,7 +41,7 @@ export default function CandidatureCard({ a }: { a: CandidatureWithOpportunity }
 
           <div className="flex flex-wrap gap-4 mt-3 text-sm text-gray-600">
             {a.phone && (
-              <a href={`https://wa.me/${a.phone.replace(/\D/g, "")}`}
+              <a href={whatsappLink(a.phone)}
                 target="_blank" rel="noopener noreferrer"
                 className="flex items-center gap-1 text-green-600 hover:underline">
                 📱 {a.phone} (WhatsApp)

@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { isOpen } from "@/lib/offers";
+import { BENIN_PHONE, normalizeBeninPhone } from "@/lib/phone";
 
 // Limits counted in the database (no external service)
 const MAX_PER_PHONE_PER_HOUR = 3;
@@ -28,12 +29,8 @@ const candidatureSchema = z.object({
     }),
   phone: z
     .string()
-    .trim()
-    .transform((val) => val.replace(/\s+/g, ""))
-    .pipe(
-      z.string()
-        .regex(/^01[0-9]{8}$/, "Le numéro doit comporter 10 chiffres et commencer par 01.")
-    ),
+    .transform(normalizeBeninPhone)
+    .pipe(z.string().regex(BENIN_PHONE, "Le numéro doit comporter 10 chiffres et commencer par 01.")),
   email: z
     .string()
     .email("Adresse email invalide.")
