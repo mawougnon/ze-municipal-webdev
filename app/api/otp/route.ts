@@ -58,7 +58,8 @@ export async function POST(req: Request) {
     const isSuperAdmin = user.role === "SUPERADMIN";
 
     // Send OTP via Resend
-    await resend.emails.send({
+    // The Resend SDK returns errors instead of throwing them
+    const { error: sendError } = await resend.emails.send({
       from: "Mairie de Zè <onboarding@resend.dev>",
       to: email,
       subject: "Code de vérification — Mairie des Jeunes de Zè",
@@ -77,10 +78,23 @@ export async function POST(req: Request) {
       `,
     });
 
+    if (sendError) throw new Error(`Resend email error: ${sendError.message}`);
+
     return NextResponse.json({ success: true, isSuperAdmin });
 
   } catch (error) {
-    console.error("OTP_SEND_ERROR:", error);
-    return NextResponse.json({ error: "Échec de l'envoi du code." }, { status: 500 });
+    // Un seul message pour plusieurs services differents rendait tout diagnostic impossible.
+    // On journalise l'etape fautive pour pouvoir la lire dans les logs Vercel.
+    const stage =
+      error instanceof Error && /prisma|database|connect|ECONNREFUSED/i.test(error.message) ? "DATABASE"
+      : error instanceof Error && /resend|email|domain/i.test(error.message) ? "EMAIL"
+      : "UNKNOWN";
+
+    console.error(`OTP_SEND_ERROR [${stage}]:`, error);
+
+    return NextResponse.json(
+      { error: "Service momentanement indisponible. Reessayez dans quelques minutes." },
+      { status: 503 }
+    );
   }
 }
