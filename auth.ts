@@ -25,22 +25,42 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         // ── PATH A: OTP login (all roles) ────────────────────────────
         if (otp) {
-          if (!user.otpCode || !user.otpExpires) return null;
+          if (!user.otpHash || !user.otpExpires) return null;
 
-          // Check expiry before comparing
+          // Expiration verifiee avant toute comparaison
           if (new Date() > user.otpExpires) return null;
 
-          // Constant-time comparison to prevent timing attacks
-          const isOtpValid =
-            otp.length === user.otpCode.length &&
-            otp.split("").every((c, i) => c === user.otpCode![i]);
+          // Garde-fou en base : la force brute reste bornee a 5 essais par code emis.
+          if (user.otpAttempts >= 5) {
+            await prisma.user.update({
+              where: { email },
+              data: { otpHash: null, otpExpires: null, otpAttempts: 0 },
+            });
+            await prisma.auditLog.create({
+              data: { action: "LOGIN_OTP_LOCKED", userEmail: user.email },
+            });
+            return null;
+          }
 
-          if (!isOtpValid) return null;
+          // bcrypt.compare est a temps constant : la duree ne revele rien.
+          // L'ancienne comparaison avec .every() s'arretait au premier caractere different.
+          const isOtpValid = await bcrypt.compare(otp, user.otpHash);
 
-          // Invalidate OTP immediately after use
+          if (!isOtpValid) {
+            await prisma.user.update({
+              where: { email },
+              data: { otpAttempts: { increment: 1 } },
+            });
+            await prisma.auditLog.create({
+              data: { action: "LOGIN_OTP_FAILED", userEmail: user.email },
+            });
+            return null;
+          }
+
+          // Code invalide des qu'il a servi
           await prisma.user.update({
             where: { email },
-            data: { otpCode: null, otpExpires: null },
+            data: { otpHash: null, otpExpires: null, otpAttempts: 0 },
           });
 
           await prisma.auditLog.create({

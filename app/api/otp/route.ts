@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { randomInt } from "node:crypto";
+import bcrypt from "bcrypt";
 import { prisma } from "@/lib/prisma";
 import { Resend } from "resend";
 import { Ratelimit } from "@upstash/ratelimit";
@@ -41,18 +43,22 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Email non autorisé." }, { status: 403 });
     }
 
-    // Generate cryptographically random 6-digit OTP
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    // Code a 6 chiffres tire d'un generateur cryptographique.
+    // Math.random() n'en est pas un : sa sortie est predictible.
+    const otp = randomInt(100000, 1000000).toString();
 
     // OTP expires in 10 minutes
     const expires = new Date(Date.now() + 10 * 60 * 1000);
 
-    // Store OTP in database
+    // Seul le hache est stocke : une lecture de la base ne donne aucun code utilisable.
+    const otpHash = await bcrypt.hash(otp, 10);
+
     await prisma.user.update({
       where: { email },
       data: {
-        otpCode: otp,
+        otpHash,
         otpExpires: expires,
+        otpAttempts: 0, // un nouveau code remet le compteur a zero
       },
     });
 
