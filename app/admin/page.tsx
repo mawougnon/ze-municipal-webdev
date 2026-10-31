@@ -20,7 +20,8 @@ export default async function AdminPage() {
 
   async function handleSignOut() {
     "use server";
-    await signOut({ redirectTo: "/login" });
+    // /login is hidden behind a 404, so go back to the public site
+    await signOut({ redirectTo: "/" });
   }
 
   const sections = [

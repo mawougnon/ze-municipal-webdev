@@ -42,7 +42,7 @@ export default function ArticleFormPage() {
           setLoading(false);
         })
         .catch(() => {
-          setError("Impossible to load the article data.");
+          setError("Impossible de charger l'article.");
           setLoading(false);
         });
     }
@@ -57,7 +57,7 @@ export default function ArticleFormPage() {
 
     // Validation
     if (!content || content === "<p></p>") {
-      setError("Content cannot be empty.");
+      setError("Le contenu ne peut pas être vide.");
       setIsSaving(false);
       return;
     }
@@ -73,13 +73,16 @@ export default function ArticleFormPage() {
         body: JSON.stringify({ title, content, coverImageUrl, published }),
       });
 
-      if (!res.ok) throw new Error("Échec de l'enregistrement.");
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error ?? "Échec de l'enregistrement.");
+      }
 
       // Succès : redirection puis rafraîchissement des données
       router.push("/admin/articles");
       router.refresh();
-    } catch {
-      setError("Une erreur est survenue. Veuillez réessayer.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Une erreur est survenue. Veuillez réessayer.");
     } finally {
       setIsSaving(false);
     }
@@ -163,7 +166,7 @@ export default function ArticleFormPage() {
               disabled={isSaving}
               className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
             >
-              {isSaving ? "Saving..." : isEditing ? "Update Article" : "Publish Article"}
+              {isSaving ? "Enregistrement..." : published ? "Publier" : "Enregistrer comme brouillon"}
             </button>
 
             {/* NOUVEAU : Bouton supprimer uniquement en mode édition */}
@@ -173,7 +176,12 @@ export default function ArticleFormPage() {
                 onClick={async () => {
                   if (confirm("Supprimer cet article définitivement ?")) {
                     setIsSaving(true);
-                    await fetch(`/api/articles/${id}`, { method: "DELETE" });
+                    const res = await fetch(`/api/articles/${id}`, { method: "DELETE" });
+                    if (!res.ok) {
+                      setError("La suppression a échoué. Réessayez.");
+                      setIsSaving(false);
+                      return;
+                    }
                     router.push("/admin/articles");
                     router.refresh();
                   }

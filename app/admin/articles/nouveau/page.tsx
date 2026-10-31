@@ -40,12 +40,15 @@ export default function NouvelArticlePage() {
         body: JSON.stringify({ title, content, coverImageUrl, published }),
       });
 
-      if (!res.ok) throw new Error("Erreur lors de la création.");
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error ?? "Erreur lors de la création.");
+      }
 
       router.push("/admin/articles");
       router.refresh();
-    } catch {
-      setError("Une erreur est survenue. Réessayez.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Une erreur est survenue. Réessayez.");
     } finally {
       setLoading(false);
     }

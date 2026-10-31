@@ -9,10 +9,14 @@ export default function ModifierOpportunitePage({ params }: { params: Promise<{ 
   const [loading, setLoading] = useState(false);
   const [isFree, setIsFree] = useState(true);
   const [published, setPublished] = useState(false);
+  const [error, setError] = useState("");
   const [form, setForm] = useState({ type: "JOB", title: "", description: "", deadline: "", price: "" });
 
   useEffect(() => {
-    fetch(`/api/opportunites/${id}`).then(r => r.json()).then(data => {
+    fetch(`/api/opportunites/${id}`).then(r => {
+      if (!r.ok) throw new Error();
+      return r.json();
+    }).then(data => {
       setForm({
         type: data.type, title: data.title, description: data.description,
         deadline: data.deadline ? data.deadline.split("T")[0] : "",
@@ -20,7 +24,7 @@ export default function ModifierOpportunitePage({ params }: { params: Promise<{ 
       });
       setIsFree(data.isFree);
       setPublished(data.published);
-    });
+    }).catch(() => setError("Impossible de charger l'offre."));
   }, [id]);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
@@ -30,7 +34,8 @@ export default function ModifierOpportunitePage({ params }: { params: Promise<{ 
   async function handleUpdate(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
-    await fetch(`/api/opportunites/${id}`, {
+    setError("");
+    const res = await fetch(`/api/opportunites/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -39,13 +44,24 @@ export default function ModifierOpportunitePage({ params }: { params: Promise<{ 
         deadline: form.deadline ? new Date(form.deadline).toISOString() : null,
       }),
     });
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      setError(data.error ?? "L'enregistrement a échoué. Réessayez.");
+      setLoading(false);
+      return;
+    }
     router.push("/admin/opportunites");
     router.refresh();
   }
 
   async function handleDelete() {
-    if (!confirm("Supprimer cette offre définitivement ?")) return;
-    await fetch(`/api/opportunites/${id}`, { method: "DELETE" });
+    // Applications are deleted with their offer (cascade): say so before it happens
+    if (!confirm("Supprimer cette offre définitivement ? Toutes ses candidatures seront aussi supprimées.")) return;
+    const res = await fetch(`/api/opportunites/${id}`, { method: "DELETE" });
+    if (!res.ok) {
+      setError("La suppression a échoué. Réessayez.");
+      return;
+    }
     router.push("/admin/opportunites");
     router.refresh();
   }
@@ -83,10 +99,10 @@ export default function ModifierOpportunitePage({ params }: { params: Promise<{ 
               className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
 
-          <div className="flex items-center gap-3 cursor-pointer group" onClick={() => setIsFree(!isFree)}>
+          <label className="flex items-center gap-3 cursor-pointer w-fit">
             <input type="checkbox" checked={isFree} onChange={(e) => setIsFree(e.target.checked)} className="w-4 h-4 cursor-pointer" />
-            <span className="text-sm text-gray-700 cursor-pointer">Gratuit</span>
-          </div>
+            <span className="text-sm text-gray-700">Gratuit</span>
+          </label>
 
           {!isFree && (
             <div>
@@ -96,10 +112,12 @@ export default function ModifierOpportunitePage({ params }: { params: Promise<{ 
             </div>
           )}
 
-          <div className="flex items-center gap-3 cursor-pointer group" onClick={() => setPublished(!published)}>
+          <label className="flex items-center gap-3 cursor-pointer w-fit">
             <input type="checkbox" checked={published} onChange={(e) => setPublished(e.target.checked)} className="w-4 h-4 cursor-pointer" />
-            <span className="text-sm text-gray-700 cursor-pointer">Publier cette offre</span>
-          </div>
+            <span className="text-sm text-gray-700">Publier cette offre</span>
+          </label>
+
+          {error && <p className="text-red-500 text-sm">{error}</p>}
 
           <div className="flex gap-3 pt-2">
             <button type="submit" disabled={loading}

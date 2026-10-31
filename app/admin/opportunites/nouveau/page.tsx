@@ -8,6 +8,7 @@ export default function NouvelleOpportunitePage() {
   const [loading, setLoading] = useState(false);
   const [isFree, setIsFree] = useState(true);
   const [published, setPublished] = useState(false);
+  const [error, setError] = useState("");
   const [form, setForm] = useState({ type: "JOB", title: "", description: "", deadline: "", price: "" });
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
@@ -17,7 +18,8 @@ export default function NouvelleOpportunitePage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
-    await fetch("/api/opportunites", {
+    setError("");
+    const res = await fetch("/api/opportunites", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -28,6 +30,12 @@ export default function NouvelleOpportunitePage() {
         deadline: form.deadline ? new Date(form.deadline).toISOString() : null,
       }),
     });
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      setError(data.error ?? "L'enregistrement a échoué. Réessayez.");
+      setLoading(false);
+      return;
+    }
     router.push("/admin/opportunites");
     router.refresh();
   }
@@ -66,10 +74,10 @@ export default function NouvelleOpportunitePage() {
           </div>
 
           {/* Free or paid toggle: pointer cursor added */}
-          <div className="flex items-center gap-3 cursor-pointer group w-fit" onClick={() => setIsFree(!isFree)}>
+          <label className="flex items-center gap-3 cursor-pointer w-fit">
             <input type="checkbox" checked={isFree} onChange={(e) => setIsFree(e.target.checked)} className="w-4 h-4 cursor-pointer" />
-            <span className="text-sm text-gray-700 cursor-pointer select-none">Gratuit</span>
-          </div>
+            <span className="text-sm text-gray-700 select-none">Gratuit</span>
+          </label>
 
           {!isFree && (
             <div>
@@ -80,10 +88,12 @@ export default function NouvelleOpportunitePage() {
           )}
 
           
-          <div className="flex items-center gap-3 cursor-pointer group w-fit" onClick={() => setPublished(!published)}>
+          <label className="flex items-center gap-3 cursor-pointer w-fit">
             <input type="checkbox" checked={published} onChange={(e) => setPublished(e.target.checked)} className="w-4 h-4 cursor-pointer" />
-            <span className="text-sm text-gray-700 cursor-pointer select-none">Publier immédiatement en ligne</span>
-          </div>
+            <span className="text-sm text-gray-700 select-none">Publier immédiatement en ligne</span>
+          </label>
+
+          {error && <p className="text-red-500 text-sm">{error}</p>}
           <div className="flex gap-3 pt-2">
             <button type="submit" disabled={loading}
               className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition disabled:opacity-50">
