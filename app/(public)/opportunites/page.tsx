@@ -1,17 +1,13 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
+import { openOffersWhere } from "@/lib/offers";
+
+// The list depends on the current date, so it cannot stay frozen until the next edit
+export const revalidate = 60;
 
 export default async function OpportunitesPublicPage() {
-  const now = new Date();
-
   const opportunities = await prisma.opportunity.findMany({
-    where: { 
-      published: true, // L'admin doit avoir coché "Publier"
-      OR: [
-        { deadline: null },      // Affiche si aucune date n'est définie
-        { deadline: { gte: now } } // Affiche si la date est aujourd'hui ou dans le futur
-      ]
-    },
+    where: openOffersWhere(),
     orderBy: { createdAt: "desc" },
   });
 

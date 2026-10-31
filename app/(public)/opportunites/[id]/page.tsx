@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import ApplicationForm from "@/components/ApplicationForm";
+import { isOpen } from "@/lib/offers";
 
 export default async function OpportuniteDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -36,14 +37,19 @@ export default async function OpportuniteDetailPage({ params }: { params: Promis
           )}
         </div>
 
-        {/* Application form component */}
-        
-        <ApplicationForm
-          opportunityId={opportunity.id}
-          isFree={opportunity.isFree}
-          price={opportunity.price}
-          type={opportunity.type}
-        />
+        {/* A shared link can outlive the deadline: no form once the offer is closed */}
+        {isOpen(opportunity.deadline) ? (
+          <ApplicationForm
+            opportunityId={opportunity.id}
+            isFree={opportunity.isFree}
+            price={opportunity.price}
+            type={opportunity.type}
+          />
+        ) : (
+          <div className="bg-gray-50 border border-gray-200 rounded-xl p-8 text-center text-gray-600">
+            Les candidatures pour cette offre sont closes.
+          </div>
+        )}
 
         <div className="mt-8">
           <Link href="/opportunites" className="text-gray-400 hover:text-gray-600 text-sm">← Retour aux offres</Link>

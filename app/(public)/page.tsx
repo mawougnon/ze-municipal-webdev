@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import Image from "next/image";
+import { openOffersWhere } from "@/lib/offers";
 
 export const revalidate = 60;
 
@@ -23,16 +24,8 @@ export default async function HomePage() {
   const completed = allPtaActivities.filter(a => a.status === "COMPLETED").length;
   const progress = total > 0 ? Math.round((completed / total) * 100) : 0;
 
-  const now = new Date();
-
   const opportunities = await prisma.opportunity.findMany({
-    where: { 
-      published: true, 
-      OR: [
-        { deadline: null },
-        { deadline: { gte: now } } 
-      ]
-    },
+    where: openOffersWhere(),
     orderBy: { createdAt: "desc" },
     take: 3,
   });
