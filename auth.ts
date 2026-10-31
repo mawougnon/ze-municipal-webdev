@@ -77,8 +77,24 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           if (user.role !== "SUPERADMIN") return null;
           if (!user.password) return null;
 
+          // Failures are counted from the audit log: 5 in 15 minutes locks the password login.
+          // The email code keeps working, so a locked password never locks the account out.
+          const recentFailures = await prisma.auditLog.count({
+            where: {
+              userEmail: user.email,
+              action: "LOGIN_PASSWORD_FAILED",
+              createdAt: { gte: new Date(Date.now() - 15 * 60 * 1000) },
+            },
+          });
+          if (recentFailures >= 5) return null;
+
           const isMatch = await bcrypt.compare(password, user.password);
-          if (!isMatch) return null;
+          if (!isMatch) {
+            await prisma.auditLog.create({
+              data: { action: "LOGIN_PASSWORD_FAILED", userEmail: user.email },
+            });
+            return null;
+          }
 
           await prisma.auditLog.create({
             data: { action: "LOGIN_PASSWORD_SUCCESS", userEmail: user.email },
