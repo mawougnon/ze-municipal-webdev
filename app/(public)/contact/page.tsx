@@ -65,7 +65,7 @@ export default function ContactPage() {
               </a>
 
               {/* WhatsApp Channel */}
-              <a href="https://whatsapp.com/channel/0029Vb7WVZXlIRovF2vgsk0t" target="_blank" rel="noopener noreferrer"
+              <a href="https://whatsapp.com/channel/0029Vb7WVZXIiRovF2vgsk0t" target="_blank" rel="noopener noreferrer"
                 className="flex items-center gap-2 bg-green-800 text-white px-3 py-2 rounded-lg hover:bg-green-900 transition text-xs font-medium">
                 <FaBullhorn className="text-base" /> Canal
               </a>
@@ -85,32 +85,22 @@ export default function ContactPage() {
           </div>
         </div>
 
-        {/* Message form */}
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-8">
-          <h2 className="text-xl font-serif font-bold text-gray-900 mb-6">
-            Envoyer un message
+        {/* Write to us: opens the visitor's own mail app or WhatsApp, nothing is lost on the way */}
+        <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-8 flex flex-col justify-center">
+          <h2 className="text-xl font-serif font-bold text-gray-900 mb-3">
+            Nous écrire
           </h2>
-          <form className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Nom complet</label>
-              <input type="text" required
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-              <input type="email"
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Message</label>
-              <textarea rows={5}
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 text-justify" />
-            </div>
-            <button type="submit"
-              className="w-full bg-green-700 text-white py-3 rounded-lg font-semibold hover:bg-green-800 transition">
-              Envoyer
-            </button>
-          </form>
+          <p className="text-gray-600 text-sm mb-6">
+            Une question, une proposition de partenariat ? Écrivez-nous directement, nous vous répondrons.
+          </p>
+          <a href="mailto:mairiedesjeunesdeze2025@gmail.com"
+            className="flex items-center justify-center gap-2 w-full bg-green-700 text-white py-3 rounded-lg font-semibold hover:bg-green-800 transition">
+            <FaEnvelope /> Envoyer un e-mail
+          </a>
+          <a href="https://wa.me/2290198704584" target="_blank" rel="noopener noreferrer"
+            className="flex items-center justify-center gap-2 w-full mt-3 border border-green-700 text-green-700 py-3 rounded-lg font-semibold hover:bg-green-50 transition">
+            <FaWhatsapp /> Écrire sur WhatsApp
+          </a>
         </div>
 
       </section>
