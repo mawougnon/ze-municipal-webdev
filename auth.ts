@@ -32,9 +32,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
           // Garde-fou en base : la force brute reste bornee a 5 essais par code emis.
           if (user.otpAttempts >= 5) {
+            // otpExpires is kept: /api/otp derives the 2 minute resend delay from it
             await prisma.user.update({
               where: { email },
-              data: { otpHash: null, otpExpires: null, otpAttempts: 0 },
+              data: { otpHash: null, otpAttempts: 0 },
             });
             await prisma.auditLog.create({
               data: { action: "LOGIN_OTP_LOCKED", userEmail: user.email },

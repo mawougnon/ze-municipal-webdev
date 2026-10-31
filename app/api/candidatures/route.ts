@@ -1,14 +1,10 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { Ratelimit } from "@upstash/ratelimit";
-import { Redis } from "@upstash/redis";
 
-// 1. Initialize Upstash Ratelimit (10 apps / hour)
-const ratelimit = new Ratelimit({
-  redis: Redis.fromEnv(),
-  limiter: Ratelimit.slidingWindow(10, "1 h"),
-});
+// Limits counted in the database (no external service)
+const MAX_PER_PHONE_PER_HOUR = 3;
+const MAX_TOTAL_PER_HOUR = 100;
 
 // Zod Schema for validation
 const candidatureSchema = z.object({
@@ -63,18 +59,7 @@ export async function GET() {
 // POST: Submit a new application (Rate-limited)
 export async function POST(req: Request) {
   try {
-    // A. Rate Limit Check (First priority)
-    const ip = req.headers.get("x-forwarded-for") ?? "anonymous";
-    const { success } = await ratelimit.limit(ip);
-
-    if (!success) {
-      return NextResponse.json(
-        { error: "Trop de soumissions. Réessayez plus tard." },
-        { status: 429 }
-      );
-    }
-
-    // B. Validate Data
+    // A. Validate Data
     const body = await req.json();
     const result = candidatureSchema.safeParse(body);
     
@@ -82,6 +67,20 @@ export async function POST(req: Request) {
       return NextResponse.json(
         { error: "Données invalides.", details: result.error.flatten().fieldErrors },
         { status: 400 }
+      );
+    }
+
+    // B. Rate limit, by phone number and overall
+    const hourAgo = new Date(Date.now() - 60 * 60 * 1000);
+    const [byPhone, total] = await Promise.all([
+      prisma.application.count({ where: { phone: result.data.phone, createdAt: { gte: hourAgo } } }),
+      prisma.application.count({ where: { createdAt: { gte: hourAgo } } }),
+    ]);
+
+    if (byPhone >= MAX_PER_PHONE_PER_HOUR || total >= MAX_TOTAL_PER_HOUR) {
+      return NextResponse.json(
+        { error: "Trop de soumissions. Réessayez plus tard." },
+        { status: 429 }
       );
     }
 

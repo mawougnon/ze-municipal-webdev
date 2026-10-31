@@ -3,31 +3,15 @@ import { randomInt } from "node:crypto";
 import bcrypt from "bcrypt";
 import { prisma } from "@/lib/prisma";
 import { Resend } from "resend";
-import { Ratelimit } from "@upstash/ratelimit";
-import { Redis } from "@upstash/redis";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// 1. Initialize Upstash Ratelimit
-const ratelimit = new Ratelimit({
-  redis: Redis.fromEnv(),
-  limiter: Ratelimit.slidingWindow(5, "15 m"),
-  analytics: true,
-});
+const OTP_TTL_MS = 10 * 60 * 1000;
+// One code per account every 2 minutes, counted in the database (no external service).
+const OTP_INTERVAL_MS = 2 * 60 * 1000;
 
 export async function POST(req: Request) {
   try {
-    // 2. Extract IP and check rate limit immediately
-    const ip = req.headers.get("x-forwarded-for") ?? "anonymous";
-    const { success } = await ratelimit.limit(ip);
-
-    if (!success) {
-      return NextResponse.json(
-        { error: "Trop de tentatives. Réessayez dans 15 minutes." },
-        { status: 429 }
-      );
-    }
-
     const { email } = await req.json();
 
     if (!email || typeof email !== "string") {
@@ -43,12 +27,20 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Email non autorisé." }, { status: 403 });
     }
 
+    // otpExpires is set OTP_TTL_MS after issue, so the last issue time can be derived from it
+    if (user.otpExpires && user.otpExpires.getTime() - OTP_TTL_MS + OTP_INTERVAL_MS > Date.now()) {
+      return NextResponse.json(
+        { error: "Un code vient d'être envoyé. Patientez deux minutes avant d'en demander un autre." },
+        { status: 429 }
+      );
+    }
+
     // Code a 6 chiffres tire d'un generateur cryptographique.
     // Math.random() n'en est pas un : sa sortie est predictible.
     const otp = randomInt(100000, 1000000).toString();
 
     // OTP expires in 10 minutes
-    const expires = new Date(Date.now() + 10 * 60 * 1000);
+    const expires = new Date(Date.now() + OTP_TTL_MS);
 
     // Seul le hache est stocke : une lecture de la base ne donne aucun code utilisable.
     const otpHash = await bcrypt.hash(otp, 10);
