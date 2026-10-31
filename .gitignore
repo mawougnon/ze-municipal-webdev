@@ -45,3 +45,6 @@ next-env.d.ts
 seed-pta.mjs
 
 seed-users.mjs
+
+# Documents de travail
+*.pdf
