@@ -1,20 +1,19 @@
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
 import { NextResponse } from "next/server";
-import { revalidatePath } from "next/cache"; 
+import { revalidatePath } from "next/cache";
+import { offerSchema } from "@/lib/offers";
 
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
   
   const { id } = await params;
-  const { type, title, description, deadline, published, isFree, price } = await req.json();
-  
+  const result = offerSchema.safeParse(await req.json().catch(() => null));
+  if (!result.success) return NextResponse.json({ error: result.error.issues[0].message }, { status: 400 });
+
   try {
-    const opportunity = await prisma.opportunity.update({ 
-      where: { id }, 
-      data: { type, title, description, deadline, published, isFree, price } 
-    });
+    const opportunity = await prisma.opportunity.update({ where: { id }, data: result.data });
 
     revalidatePath("/opportunites");
     revalidatePath("/"); 

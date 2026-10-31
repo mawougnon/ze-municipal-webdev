@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
+import { articleSchema } from "@/lib/articles";
 
 /**
  * GET /api/articles/:id
@@ -38,14 +39,12 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
   }
 
+  const result = articleSchema.safeParse(await req.json().catch(() => null));
+  if (!result.success) return NextResponse.json({ error: result.error.issues[0].message }, { status: 400 });
+
   try {
     const { id } = await params;
-    const { title, content, published, coverImageUrl } = await req.json();
-
-    const article = await prisma.article.update({
-      where: { id },
-      data: { title, content, published, coverImageUrl },
-    });
+    const article = await prisma.article.update({ where: { id }, data: result.data });
 
     revalidatePath("/articles");
     revalidatePath(`/articles/${id}`);

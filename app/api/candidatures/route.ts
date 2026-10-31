@@ -2,19 +2,12 @@ import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { isOpen } from "@/lib/offers";
+import { isProjectFile } from "@/lib/storage";
 import { BENIN_PHONE, normalizeBeninPhone } from "@/lib/phone";
 
 // Limits counted in the database (no external service)
 const MAX_PER_PHONE_PER_HOUR = 3;
 const MAX_TOTAL_PER_HOUR = 100;
-
-// Uploaded documents live in the project's "documents" bucket. Any other link is refused,
-// so an applicant cannot plant a link to an outside page in the admin panel.
-const DOCUMENTS_PREFIX = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/documents/`;
-const isOwnDocument = (url: string) => {
-  const name = url.slice(DOCUMENTS_PREFIX.length);
-  return url.startsWith(DOCUMENTS_PREFIX) && name.length > 0 && !name.includes("/") && !name.includes("..");
-};
 
 // Zod Schema for validation
 const candidatureSchema = z.object({
@@ -49,7 +42,8 @@ const candidatureSchema = z.object({
     .refine((val) => {
       if (!val) return true;
       const urls = val.split(" | ");
-      return urls.length <= 5 && urls.every(isOwnDocument);
+      // Only files from the project's bucket: an applicant cannot plant an outside link
+      return urls.length <= 5 && urls.every((url) => isProjectFile(url, "documents"));
     }, "Document invalide."),
 });
 
