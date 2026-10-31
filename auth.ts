@@ -117,7 +117,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
   callbacks: {
     async jwt({ token, user }) {
-      if (user) token.role = (user as any).role;
+      if (user) {
+        token.role = (user as any).role;
+        return token;
+      }
+      // Read the account again on every request: a removed admin loses access at once
+      // instead of keeping a valid token for up to 10 hours, and a role change applies.
+      const current = token.email
+        ? await prisma.user.findUnique({ where: { email: token.email }, select: { role: true } })
+        : null;
+      if (!current) return null;
+      token.role = current.role;
       return token;
     },
     async session({ session, token }) {
