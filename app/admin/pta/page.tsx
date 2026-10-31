@@ -1,3 +1,4 @@
+import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import PtaDocumentUpload from "@/components/PtaDocumentUpload";
@@ -5,6 +6,8 @@ import PtaDocumentUpload from "@/components/PtaDocumentUpload";
 export const dynamic = "force-dynamic";
 
 export default async function PtaPage() {
+  await requireAdmin();
+
   // Fetch data
   const activities = await prisma.ptaActivity.findMany({ orderBy: { updatedAt: "desc" } });
   const ptaDoc = await prisma.ptaDocument.findFirst({ orderBy: { updatedAt: "desc" } });

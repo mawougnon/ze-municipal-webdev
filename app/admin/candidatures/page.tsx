@@ -1,3 +1,4 @@
+import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import CandidatureCard from "@/components/CandidatureCard";
@@ -7,6 +8,8 @@ interface Props {
 }
 
 export default async function CandidaturesPage({ searchParams }: Props) {
+  await requireAdmin();
+
   const { type, opportunityId } = await searchParams;
 
   const applications = await prisma.application.findMany({

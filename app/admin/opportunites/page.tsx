@@ -1,9 +1,12 @@
+import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
 export default async function OpportunitesPage() {
+  await requireAdmin();
+
   const opportunities = await prisma.opportunity.findMany({ orderBy: { createdAt: "desc" } });
 
   return (
