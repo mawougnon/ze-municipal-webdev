@@ -48,7 +48,10 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
   const { id } = await params;
   const opportunity = await prisma.opportunity.findUnique({ where: { id } });
   
-  if (!opportunity) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  // An unpublished offer is reported as missing unless an admin is logged in
+  if (!opportunity || (!opportunity.published && !(await auth()))) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
   
   return NextResponse.json(opportunity);
 }

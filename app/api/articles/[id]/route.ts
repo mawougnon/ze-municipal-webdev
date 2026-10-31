@@ -16,7 +16,8 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
       include: { photos: true },
     });
 
-    if (!article) {
+    // A draft is reported as missing unless an admin is logged in
+    if (!article || (!article.published && !(await auth()))) {
       return NextResponse.json({ error: "Article not found" }, { status: 404 });
     }
 

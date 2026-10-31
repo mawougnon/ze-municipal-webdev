@@ -5,7 +5,10 @@ import { revalidatePath } from "next/cache";
 
 // GET /api/articles — fetch all articles
 export async function GET() {
+  // Drafts are only returned to a logged-in admin
+  const session = await auth();
   const articles = await prisma.article.findMany({
+    where: session ? undefined : { published: true },
     orderBy: { createdAt: "desc" },
     include: { photos: true },
   });

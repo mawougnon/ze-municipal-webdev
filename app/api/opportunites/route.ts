@@ -4,7 +4,12 @@ import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 
 export async function GET() {
-  const opportunities = await prisma.opportunity.findMany({ orderBy: { createdAt: "desc" } });
+  // Unpublished offers are only returned to a logged-in admin
+  const session = await auth();
+  const opportunities = await prisma.opportunity.findMany({
+    where: session ? undefined : { published: true },
+    orderBy: { createdAt: "desc" },
+  });
   return NextResponse.json(opportunities);
 }
 
