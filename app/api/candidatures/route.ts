@@ -1,10 +1,19 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { isOpen } from "@/lib/offers";
 
 // Limits counted in the database (no external service)
 const MAX_PER_PHONE_PER_HOUR = 3;
 const MAX_TOTAL_PER_HOUR = 100;
+
+// Uploaded documents live in the project's "documents" bucket. Any other link is refused,
+// so an applicant cannot plant a link to an outside page in the admin panel.
+const DOCUMENTS_PREFIX = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/documents/`;
+const isOwnDocument = (url: string) => {
+  const name = url.slice(DOCUMENTS_PREFIX.length);
+  return url.startsWith(DOCUMENTS_PREFIX) && name.length > 0 && !name.includes("/") && !name.includes("..");
+};
 
 // Zod Schema for validation
 const candidatureSchema = z.object({
@@ -36,7 +45,15 @@ const candidatureSchema = z.object({
     .max(1000, "Message trop long.")
     .optional()
     .or(z.null()),
-  cvUrl: z.string().optional().or(z.null()),
+  cvUrl: z
+    .string()
+    .optional()
+    .or(z.null())
+    .refine((val) => {
+      if (!val) return true;
+      const urls = val.split(" | ");
+      return urls.length <= 5 && urls.every(isOwnDocument);
+    }, "Document invalide."),
 });
 
 // GET: Fetch applications (Protected)
@@ -70,7 +87,19 @@ export async function POST(req: Request) {
       );
     }
 
-    // B. Rate limit, by phone number and overall
+    // B. The offer must exist, be published and still be open
+    const opportunity = await prisma.opportunity.findUnique({
+      where: { id: result.data.opportunityId },
+      select: { published: true, deadline: true },
+    });
+    if (!opportunity || !opportunity.published) {
+      return NextResponse.json({ error: "Offre introuvable." }, { status: 404 });
+    }
+    if (!isOpen(opportunity.deadline)) {
+      return NextResponse.json({ error: "Les candidatures pour cette offre sont closes." }, { status: 410 });
+    }
+
+    // C. Rate limit, by phone number and overall
     const hourAgo = new Date(Date.now() - 60 * 60 * 1000);
     const [byPhone, total] = await Promise.all([
       prisma.application.count({ where: { phone: result.data.phone, createdAt: { gte: hourAgo } } }),
@@ -84,7 +113,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // C. Create Database Entry
+    // D. Create Database Entry
     const application = await prisma.application.create({
       data: {
         opportunityId: result.data.opportunityId,
