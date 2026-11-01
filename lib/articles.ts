@@ -1,4 +1,5 @@
 import { z } from "zod";
+import sanitizeHtml from "sanitize-html";
 import { isProjectFile } from "@/lib/storage";
 
 // What an admin may send when creating or editing an article
@@ -11,3 +12,15 @@ export const articleSchema = z.object({
     .nullish(),
   published: z.boolean().default(false),
 });
+
+// Article bodies come from the TipTap editor. Only the tags it can produce are kept, so
+// scripts, event handlers, styles and javascript: links are removed before display.
+export function cleanArticleHtml(html: string) {
+  return sanitizeHtml(html, {
+    allowedTags: ["p", "br", "strong", "em", "s", "u", "code", "pre", "blockquote",
+      "ul", "ol", "li", "h1", "h2", "h3", "h4", "h5", "h6", "hr", "a"],
+    allowedAttributes: { a: ["href", "target", "rel"] },
+    allowedSchemes: ["http", "https", "mailto"],
+    transformTags: { a: sanitizeHtml.simpleTransform("a", { rel: "noopener noreferrer" }) },
+  });
+}

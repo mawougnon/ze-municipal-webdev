@@ -1,3 +1,4 @@
+import { cleanArticleHtml } from "@/lib/articles";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -40,7 +41,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
         {/* Article content with custom styles */}
         <div
           className="article-content"
-          dangerouslySetInnerHTML={{ __html: article.content }}
+          dangerouslySetInnerHTML={{ __html: cleanArticleHtml(article.content) }}
         />
 
         {/* Additional photos */}
