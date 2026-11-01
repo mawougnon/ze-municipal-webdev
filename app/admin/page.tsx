@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/format";
 import { signOut } from "@/auth";
 import { requireAdmin } from "@/lib/admin";
 import Link from "next/link";
@@ -150,7 +151,7 @@ async function AuditLogPreview() {
             </span>
             <span className="text-gray-400 text-xs">{log.userEmail}</span>
             <span className="text-gray-300 text-xs">
-              {new Date(log.createdAt).toLocaleDateString("fr-FR", {
+              {formatDate(log.createdAt, {
                 day: "numeric", month: "short",
                 hour: "2-digit", minute: "2-digit"
               })}

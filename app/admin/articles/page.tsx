@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/format";
 import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
@@ -44,7 +45,7 @@ export default async function ArticlesPage() {
                   <h2 className="font-semibold text-gray-800">{article.title}</h2>
                   <div className="flex items-center gap-3 mt-1">
                     <span className="text-gray-400 text-sm">
-                      {new Date(article.createdAt).toLocaleDateString("fr-FR")}
+                      {formatDate(article.createdAt)}
                     </span>
                     {/* Publication status badge */}
                     <span className={`text-xs px-2 py-0.5 rounded-full ${

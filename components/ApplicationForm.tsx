@@ -1,5 +1,6 @@
 "use client";
 
+import { formatPrice } from "@/lib/format";
 import { useState } from "react";
 import { z } from "zod";
 import { BENIN_PHONE, normalizeBeninPhone } from "@/lib/phone";
@@ -226,7 +227,7 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
   return (
     <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
       <h2 className="font-bold text-gray-800 text-lg mb-6">
-        {isFree ? "Postuler gratuitement" : `Postuler (${price?.toLocaleString()} XOF)`}
+        {isFree ? "Postuler gratuitement" : `Postuler (${formatPrice(price)} XOF)`}
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-5" noValidate>

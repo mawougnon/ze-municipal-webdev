@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/format";
 import { cleanArticleHtml } from "@/lib/articles";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
@@ -17,7 +18,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
       <section className="max-w-3xl mx-auto px-4 md:px-6 py-8 md:py-12">
         {/* Date */}
         <p className="text-gray-400 text-sm mb-4">
-          {new Date(article.createdAt).toLocaleDateString("fr-FR", {
+          {formatDate(article.createdAt, {
             day: "numeric", month: "long", year: "numeric"
           })}
         </p>

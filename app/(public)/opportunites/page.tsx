@@ -1,3 +1,4 @@
+import { formatDate, formatPrice } from "@/lib/format";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { openOffersWhere } from "@/lib/offers";
@@ -39,12 +40,12 @@ export default async function OpportunitesPublicPage() {
                       <p className="text-gray-500 text-sm mt-1 line-clamp-2">{o.description}</p>
                       {o.deadline && (
                         <p className="text-gray-400 text-xs mt-2">
-                          Date limite : {new Date(o.deadline).toLocaleDateString("fr-FR")}
+                          Date limite : {formatDate(o.deadline)}
                         </p>
                       )}
                     </div>
                     <span className="text-sm font-semibold text-green-700 ml-4 shrink-0">
-                      {o.isFree ? "Gratuit" : `${o.price} XOF`}
+                      {o.isFree ? "Gratuit" : `${formatPrice(o.price)} XOF`}
                     </span>
                   </div>
                 </Link>
@@ -69,12 +70,12 @@ export default async function OpportunitesPublicPage() {
                       <p className="text-gray-500 text-sm mt-1 line-clamp-2">{o.description}</p>
                       {o.deadline && (
                         <p className="text-gray-400 text-xs mt-2">
-                          Date limite : {new Date(o.deadline).toLocaleDateString("fr-FR")}
+                          Date limite : {formatDate(o.deadline)}
                         </p>
                       )}
                     </div>
                     <span className="text-sm font-semibold text-green-700 ml-4 shrink-0">
-                      {o.isFree ? "Gratuit" : `${o.price} XOF`}
+                      {o.isFree ? "Gratuit" : `${formatPrice(o.price)} XOF`}
                     </span>
                   </div>
                 </Link>

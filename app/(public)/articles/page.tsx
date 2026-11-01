@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/format";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 
@@ -40,7 +41,7 @@ export default async function ArticlesPublicPage() {
                     {a.title}
                   </h2>
                   <p className="text-gray-400 text-sm">
-                    {new Date(a.createdAt).toLocaleDateString("fr-FR", {
+                    {formatDate(a.createdAt, {
                       day: "numeric", month: "long", year: "numeric"
                     })}
                   </p>

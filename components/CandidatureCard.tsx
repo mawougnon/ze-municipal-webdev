@@ -1,5 +1,6 @@
 "use client";
 
+import { formatDate } from "@/lib/format";
 import { useRouter } from "next/navigation";
 import { Application, Opportunity } from "@prisma/client";
 import { whatsappLink } from "@/lib/phone";
@@ -75,7 +76,7 @@ export default function CandidatureCard({ a }: { a: CandidatureWithOpportunity }
 
         <div className="flex flex-col items-end gap-2 shrink-0">
           <span className="text-xs text-gray-400">
-            {new Date(a.createdAt).toLocaleDateString("fr-FR", {
+            {formatDate(a.createdAt, {
               day: "numeric", month: "long", year: "numeric",
             })}
           </span>

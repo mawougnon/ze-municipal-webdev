@@ -1,3 +1,4 @@
+import { formatDate, formatPrice } from "@/lib/format";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import Image from "next/image";
@@ -357,7 +358,7 @@ export default async function HomePage() {
                   <div className={`bg-gray-50 border border-gray-100 p-8 h-full hover:border-[#D4AF37] hover:shadow-lg transition ${i === 0 ? "border-l-4 border-l-green-800" : ""}`}>
                     <p className="text-[#D4AF37] text-xs uppercase tracking-widest font-semibold mb-3">Actualité</p>
                     <h3 className="font-serif font-bold text-gray-900 text-lg mb-4 group-hover:text-green-800 transition leading-snug">{a.title}</h3>
-                    <p className="text-gray-400 text-sm">{new Date(a.createdAt).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}</p>
+                    <p className="text-gray-400 text-sm">{formatDate(a.createdAt, { day: "numeric", month: "long", year: "numeric" })}</p>
                   </div>
                 </Link>
               ))}
@@ -389,7 +390,7 @@ export default async function HomePage() {
                     {o.type === "JOB" ? "Emploi" : "Formation"}
                   </span>
                   <h3 className="font-serif font-bold text-gray-900 mt-4 mb-3 group-hover:text-green-800 transition">{o.title}</h3>
-                  <p className="text-[#D4AF37] font-bold text-sm">{o.isFree ? "Gratuit" : `${o.price?.toLocaleString()} XOF`}</p>
+                  <p className="text-[#D4AF37] font-bold text-sm">{o.isFree ? "Gratuit" : `${formatPrice(o.price)} XOF`}</p>
                 </Link>
               ))}
             </div>

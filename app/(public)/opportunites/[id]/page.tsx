@@ -1,3 +1,4 @@
+import { formatDate, formatPrice } from "@/lib/format";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -22,17 +23,17 @@ export default async function OpportuniteDetailPage({ params }: { params: Promis
         </span>
         <h1 className="text-3xl font-bold mt-2">{opportunity.title}</h1>
         <p className="text-green-100 mt-2 font-semibold">
-          {opportunity.isFree ? "Gratuit" : `${opportunity.price} XOF`}
+          {opportunity.isFree ? "Gratuit" : `${formatPrice(opportunity.price)} XOF`}
         </p>
       </section>
 
       <section className="max-w-3xl mx-auto px-6 py-12">
         <div className="bg-gray-50 rounded-xl p-6 border border-gray-100 mb-10">
           <h2 className="font-semibold text-gray-800 mb-3">Description</h2>
-          <p className="text-gray-600">{opportunity.description}</p>
+          <p className="text-gray-600 whitespace-pre-line">{opportunity.description}</p>
           {opportunity.deadline && (
             <p className="text-red-500 text-sm mt-4 font-medium">
-              ⏳ Date limite : {new Date(opportunity.deadline).toLocaleDateString("fr-FR")}
+              ⏳ Date limite : {formatDate(opportunity.deadline)}
             </p>
           )}
         </div>
