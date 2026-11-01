@@ -43,7 +43,7 @@ const candidatureSchema = z.object({
       if (!val) return true;
       const urls = val.split(" | ");
       // Only files from the project's bucket: an applicant cannot plant an outside link
-      return urls.length <= 5 && urls.every((url) => isProjectFile(url, "documents"));
+      return urls.length <= 5 && urls.every((url) => isProjectFile(url, "documents") && /\.pdf$/i.test(url));
     }, "Document invalide."),
 });
 

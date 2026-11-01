@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { z } from "zod";
 import { BENIN_PHONE, normalizeBeninPhone } from "@/lib/phone";
+import { safeFileName } from "@/lib/storage";
 
 interface Props {
   opportunityId: string;
@@ -80,32 +81,42 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
       return;
     }
     for (const file of files) {
+      // The documents bucket only accepts PDF: say it here instead of failing later
+      if (file.type !== "application/pdf") {
+        setServerError(`"${file.name}" n'est pas un PDF. Seuls les fichiers PDF sont acceptés.`);
+        return;
+      }
       if (file.size > 5 * 1024 * 1024) {
-        setServerError(`Le fichier "${file.name}" dépasse 5MB.`);
+        setServerError(`Le fichier "${file.name}" dépasse 5 Mo.`);
         return;
       }
     }
+    setServerError("");
 
     setUploading(true);
     const uploaded: string[] = [];
+    const failed: string[] = [];
 
     for (const file of files) {
       try {
         const { supabase } = await import("@/lib/supabase");
-        const filename = `cv-${Date.now()}-${file.name.replace(/\s/g, "_")}`;
+        const filename = `cv-${Date.now()}-${safeFileName(file.name)}`;
         const { error } = await supabase.storage
           .from("documents")
           .upload(filename, file, { upsert: false });
 
-        if (!error) {
-          const { data } = supabase.storage.from("documents").getPublicUrl(filename);
-          uploaded.push(data.publicUrl);
-        }
+        if (error) throw error;
+        const { data } = supabase.storage.from("documents").getPublicUrl(filename);
+        uploaded.push(data.publicUrl);
       } catch {
-        console.error("Upload failed for", file.name);
+        failed.push(file.name);
       }
     }
 
+    // A failed upload used to vanish silently: the applicant must know before sending
+    if (failed.length > 0) {
+      setServerError(`Échec de l'envoi de : ${failed.join(", ")}. Réessayez.`);
+    }
     setCvFiles((prev) => [...prev, ...uploaded]);
     setUploading(false);
   }
@@ -194,11 +205,11 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
       {wantsToUploadCV && (
         <div>
           <p className="text-sm text-gray-500 mb-2">
-            Formats acceptés : PDF, Word, images (max 5 fichiers, 5MB chacun)
+            Format accepté : PDF uniquement (5 fichiers au maximum, 5 Mo chacun)
           </p>
           <input
             type="file" multiple
-            accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+            accept="application/pdf,.pdf"
             onChange={handleFileUpload}
             disabled={uploading}
             className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-green-50 file:text-green-700 hover:file:bg-green-100 cursor-pointer"
