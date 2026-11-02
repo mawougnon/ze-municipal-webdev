@@ -1,3 +1,4 @@
+import "server-only";
 import { z } from "zod";
 import sanitizeHtml from "sanitize-html";
 import { isProjectFile } from "@/lib/storage";

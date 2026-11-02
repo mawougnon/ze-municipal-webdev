@@ -1,3 +1,4 @@
+import "server-only";
 import { z } from "zod";
 
 // A deadline is stored as midnight UTC of the chosen day. Benin is UTC+1 all year,
