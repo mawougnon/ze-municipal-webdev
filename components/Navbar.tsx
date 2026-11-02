@@ -10,7 +10,7 @@ export default function Navbar() {
         <Link href="/" className="flex items-center">
           <Image src="/logo-benin.png" alt="Mairie des Jeunes de Zè"
             width={120} height={48}
-            className="object-contain h-10 md:h-12 w-auto" />
+            className="object-contain h-10 md:h-12 w-auto" preload />
         </Link>
 
         {/* Navigation desktop */}
@@ -26,7 +26,7 @@ export default function Navbar() {
         {/* Logo droite */}
         <Image src="/logo-commune-ze.jpg" alt="Commune de Zè"
           width={100} height={50}
-          className="object-contain h-10 md:h-12 w-auto" />
+          className="object-contain h-10 md:h-12 w-auto" preload />
       </div>
 
       {/* Navigation mobile: barre scrollable */}

@@ -36,7 +36,7 @@ export default async function HomePage() {
       {/* HERO: full viewport, site historique background */}
       <section className="relative h-screen flex flex-col items-center justify-center overflow-hidden">
         <Image src="/population-ze.png" alt="Commune de Zè" fill
-          className="object-cover scale-105" priority />
+          className="object-cover scale-105" preload />
         {/* Gradient overlay: dark bottom, slightly lighter top */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/55 to-black/80" />
 
@@ -46,15 +46,15 @@ export default async function HomePage() {
           <div className="flex justify-center items-center gap-3 mb-6">
             <Image src="/logo-association-mj-benin.jpg" alt="AMJB"
               width={50} height={50}
-              className="rounded-full bg-white p-1 object-contain shadow-lg w-10 h-10 md:w-16 md:h-16" />
+              className="rounded-full bg-white p-1 object-contain shadow-lg w-10 h-10 md:w-16 md:h-16" preload />
             <div className="w-px h-8 bg-white/30" />
             <Image src="/logo-association-mj-ze.jpg" alt="Mairie des Jeunes de Zè"
               width={100} height={40}
-              className="bg-white rounded-lg px-2 py-1 object-contain shadow-lg h-8 w-auto md:h-12" />
+              className="bg-white rounded-lg px-2 py-1 object-contain shadow-lg h-8 w-auto md:h-12" preload />
             <div className="w-px h-8 bg-white/30" />
             <Image src="/logo-commune-ze.jpg" alt="Commune de Zè"
               width={50} height={50}
-              className="rounded-full bg-white p-1 object-contain shadow-lg w-10 h-10 md:w-16 md:h-16" />
+              className="rounded-full bg-white p-1 object-contain shadow-lg w-10 h-10 md:w-16 md:h-16" preload />
           </div>
 
           {/* Eyebrow */}

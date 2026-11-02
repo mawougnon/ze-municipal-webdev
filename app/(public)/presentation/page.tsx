@@ -18,7 +18,7 @@ export default function PresentationPage() {
       {/* Hero */}
       <section className="relative h-64 flex items-center justify-center overflow-hidden bg-green-900">
         <div className="absolute inset-0 opacity-20">
-          <Image src="/Sites-touristique.jpg" alt="" fill className="object-cover" />
+          <Image src="/sites-touristiques.png" alt="Sites touristiques de Zè" fill className="object-cover" preload />
         </div>
         <div className="relative z-10 text-center text-white px-6">
           <p className="text-[#D4AF37] uppercase tracking-widest text-xs font-semibold mb-3">Qui sommes-nous</p>
@@ -110,9 +110,9 @@ export default function PresentationPage() {
       {/* Logos */}
       <section className="py-12 px-6 bg-[#FAFAF7]">
         <div className="max-w-4xl mx-auto flex flex-wrap justify-center items-center gap-12">
-          <Image src="/logo-association-MJ-Benin.jpg" alt="AMJB" width={160} height={80} className="object-contain" />
-          <Image src="/logo-association-MJ-Ze.jpg" alt="Mairie des Jeunes de Zè" width={200} height={80} className="object-contain" />
-          <Image src="/logo-commune-Ze.jpg" alt="Commune de Zè" width={100} height={100} className="object-contain" />
+          <Image src="/logo-association-mj-benin.jpg" alt="AMJB" width={160} height={80} className="object-contain" />
+          <Image src="/logo-association-mj-ze.jpg" alt="Mairie des Jeunes de Zè" width={200} height={80} className="object-contain" />
+          <Image src="/logo-commune-ze.jpg" alt="Commune de Zè" width={100} height={100} className="object-contain" />
         </div>
       </section>
 
