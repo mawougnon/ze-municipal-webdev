@@ -1,14 +1,23 @@
 {
-  "name": "ze_municipal_webdev",
-  "version": "0.1.0",
+  "name": "ze-municipal-platform",
+  "version": "1.0.0",
   "private": true,
+  "description": "Website and admin area of the Zè Youth City Hall (AMJB), Benin",
+  "license": "MIT",
+  "engines": {
+    "node": "24.x"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "postinstall": "prisma generate",
-    "test": "vitest run"
+    "lint": "eslint --max-warnings 0",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "db:migrate": "prisma migrate deploy",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
@@ -23,7 +32,6 @@
     "next": "^16.4.3",
     "next-auth": "^5.0.0-beta.32",
     "nextjs-toploader": "^3.9.17",
-    "prisma": "^5.22.0",
     "radix-ui": "^1.4.3",
     "react": "19.2.4",
     "react-dom": "19.2.4",
@@ -47,6 +55,7 @@
     "eslint-config-prettier": "^10.1.8",
     "prettier": "^3.9.10",
     "prettier-plugin-tailwindcss": "^0.8.1",
+    "prisma": "^5.22.0",
     "shadcn": "^4.6.0",
     "tailwindcss": "^4",
     "typescript": "^5",
