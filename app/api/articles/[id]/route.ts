@@ -34,13 +34,14 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
  */
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
-  
+
   if (!session) {
     return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
   }
 
   const result = articleSchema.safeParse(await req.json().catch(() => null));
-  if (!result.success) return NextResponse.json({ error: result.error.issues[0].message }, { status: 400 });
+  if (!result.success)
+    return NextResponse.json({ error: result.error.issues[0].message }, { status: 400 });
 
   try {
     const { id } = await params;
@@ -48,7 +49,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
 
     revalidatePath("/articles");
     revalidatePath(`/articles/${id}`);
-    revalidatePath("/"); 
+    revalidatePath("/");
 
     return NextResponse.json(article);
   } catch (error) {

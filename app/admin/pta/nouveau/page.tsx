@@ -7,10 +7,18 @@ import FileUpload from "@/components/FileUpload";
 export default function NouvellePtaPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [form, setForm] = useState({ year: "", title: "", description: "", status: "IN_PROGRESS", pdfUrl: "" });
+  const [form, setForm] = useState({
+    year: "",
+    title: "",
+    description: "",
+    status: "IN_PROGRESS",
+    pdfUrl: "",
+  });
 
   // Update local state when text fields change
-  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
+  function handleChange(
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+  ) {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
 
@@ -29,43 +37,62 @@ export default function NouvellePtaPage() {
 
   return (
     <main className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-3xl mx-auto">
-        <h1 className="text-2xl font-bold text-gray-800 mb-8">Nouvelle activité PTA</h1>
-        <form onSubmit={handleSubmit} className="space-y-5 bg-white p-6 rounded-xl shadow-sm">
+      <div className="mx-auto max-w-3xl">
+        <h1 className="mb-8 text-2xl font-bold text-gray-800">Nouvelle activité PTA</h1>
+        <form onSubmit={handleSubmit} className="space-y-5 rounded-xl bg-white p-6 shadow-sm">
           {/* Map through basic text fields for cleaner code */}
           {[
             { label: "Année", name: "year", type: "text", placeholder: "2026" },
-            { label: "Titre", name: "title", type: "text", placeholder: "Ex: Construction d'un centre de jeunes" },
+            {
+              label: "Titre",
+              name: "title",
+              type: "text",
+              placeholder: "Ex: Construction d'un centre de jeunes",
+            },
           ].map((field) => (
             <div key={field.name}>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{field.label}</label>
-              <input type={field.type} name={field.name} placeholder={field.placeholder}
-                onChange={handleChange} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              <label className="mb-1 block text-sm font-medium text-gray-700">{field.label}</label>
+              <input
+                type={field.type}
+                name={field.name}
+                placeholder={field.placeholder}
+                onChange={handleChange}
+                className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              />
             </div>
           ))}
 
           {/* FileUpload handles PDF storage in the 'documents' bucket */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Document officiel (PDF)</label>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Document officiel (PDF)
+            </label>
             <FileUpload
               bucket="documents"
               accept=".pdf"
               onUpload={(url) => setForm({ ...form, pdfUrl: url })}
             />
-            {form.pdfUrl && <p className="text-green-600 text-sm mt-1">✅ Document prêt</p>}
+            {form.pdfUrl && <p className="mt-1 text-sm text-green-600">✅ Document prêt</p>}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-            <textarea name="description" rows={4} onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <label className="mb-1 block text-sm font-medium text-gray-700">Description</label>
+            <textarea
+              name="description"
+              rows={4}
+              onChange={handleChange}
+              className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
           </div>
 
           {/* User selects the current status of the PTA activity */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Statut</label>
-            <select name="status" onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <label className="mb-1 block text-sm font-medium text-gray-700">Statut</label>
+            <select
+              name="status"
+              onChange={handleChange}
+              className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            >
               <option value="IN_PROGRESS">En cours</option>
               <option value="COMPLETED">Terminé</option>
               <option value="CANCELLED">Annulé</option>
@@ -73,12 +100,18 @@ export default function NouvellePtaPage() {
           </div>
 
           <div className="flex gap-3 pt-2">
-            <button type="submit" disabled={loading}
-              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition disabled:opacity-50">
+            <button
+              type="submit"
+              disabled={loading}
+              className="rounded-lg bg-blue-600 px-6 py-2 text-white transition hover:bg-blue-700 disabled:opacity-50"
+            >
               {loading ? "Enregistrement..." : "Enregistrer"}
             </button>
-            <button type="button" onClick={() => router.back()}
-              className="px-6 py-2 rounded-lg border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 transition text-sm">
+            <button
+              type="button"
+              onClick={() => router.back()}
+              className="rounded-lg border border-gray-300 bg-white px-6 py-2 text-sm text-gray-700 transition hover:bg-gray-50"
+            >
               Annuler
             </button>
           </div>

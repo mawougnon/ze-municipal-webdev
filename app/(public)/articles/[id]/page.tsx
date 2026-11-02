@@ -15,26 +15,28 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
 
   return (
     <main className="min-h-screen bg-white">
-      <section className="max-w-3xl mx-auto px-4 md:px-6 py-8 md:py-12">
+      <section className="mx-auto max-w-3xl px-4 py-8 md:px-6 md:py-12">
         {/* Date */}
-        <p className="text-gray-400 text-sm mb-4">
+        <p className="mb-4 text-sm text-gray-400">
           {formatDate(article.createdAt, {
-            day: "numeric", month: "long", year: "numeric"
+            day: "numeric",
+            month: "long",
+            year: "numeric",
           })}
         </p>
 
         {/* Title */}
-        <h1 className="text-3xl font-serif font-bold text-gray-900 mb-6 leading-tight">
+        <h1 className="mb-6 font-serif text-3xl leading-tight font-bold text-gray-900">
           {article.title}
         </h1>
 
         {/* Cover image: shown if available */}
         {article.coverImageUrl && (
-          <div className="relative w-full h-72 mb-8 overflow-hidden rounded-xl">
+          <div className="relative mb-8 h-72 w-full overflow-hidden rounded-xl">
             <img
               src={article.coverImageUrl}
               alt={article.title}
-              className="w-full h-full object-cover"
+              className="h-full w-full object-cover"
             />
           </div>
         )}
@@ -47,16 +49,15 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
 
         {/* Additional photos */}
         {article.photos.length > 0 && (
-          <div className="grid grid-cols-2 gap-4 mt-10">
+          <div className="mt-10 grid grid-cols-2 gap-4">
             {article.photos.map((p) => (
-              <img key={p.id} src={p.url} alt=""
-                className="rounded-xl w-full h-48 object-cover" />
+              <img key={p.id} src={p.url} alt="" className="h-48 w-full rounded-xl object-cover" />
             ))}
           </div>
         )}
 
-        <div className="mt-10 pt-6 border-t border-gray-100">
-          <a href="/articles" className="text-gray-400 hover:text-gray-600 text-sm">
+        <div className="mt-10 border-t border-gray-100 pt-6">
+          <a href="/articles" className="text-sm text-gray-400 hover:text-gray-600">
             ← Retour aux actualités
           </a>
         </div>

@@ -9,9 +9,17 @@ export default function NouvelleOpportunitePage() {
   const [isFree, setIsFree] = useState(true);
   const [published, setPublished] = useState(false);
   const [error, setError] = useState("");
-  const [form, setForm] = useState({ type: "JOB", title: "", description: "", deadline: "", price: "" });
+  const [form, setForm] = useState({
+    type: "JOB",
+    title: "",
+    description: "",
+    deadline: "",
+    price: "",
+  });
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
+  function handleChange(
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+  ) {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
 
@@ -42,65 +50,107 @@ export default function NouvelleOpportunitePage() {
 
   return (
     <main className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-3xl mx-auto">
-        <h1 className="text-2xl font-bold text-gray-800 mb-8">Nouvelle offre</h1>
-        <form onSubmit={handleSubmit} className="space-y-5 bg-white p-6 rounded-xl shadow-sm">
-
+      <div className="mx-auto max-w-3xl">
+        <h1 className="mb-8 text-2xl font-bold text-gray-800">Nouvelle offre</h1>
+        <form onSubmit={handleSubmit} className="space-y-5 rounded-xl bg-white p-6 shadow-sm">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
-            <select name="type" onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <label className="mb-1 block text-sm font-medium text-gray-700">Type</label>
+            <select
+              name="type"
+              onChange={handleChange}
+              className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            >
               <option value="JOB">Offre d'emploi</option>
               <option value="TRAINING">Formation</option>
             </select>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Titre</label>
-            <input type="text" name="title" onChange={handleChange} required
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <label className="mb-1 block text-sm font-medium text-gray-700">Titre</label>
+            <input
+              type="text"
+              name="title"
+              onChange={handleChange}
+              required
+              className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-            <textarea name="description" rows={4} onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <label className="mb-1 block text-sm font-medium text-gray-700">Description</label>
+            <textarea
+              name="description"
+              rows={4}
+              onChange={handleChange}
+              className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Date limite (optionnel)</label>
-            <input type="date" name="deadline" onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Date limite (optionnel)
+            </label>
+            <input
+              type="date"
+              name="deadline"
+              onChange={handleChange}
+              className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
           </div>
 
           {/* Free or paid toggle: pointer cursor added */}
-          <label className="flex items-center gap-3 cursor-pointer w-fit">
-            <input type="checkbox" checked={isFree} onChange={(e) => setIsFree(e.target.checked)} className="w-4 h-4 cursor-pointer" />
+          <label className="flex w-fit cursor-pointer items-center gap-3">
+            <input
+              type="checkbox"
+              checked={isFree}
+              onChange={(e) => setIsFree(e.target.checked)}
+              className="h-4 w-4 cursor-pointer"
+            />
             <span className="text-sm text-gray-700 select-none">Gratuit</span>
           </label>
 
           {!isFree && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Prix (XOF)</label>
-              <input type="number" name="price" onChange={handleChange}
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              <label className="mb-1 block text-sm font-medium text-gray-700">Prix (XOF)</label>
+              <input
+                type="number"
+                name="price"
+                onChange={handleChange}
+                className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              />
             </div>
           )}
 
-          
-          <label className="flex items-center gap-3 cursor-pointer w-fit">
-            <input type="checkbox" checked={published} onChange={(e) => setPublished(e.target.checked)} className="w-4 h-4 cursor-pointer" />
-            <span className="text-sm text-gray-700 select-none">Publier immédiatement en ligne</span>
+          <label className="flex w-fit cursor-pointer items-center gap-3">
+            <input
+              type="checkbox"
+              checked={published}
+              onChange={(e) => setPublished(e.target.checked)}
+              className="h-4 w-4 cursor-pointer"
+            />
+            <span className="text-sm text-gray-700 select-none">
+              Publier immédiatement en ligne
+            </span>
           </label>
 
-          {error && <p className="text-red-500 text-sm">{error}</p>}
+          {error && <p className="text-sm text-red-500">{error}</p>}
           <div className="flex gap-3 pt-2">
-            <button type="submit" disabled={loading}
-              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition disabled:opacity-50">
-              {loading ? "Enregistrement..." : published ? "Publier" : "Enregistrer comme brouillon"}
+            <button
+              type="submit"
+              disabled={loading}
+              className="rounded-lg bg-blue-600 px-6 py-2 text-white transition hover:bg-blue-700 disabled:opacity-50"
+            >
+              {loading
+                ? "Enregistrement..."
+                : published
+                  ? "Publier"
+                  : "Enregistrer comme brouillon"}
             </button>
-            <button type="button" onClick={() => router.back()}
-              className="px-6 py-2 rounded-lg border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 transition text-sm">
+            <button
+              type="button"
+              onClick={() => router.back()}
+              className="rounded-lg border border-gray-300 bg-white px-6 py-2 text-sm text-gray-700 transition hover:bg-gray-50"
+            >
               Annuler
             </button>
           </div>

@@ -42,6 +42,9 @@
     "@types/sanitize-html": "^2.16.2",
     "eslint": "^9",
     "eslint-config-next": "^16.4.3",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.9.10",
+    "prettier-plugin-tailwindcss": "^0.8.1",
     "shadcn": "^4.6.0",
     "tailwindcss": "^4",
     "typescript": "^5"

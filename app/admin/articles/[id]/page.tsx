@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter, useParams } from "next/navigation"; 
+import { useRouter, useParams } from "next/navigation";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import FileUpload from "@/components/FileUpload";
@@ -90,71 +90,89 @@ export default function ArticleFormPage() {
 
   // Configuration de la barre d'outils
   const toolbarButtons = [
-    { label: <strong>B</strong>, action: () => editor?.chain().focus().toggleBold().run(), title: "Gras" },
-    { label: <em>I</em>, action: () => editor?.chain().focus().toggleItalic().run(), title: "Italique" },
-    { label: "• Liste", action: () => editor?.chain().focus().toggleBulletList().run(), title: "Liste à puces" },
+    {
+      label: <strong>B</strong>,
+      action: () => editor?.chain().focus().toggleBold().run(),
+      title: "Gras",
+    },
+    {
+      label: <em>I</em>,
+      action: () => editor?.chain().focus().toggleItalic().run(),
+      title: "Italique",
+    },
+    {
+      label: "• Liste",
+      action: () => editor?.chain().focus().toggleBulletList().run(),
+      title: "Liste à puces",
+    },
   ];
 
   if (loading) return <div className="p-8 text-center">Chargement des données de l'article...</div>;
 
   return (
     <main className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-3xl mx-auto">
-        <h1 className="text-2xl font-bold text-gray-800 mb-8">
+      <div className="mx-auto max-w-3xl">
+        <h1 className="mb-8 text-2xl font-bold text-gray-800">
           {isEditing ? "Modifier l'article" : "Nouvel article"}
         </h1>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Title Input */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Titre</label>
+            <label className="mb-1 block text-sm font-medium text-gray-700">Titre</label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded-lg border border-gray-300 px-4 py-2 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none"
             />
           </div>
 
           {/* Image Upload */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Image de couverture</label>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Image de couverture
+            </label>
             <FileUpload bucket="photos" onUpload={(url) => setCoverImageUrl(url)} />
             {coverImageUrl && (
-              <img src={coverImageUrl} alt="cover preview" className="mt-3 w-full h-48 object-cover rounded-lg" />
+              <img
+                src={coverImageUrl}
+                alt="cover preview"
+                className="mt-3 h-48 w-full rounded-lg object-cover"
+              />
             )}
           </div>
 
           {/* Content Editor */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Contenu</label>
-            <div className="flex gap-2 mb-2">
+            <label className="mb-1 block text-sm font-medium text-gray-700">Contenu</label>
+            <div className="mb-2 flex gap-2">
               {toolbarButtons.map((btn) => (
                 <button
                   key={btn.title}
                   type="button"
                   onClick={btn.action}
-                  className="px-3 py-1 bg-white border border-gray-300 hover:bg-gray-100 rounded text-sm font-semibold text-gray-800"
+                  className="rounded border border-gray-300 bg-white px-3 py-1 text-sm font-semibold text-gray-800 hover:bg-gray-100"
                 >
                   {btn.label}
                 </button>
               ))}
             </div>
-            <div className="border border-gray-300 rounded-lg p-4 min-h-[200px] bg-white text-gray-900">
+            <div className="min-h-[200px] rounded-lg border border-gray-300 bg-white p-4 text-gray-900">
               <EditorContent editor={editor} />
             </div>
           </div>
 
-          {error && <p className="text-red-500 text-sm">{error}</p>}
+          {error && <p className="text-sm text-red-500">{error}</p>}
 
           {/* Visibility Toggle */}
-          <label className="flex items-center gap-3 cursor-pointer">
+          <label className="flex cursor-pointer items-center gap-3">
             <input
               type="checkbox"
               checked={published}
               onChange={(e) => setPublished(e.target.checked)}
-              className="w-4 h-4"
+              className="h-4 w-4"
             />
             <span className="text-sm text-gray-700">Publier immédiatement</span>
           </label>
@@ -164,9 +182,13 @@ export default function ArticleFormPage() {
             <button
               type="submit"
               disabled={isSaving}
-              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+              className="rounded-lg bg-blue-600 px-6 py-2 text-white hover:bg-blue-700 disabled:opacity-50"
             >
-              {isSaving ? "Enregistrement..." : published ? "Publier" : "Enregistrer comme brouillon"}
+              {isSaving
+                ? "Enregistrement..."
+                : published
+                  ? "Publier"
+                  : "Enregistrer comme brouillon"}
             </button>
 
             {/* NOUVEAU : Bouton supprimer uniquement en mode édition */}
@@ -186,7 +208,7 @@ export default function ArticleFormPage() {
                     router.refresh();
                   }
                 }}
-                className="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600 transition"
+                className="rounded-lg bg-red-500 px-6 py-2 text-white transition hover:bg-red-600"
               >
                 Supprimer
               </button>
@@ -195,15 +217,13 @@ export default function ArticleFormPage() {
             <button
               type="button"
               onClick={() => router.back()}
-              className="px-6 py-2 rounded-lg border border-gray-300 text-gray-700 bg-white hover:bg-gray-100"
+              className="rounded-lg border border-gray-300 bg-white px-6 py-2 text-gray-700 hover:bg-gray-100"
             >
               Annuler
             </button>
           </div>
-            
         </form>
       </div>
     </main>
   );
 }
-

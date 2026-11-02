@@ -8,14 +8,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     Credentials({
       name: "Mairie de Zè",
       credentials: {
-        email:    { label: "Email",    type: "email"    },
-        otp:      { label: "OTP",      type: "text"     },
+        email: { label: "Email", type: "email" },
+        otp: { label: "OTP", type: "text" },
         password: { label: "Password", type: "password" },
       },
 
       async authorize(credentials) {
-        const email    = credentials?.email    as string | undefined;
-        const otp      = credentials?.otp      as string | undefined;
+        const email = credentials?.email as string | undefined;
+        const otp = credentials?.otp as string | undefined;
         const password = credentials?.password as string | undefined;
 
         if (!email) return null;
@@ -112,7 +112,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   session: {
     strategy: "jwt",
     maxAge: 10 * 60 * 60, // 10 hours in seconds
-    updateAge: 60 * 60,   // refresh token every hour to track activity
+    updateAge: 60 * 60, // refresh token every hour to track activity
   },
 
   callbacks: {
@@ -135,5 +135,4 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return session;
     },
   },
-
 });

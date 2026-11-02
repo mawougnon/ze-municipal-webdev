@@ -21,15 +21,15 @@ export async function POST(req: Request) {
   await prisma.ptaDocument.deleteMany();
   const doc = await prisma.ptaDocument.create({ data: { pdfUrl, year } });
 
-  revalidatePath("/pta"); 
-  
+  revalidatePath("/pta");
+
   return NextResponse.json(doc, { status: 201 });
 }
 
 export async function DELETE() {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
-  
+
   await prisma.ptaDocument.deleteMany();
 
   revalidatePath("/pta");

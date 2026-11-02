@@ -23,18 +23,11 @@ const candidatureSchema = z.object({
   phone: z
     .string()
     .transform(normalizeBeninPhone)
-    .pipe(z.string().regex(BENIN_PHONE, "Le numéro doit comporter 10 chiffres et commencer par 01.")),
-  email: z
-    .string()
-    .email("Adresse email invalide.")
-    .optional()
-    .or(z.literal(""))
-    .or(z.null()),
-  message: z
-    .string()
-    .max(1000, "Message trop long.")
-    .optional()
-    .or(z.null()),
+    .pipe(
+      z.string().regex(BENIN_PHONE, "Le numéro doit comporter 10 chiffres et commencer par 01."),
+    ),
+  email: z.string().email("Adresse email invalide.").optional().or(z.literal("")).or(z.null()),
+  message: z.string().max(1000, "Message trop long.").optional().or(z.null()),
   cvUrl: z
     .string()
     .optional()
@@ -43,7 +36,10 @@ const candidatureSchema = z.object({
       if (!val) return true;
       const urls = val.split(" | ");
       // Only files from the project's bucket: an applicant cannot plant an outside link
-      return urls.length <= 5 && urls.every((url) => isProjectFile(url, "documents") && /\.pdf$/i.test(url));
+      return (
+        urls.length <= 5 &&
+        urls.every((url) => isProjectFile(url, "documents") && /\.pdf$/i.test(url))
+      );
     }, "Document invalide."),
 });
 
@@ -51,7 +47,7 @@ const candidatureSchema = z.object({
 export async function GET() {
   const { auth } = await import("@/auth");
   const session = await auth();
-  
+
   if (!session) {
     return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
   }
@@ -60,7 +56,7 @@ export async function GET() {
     orderBy: { createdAt: "desc" },
     include: { opportunity: { select: { title: true, type: true } } },
   });
-  
+
   return NextResponse.json(applications);
 }
 
@@ -70,11 +66,11 @@ export async function POST(req: Request) {
     // A. Validate Data
     const body = await req.json();
     const result = candidatureSchema.safeParse(body);
-    
+
     if (!result.success) {
       return NextResponse.json(
         { error: "Données invalides.", details: result.error.flatten().fieldErrors },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -87,20 +83,25 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Offre introuvable." }, { status: 404 });
     }
     if (!isOpen(opportunity.deadline)) {
-      return NextResponse.json({ error: "Les candidatures pour cette offre sont closes." }, { status: 410 });
+      return NextResponse.json(
+        { error: "Les candidatures pour cette offre sont closes." },
+        { status: 410 },
+      );
     }
 
     // C. Rate limit, by phone number and overall
     const hourAgo = new Date(Date.now() - 60 * 60 * 1000);
     const [byPhone, total] = await Promise.all([
-      prisma.application.count({ where: { phone: result.data.phone, createdAt: { gte: hourAgo } } }),
+      prisma.application.count({
+        where: { phone: result.data.phone, createdAt: { gte: hourAgo } },
+      }),
       prisma.application.count({ where: { createdAt: { gte: hourAgo } } }),
     ]);
 
     if (byPhone >= MAX_PER_PHONE_PER_HOUR || total >= MAX_TOTAL_PER_HOUR) {
       return NextResponse.json(
         { error: "Trop de soumissions. Réessayez plus tard." },
-        { status: 429 }
+        { status: 429 },
       );
     }
 

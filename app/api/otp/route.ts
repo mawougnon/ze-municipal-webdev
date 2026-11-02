@@ -30,8 +30,11 @@ export async function POST(req: Request) {
     // otpExpires is set OTP_TTL_MS after issue, so the last issue time can be derived from it
     if (user.otpExpires && user.otpExpires.getTime() - OTP_TTL_MS + OTP_INTERVAL_MS > Date.now()) {
       return NextResponse.json(
-        { error: "Un code vient d'être envoyé. Patientez deux minutes avant d'en demander un autre." },
-        { status: 429 }
+        {
+          error:
+            "Un code vient d'être envoyé. Patientez deux minutes avant d'en demander un autre.",
+        },
+        { status: 429 },
       );
     }
 
@@ -81,20 +84,21 @@ export async function POST(req: Request) {
     if (sendError) throw new Error(`Resend email error: ${sendError.message}`);
 
     return NextResponse.json({ success: true, isSuperAdmin });
-
   } catch (error) {
     // Un seul message pour plusieurs services differents rendait tout diagnostic impossible.
     // On journalise l'etape fautive pour pouvoir la lire dans les logs Vercel.
     const stage =
-      error instanceof Error && /prisma|database|connect|ECONNREFUSED/i.test(error.message) ? "DATABASE"
-      : error instanceof Error && /resend|email|domain/i.test(error.message) ? "EMAIL"
-      : "UNKNOWN";
+      error instanceof Error && /prisma|database|connect|ECONNREFUSED/i.test(error.message)
+        ? "DATABASE"
+        : error instanceof Error && /resend|email|domain/i.test(error.message)
+          ? "EMAIL"
+          : "UNKNOWN";
 
     console.error(`OTP_SEND_ERROR [${stage}]:`, error);
 
     return NextResponse.json(
       { error: "Service momentanement indisponible. Reessayez dans quelques minutes." },
-      { status: 503 }
+      { status: 503 },
     );
   }
 }

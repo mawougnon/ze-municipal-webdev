@@ -11,11 +11,11 @@ export async function GET() {
 export async function POST(req: Request) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
-  
+
   const { year, title, description, status } = await req.json();
-  
-  const activity = await prisma.ptaActivity.create({ 
-    data: { year, title, description, status } 
+
+  const activity = await prisma.ptaActivity.create({
+    data: { year, title, description, status },
   });
 
   revalidatePath("/pta");

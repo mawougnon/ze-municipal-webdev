@@ -22,7 +22,8 @@ export async function POST(req: Request) {
   if (!session) return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
 
   const result = articleSchema.safeParse(await req.json().catch(() => null));
-  if (!result.success) return NextResponse.json({ error: result.error.issues[0].message }, { status: 400 });
+  if (!result.success)
+    return NextResponse.json({ error: result.error.issues[0].message }, { status: 400 });
 
   const article = await prisma.article.create({ data: result.data });
 

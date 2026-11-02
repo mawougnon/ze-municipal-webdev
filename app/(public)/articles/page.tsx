@@ -10,39 +10,42 @@ export default async function ArticlesPublicPage() {
 
   return (
     <main className="min-h-screen bg-white">
-      <section className="bg-green-700 text-white py-12 px-6 text-center">
+      <section className="bg-green-700 px-6 py-12 text-center text-white">
         <h1 className="text-3xl font-bold">Actualités</h1>
       </section>
 
-      <section className="max-w-4xl mx-auto px-6 py-12">
+      <section className="mx-auto max-w-4xl px-6 py-12">
         {articles.length === 0 ? (
-          <p className="text-gray-400 text-center">Aucune actualité pour le moment.</p>
+          <p className="text-center text-gray-400">Aucune actualité pour le moment.</p>
         ) : (
           <div className="space-y-6">
             {articles.map((a) => (
-              <a key={a.id} href={`/articles/${a.id}`}
-                className="block bg-gray-50 rounded-xl border border-gray-100 hover:shadow-md hover:border-green-200 transition overflow-hidden">
-                
+              <a
+                key={a.id}
+                href={`/articles/${a.id}`}
+                className="block overflow-hidden rounded-xl border border-gray-100 bg-gray-50 transition hover:border-green-200 hover:shadow-md"
+              >
                 {/* Cover image on the card */}
                 {a.coverImageUrl ? (
-                  <img src={a.coverImageUrl} alt={a.title}
-                    className="w-full h-48 object-cover" />
+                  <img src={a.coverImageUrl} alt={a.title} className="h-48 w-full object-cover" />
                 ) : (
-                  <div className="w-full h-48 bg-green-50 flex items-center justify-center">
-                    <span className="text-green-200 text-4xl">📰</span>
+                  <div className="flex h-48 w-full items-center justify-center bg-green-50">
+                    <span className="text-4xl text-green-200">📰</span>
                   </div>
                 )}
 
                 <div className="p-6">
-                  <p className="text-[#D4AF37] text-xs uppercase tracking-widest font-semibold mb-2">
+                  <p className="mb-2 text-xs font-semibold tracking-widest text-[#D4AF37] uppercase">
                     Actualité
                   </p>
-                  <h2 className="font-serif font-bold text-gray-900 text-lg mb-3 leading-snug">
+                  <h2 className="mb-3 font-serif text-lg leading-snug font-bold text-gray-900">
                     {a.title}
                   </h2>
-                  <p className="text-gray-400 text-sm">
+                  <p className="text-sm text-gray-400">
                     {formatDate(a.createdAt, {
-                      day: "numeric", month: "long", year: "numeric"
+                      day: "numeric",
+                      month: "long",
+                      year: "numeric",
                     })}
                   </p>
                 </div>
@@ -51,7 +54,9 @@ export default async function ArticlesPublicPage() {
           </div>
         )}
         <div className="mt-8">
-          <Link href="/" className="text-gray-400 hover:text-gray-600 text-sm">← Retour à l'accueil</Link>
+          <Link href="/" className="text-sm text-gray-400 hover:text-gray-600">
+            ← Retour à l'accueil
+          </Link>
         </div>
       </section>
     </main>

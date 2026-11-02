@@ -15,14 +15,14 @@ export default async function HomePage() {
 
   // Fetch ALL activities for accurate progress calculation
   const allPtaActivities = await prisma.ptaActivity.findMany();
-  
+
   // Only 4 most recent for display
   const ptaActivities = allPtaActivities
     .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
     .slice(0, 4);
 
   const total = allPtaActivities.length;
-  const completed = allPtaActivities.filter(a => a.status === "COMPLETED").length;
+  const completed = allPtaActivities.filter((a) => a.status === "COMPLETED").length;
   const progress = total > 0 ? Math.round((completed / total) * 100) : 0;
 
   const opportunities = await prisma.opportunity.findMany({
@@ -32,73 +32,99 @@ export default async function HomePage() {
   });
   return (
     <main className="min-h-screen bg-[#FAFAF7]">
-
       {/* HERO: full viewport, site historique background */}
-      <section className="relative h-screen flex flex-col items-center justify-center overflow-hidden">
-        <Image src="/population-ze.png" alt="Commune de Zè" fill
-          className="object-cover scale-105" preload />
+      <section className="relative flex h-screen flex-col items-center justify-center overflow-hidden">
+        <Image
+          src="/population-ze.png"
+          alt="Commune de Zè"
+          fill
+          className="scale-105 object-cover"
+          preload
+        />
         {/* Gradient overlay: dark bottom, slightly lighter top */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/55 to-black/80" />
 
-        <div className="relative z-10 text-center text-white px-6 max-w-4xl mx-auto">
+        <div className="relative z-10 mx-auto max-w-4xl px-6 text-center text-white">
           {/* Logos row */}
-          
+
           {/* width and height keep each file's real ratio (square, then 720x377), so the
               logos never stretch, and are large enough to stay sharp at their display size */}
-          <div className="flex justify-center items-center gap-3 md:gap-4 mb-6">
-            <Image src="/logo-association-mj-benin.jpg" alt="AMJB"
-              width={128} height={128}
-              className="rounded-full bg-white p-1.5 object-contain shadow-lg w-14 h-14 md:w-24 md:h-24" preload />
-            <div className="w-px h-10 md:h-16 bg-white/30" />
-            <Image src="/logo-association-mj-ze.jpg" alt="Mairie des Jeunes de Zè"
-              width={192} height={100}
-              className="bg-white rounded-lg px-2 py-1 object-contain shadow-lg h-11 w-auto md:h-[4.5rem]" preload />
-            <div className="w-px h-10 md:h-16 bg-white/30" />
-            <Image src="/logo-commune-ze.jpg" alt="Commune de Zè"
-              width={128} height={128}
-              className="rounded-full bg-white p-1.5 object-contain shadow-lg w-14 h-14 md:w-24 md:h-24" preload />
+          <div className="mb-6 flex items-center justify-center gap-3 md:gap-4">
+            <Image
+              src="/logo-association-mj-benin.jpg"
+              alt="AMJB"
+              width={128}
+              height={128}
+              className="h-14 w-14 rounded-full bg-white object-contain p-1.5 shadow-lg md:h-24 md:w-24"
+              preload
+            />
+            <div className="h-10 w-px bg-white/30 md:h-16" />
+            <Image
+              src="/logo-association-mj-ze.jpg"
+              alt="Mairie des Jeunes de Zè"
+              width={192}
+              height={100}
+              className="h-11 w-auto rounded-lg bg-white object-contain px-2 py-1 shadow-lg md:h-[4.5rem]"
+              preload
+            />
+            <div className="h-10 w-px bg-white/30 md:h-16" />
+            <Image
+              src="/logo-commune-ze.jpg"
+              alt="Commune de Zè"
+              width={128}
+              height={128}
+              className="h-14 w-14 rounded-full bg-white object-contain p-1.5 shadow-lg md:h-24 md:w-24"
+              preload
+            />
           </div>
 
           {/* Eyebrow */}
-          <p className="text-[#D4AF37] font-semibold tracking-[0.3em] uppercase text-xs mb-4">
+          <p className="mb-4 text-xs font-semibold tracking-[0.3em] text-[#D4AF37] uppercase">
             Mandature 2025-2030
           </p>
 
-          <h1 className="text-3xl md:text-6xl font-serif font-bold leading-tight mb-4">
-            Mairie des Jeunes<br />
+          <h1 className="mb-4 font-serif text-3xl leading-tight font-bold md:text-6xl">
+            Mairie des Jeunes
+            <br />
             <span className="text-[#D4AF37]">de Zè</span>
           </h1>
 
-          <p className="text-base md:text-xl text-gray-200 mb-2 italic">
+          <p className="mb-2 text-base text-gray-200 italic md:text-xl">
             « Initiative · Engagement · Développement »
           </p>
 
-          <div className="flex justify-center gap-4 flex-wrap">
-            <Link href="/articles"
-              className="bg-[#D4AF37] hover:bg-[#b8962e] text-black px-8 py-3 rounded-none font-bold tracking-wide transition text-sm uppercase">
+          <div className="flex flex-wrap justify-center gap-4">
+            <Link
+              href="/articles"
+              className="rounded-none bg-[#D4AF37] px-8 py-3 text-sm font-bold tracking-wide text-black uppercase transition hover:bg-[#b8962e]"
+            >
               Nos Actualités
             </Link>
-            <Link href="/pta"
-              className="border-2 border-white text-white hover:bg-white hover:text-black px-8 py-3 rounded-none font-bold tracking-wide transition text-sm uppercase">
+            <Link
+              href="/pta"
+              className="rounded-none border-2 border-white px-8 py-3 text-sm font-bold tracking-wide text-white uppercase transition hover:bg-white hover:text-black"
+            >
               Plan de Travail
             </Link>
-            <Link href="/presentation"
-              className="border-2 border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black px-8 py-3 rounded-none font-bold tracking-wide transition text-sm uppercase">
+            <Link
+              href="/presentation"
+              className="rounded-none border-2 border-[#D4AF37] px-8 py-3 text-sm font-bold tracking-wide text-[#D4AF37] uppercase transition hover:bg-[#D4AF37] hover:text-black"
+            >
               Qui sommes-nous ?
             </Link>
           </div>
         </div>
 
         {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/60 text-xs">
+        <div className="absolute bottom-8 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2 text-xs text-white/60">
           <span className="tracking-widest uppercase">Découvrir</span>
-          <div className="w-px h-8 bg-white/40 animate-pulse" />
+          <div className="h-8 w-px animate-pulse bg-white/40" />
         </div>
       </section>
 
       {/* DEVISE BAND */}
-      <section className="bg-green-800 py-5 px-6">
-        <div className="max-w-6xl mx-auto flex flex-wrap justify-center gap-8 text-white text-sm font-medium tracking-widest uppercase">
+      <section className="bg-green-800 px-6 py-5">
+        <div className="mx-auto flex max-w-6xl flex-wrap justify-center gap-8 text-sm font-medium tracking-widest text-white uppercase">
           {["Initiative", "Engagement", "Développement"].map((word, i) => (
             <span key={word} className="flex items-center gap-4">
               {i > 0 && <span className="text-[#D4AF37]">◆</span>}
@@ -109,170 +135,223 @@ export default async function HomePage() {
       </section>
 
       {/* BUREAU: Bigger size for the mayor */}
-      <section className="py-20 px-6 bg-[#FAFAF7]">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-14">
-            <p className="text-[#D4AF37] uppercase tracking-widest text-xs font-semibold mb-2">Leadership</p>
-            <h2 className="text-4xl font-serif font-bold text-gray-900">Notre Bureau Exécutif</h2>
-            <div className="w-16 h-1 bg-[#D4AF37] mx-auto mt-4" />
+      <section className="bg-[#FAFAF7] px-6 py-20">
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-14 text-center">
+            <p className="mb-2 text-xs font-semibold tracking-widest text-[#D4AF37] uppercase">
+              Leadership
+            </p>
+            <h2 className="font-serif text-4xl font-bold text-gray-900">Notre Bureau Exécutif</h2>
+            <div className="mx-auto mt-4 h-1 w-16 bg-[#D4AF37]" />
           </div>
 
           {/* Layout : deputy1 | Maire (bigger) | deputy2 */}
-          <div className="flex flex-col md:flex-row items-center md:items-end justify-center gap-6 md:gap-8">
-
+          <div className="flex flex-col items-center justify-center gap-6 md:flex-row md:items-end md:gap-8">
             {/* 1er Adjoint */}
-            <div className="text-center group order-2 md:order-1">
-              <div className="relative w-36 h-44 md:w-48 md:h-56 mx-auto mb-4 overflow-hidden">
-                <Image src="/adjoint1.jpg" alt="Hounkanlin Sèïgbénan Alphonse" fill
+            <div className="group order-2 text-center md:order-1">
+              <div className="relative mx-auto mb-4 h-44 w-36 overflow-hidden md:h-56 md:w-48">
+                <Image
+                  src="/adjoint1.jpg"
+                  alt="Hounkanlin Sèïgbénan Alphonse"
+                  fill
                   sizes="(max-width: 768px) 144px, 192px"
-                  className="object-cover object-top group-hover:scale-105 transition-transform duration-500" />
+                  className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
               </div>
-              <p className="text-[#D4AF37] text-xs uppercase tracking-widest font-semibold">1er Adjoint</p>
-              <h3 className="font-serif font-bold text-gray-800 mt-1 text-sm md:text-base px-2">
+              <p className="text-xs font-semibold tracking-widest text-[#D4AF37] uppercase">
+                1er Adjoint
+              </p>
+              <h3 className="mt-1 px-2 font-serif text-sm font-bold text-gray-800 md:text-base">
                 Alphonse S. HOUNKANLIN
               </h3>
             </div>
 
             {/* Mayor: center */}
-            <div className="text-center group order-1 md:order-2">
-              <div className="relative w-48 h-60 md:w-64 md:h-72 mx-auto mb-4 overflow-hidden border-4 border-[#D4AF37] shadow-2xl">
-                <Image src="/maire.jpg" alt="Marius Salanon" fill
+            <div className="group order-1 text-center md:order-2">
+              <div className="relative mx-auto mb-4 h-60 w-48 overflow-hidden border-4 border-[#D4AF37] shadow-2xl md:h-72 md:w-64">
+                <Image
+                  src="/maire.jpg"
+                  alt="Marius Salanon"
+                  fill
                   sizes="(max-width: 768px) 192px, 256px"
-                  className="object-cover object-top group-hover:scale-105 transition-transform duration-500" />
+                  className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                <div className="absolute bottom-4 left-0 right-0 text-center">
-                  <span className="bg-[#D4AF37] text-black text-xs font-bold px-3 py-1 uppercase tracking-widest">
+                <div className="absolute right-0 bottom-4 left-0 text-center">
+                  <span className="bg-[#D4AF37] px-3 py-1 text-xs font-bold tracking-widest text-black uppercase">
                     Maire
                   </span>
                 </div>
               </div>
-              <p className="text-[#D4AF37] text-xs uppercase tracking-widest font-bold">Maire</p>
-              <h3 className="font-serif font-bold text-gray-800 text-lg md:text-xl mt-1">Marius SALANON</h3>
-            </div>
-      
-            <div className="text-center group order-3">
-              <div className="relative w-36 h-44 md:w-48 md:h-56 mx-auto mb-4 overflow-hidden">
-                <Image src="/adjoint2.jpg" alt="Josaphat Hounkpe" fill
-                  sizes="(max-width: 768px) 144px, 192px"
-                  className="object-cover object-top group-hover:scale-105 transition-transform duration-500" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-              </div>
-              <p className="text-[#D4AF37] text-xs uppercase tracking-widest font-semibold">2e Adjoint</p>
-              <h3 className="font-serif font-bold text-gray-800 mt-1 text-sm md:text-base">Josaphat M. HOUNKPE</h3>
+              <p className="text-xs font-bold tracking-widest text-[#D4AF37] uppercase">Maire</p>
+              <h3 className="mt-1 font-serif text-lg font-bold text-gray-800 md:text-xl">
+                Marius SALANON
+              </h3>
             </div>
 
+            <div className="group order-3 text-center">
+              <div className="relative mx-auto mb-4 h-44 w-36 overflow-hidden md:h-56 md:w-48">
+                <Image
+                  src="/adjoint2.jpg"
+                  alt="Josaphat Hounkpe"
+                  fill
+                  sizes="(max-width: 768px) 144px, 192px"
+                  className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+              </div>
+              <p className="text-xs font-semibold tracking-widest text-[#D4AF37] uppercase">
+                2e Adjoint
+              </p>
+              <h3 className="mt-1 font-serif text-sm font-bold text-gray-800 md:text-base">
+                Josaphat M. HOUNKPE
+              </h3>
+            </div>
           </div>
         </div>
       </section>
 
       {/* AMJB PRESIDENT & THE GODFATHER */}
-      <section className="py-12 px-6 bg-green-900 text-white">
-        <div className="max-w-6xl mx-auto"> {/* Augmenté à 6xl pour plus d'espace */}
-          <div className="text-center mb-10">
-            <p className="text-[#D4AF37] uppercase tracking-widest text-xs font-semibold mb-2">
+      <section className="bg-green-900 px-6 py-12 text-white">
+        <div className="mx-auto max-w-6xl">
+          {" "}
+          {/* Augmenté à 6xl pour plus d'espace */}
+          <div className="mb-10 text-center">
+            <p className="mb-2 text-xs font-semibold tracking-widest text-[#D4AF37] uppercase">
               Autorités de Tutelle & Parrainage
             </p>
           </div>
-          
-          
-          <div className="flex flex-col md:flex-row items-start justify-center gap-8 md:gap-4">
-            
+          <div className="flex flex-col items-start justify-center gap-8 md:flex-row md:gap-4">
             {/* PRESIDENT */}
-            <div className="flex-1 w-full text-center">
-              <div className="relative w-28 h-28 md:w-36 md:h-36 mx-auto mb-4 overflow-hidden rounded-full border-2 border-[#D4AF37] shadow-xl">
-                <Image src="/president-amjb-benin.jpg" alt="Président AMJB Bénin" fill
-                  className="object-cover object-top" />
+            <div className="w-full flex-1 text-center">
+              <div className="relative mx-auto mb-4 h-28 w-28 overflow-hidden rounded-full border-2 border-[#D4AF37] shadow-xl md:h-36 md:w-36">
+                <Image
+                  src="/president-amjb-benin.jpg"
+                  alt="Président AMJB Bénin"
+                  fill
+                  className="object-cover object-top"
+                />
               </div>
-              <p className="text-[#D4AF37] text-[10px] md:text-xs uppercase tracking-widest font-bold min-h-[32px] flex items-center justify-center">
+              <p className="flex min-h-[32px] items-center justify-center text-[10px] font-bold tracking-widest text-[#D4AF37] uppercase md:text-xs">
                 Président National AMJ-Bénin
               </p>
-              <p className="text-white text-sm md:text-base font-serif font-bold mt-2">
+              <p className="mt-2 font-serif text-sm font-bold text-white md:text-base">
                 Astérix GOUDEAGBE
               </p>
             </div>
 
-            <div className="hidden md:flex items-center justify-center">
-              <div className="w-px h-24 bg-white/20" />
+            <div className="hidden items-center justify-center md:flex">
+              <div className="h-24 w-px bg-white/20" />
             </div>
 
             {/* GODFATHER */}
-            <div className="flex-1 w-full text-center">
-              <div className="relative w-28 h-28 md:w-36 md:h-36 mx-auto mb-4 overflow-hidden rounded-full border-2 border-[#D4AF37] shadow-xl">
-                <Image src="/parrain-mandature.jpg" alt="Parrain de la mandature" fill
-                  className="object-cover object-top" />
+            <div className="w-full flex-1 text-center">
+              <div className="relative mx-auto mb-4 h-28 w-28 overflow-hidden rounded-full border-2 border-[#D4AF37] shadow-xl md:h-36 md:w-36">
+                <Image
+                  src="/parrain-mandature.jpg"
+                  alt="Parrain de la mandature"
+                  fill
+                  className="object-cover object-top"
+                />
               </div>
-              <p className="text-[#D4AF37] text-[10px] md:text-xs uppercase tracking-widest font-bold min-h-[32px] flex items-center justify-center">
+              <p className="flex min-h-[32px] items-center justify-center text-[10px] font-bold tracking-widest text-[#D4AF37] uppercase md:text-xs">
                 Parrain de la mandature
               </p>
-              <p className="text-white text-sm md:text-base font-serif font-bold mt-2">
+              <p className="mt-2 font-serif text-sm font-bold text-white md:text-base">
                 Dr Victor ALLANONTO
               </p>
             </div>
 
-            <div className="hidden md:flex items-center justify-center">
-              <div className="w-px h-24 bg-white/20" />
+            <div className="hidden items-center justify-center md:flex">
+              <div className="h-24 w-px bg-white/20" />
             </div>
 
             {/* PREFECT */}
-            <div className="flex-1 w-full text-center">
-              <div className="relative w-28 h-28 md:w-36 md:h-36 mx-auto mb-4 overflow-hidden rounded-full border-2 border-[#D4AF37] shadow-xl">
-                <Image src="/prefet.jpg" alt="Préfet des Jeunes" fill
-                  className="object-cover object-top" />
+            <div className="w-full flex-1 text-center">
+              <div className="relative mx-auto mb-4 h-28 w-28 overflow-hidden rounded-full border-2 border-[#D4AF37] shadow-xl md:h-36 md:w-36">
+                <Image
+                  src="/prefet.jpg"
+                  alt="Préfet des Jeunes"
+                  fill
+                  className="object-cover object-top"
+                />
               </div>
-              <p className="text-[#D4AF37] text-[10px] md:text-xs uppercase tracking-widest font-bold min-h-[32px] flex items-center justify-center px-2">
+              <p className="flex min-h-[32px] items-center justify-center px-2 text-[10px] font-bold tracking-widest text-[#D4AF37] uppercase md:text-xs">
                 Préfet des Jeunes de l’Atlantique <br /> Chargé de Mission
               </p>
-              <p className="text-white text-sm md:text-base font-serif font-bold mt-2">
+              <p className="mt-2 font-serif text-sm font-bold text-white md:text-base">
                 Fabrice LOKOSSOU
               </p>
             </div>
-
           </div>
         </div>
       </section>
 
       {/* PTA PROGRESS */}
-      <section className="py-20 px-6 bg-green-900 text-white">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+      <section className="bg-green-900 px-6 py-20 text-white">
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-12 flex flex-col justify-between gap-4 md:flex-row md:items-end">
             <div>
-              <p className="text-[#D4AF37] uppercase tracking-widest text-xs font-semibold mb-2">Transparence</p>
-              <h2 className="text-4xl font-serif font-bold">Plan de Travail Annuel</h2>
-              <p className="text-green-300 mt-2">Mandature 2025-2030 · Suivi en temps réel</p>
+              <p className="mb-2 text-xs font-semibold tracking-widest text-[#D4AF37] uppercase">
+                Transparence
+              </p>
+              <h2 className="font-serif text-4xl font-bold">Plan de Travail Annuel</h2>
+              <p className="mt-2 text-green-300">Mandature 2025-2030 · Suivi en temps réel</p>
             </div>
-            <Link href="/pta" className="text-[#D4AF37] hover:underline text-sm uppercase tracking-widest">
+            <Link
+              href="/pta"
+              className="text-sm tracking-widest text-[#D4AF37] uppercase hover:underline"
+            >
               Voir tout le PTA →
             </Link>
           </div>
 
           {/* Progress bar */}
-          <div className="bg-green-800/50 rounded-none p-6 mb-8 border border-green-700">
-            <div className="flex justify-between mb-3">
+          <div className="mb-8 rounded-none border border-green-700 bg-green-800/50 p-6">
+            <div className="mb-3 flex justify-between">
               <span className="font-semibold text-green-100">Progression globale</span>
-              <span className="font-bold text-[#D4AF37] text-xl">{progress}%</span>
+              <span className="text-xl font-bold text-[#D4AF37]">{progress}%</span>
             </div>
-            <div className="w-full bg-green-950 h-2">
-              <div className="bg-[#D4AF37] h-2 transition-all duration-700" style={{ width: `${progress}%` }} />
+            <div className="h-2 w-full bg-green-950">
+              <div
+                className="h-2 bg-[#D4AF37] transition-all duration-700"
+                style={{ width: `${progress}%` }}
+              />
             </div>
-            <p className="text-green-400 text-sm mt-3">{completed} activité(s) terminée(s) sur {total}</p>
+            <p className="mt-3 text-sm text-green-400">
+              {completed} activité(s) terminée(s) sur {total}
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {ptaActivities.map((a) => (
-              <div key={a.id} className="border border-green-700 p-6 hover:border-[#D4AF37] transition group">
+              <div
+                key={a.id}
+                className="group border border-green-700 p-6 transition hover:border-[#D4AF37]"
+              >
                 <div className="flex items-start justify-between gap-4">
-                  <h3 className="font-serif font-semibold text-white group-hover:text-[#D4AF37] transition">{a.title}</h3>
-                  <span className={`text-xs px-2 py-1 shrink-0 font-bold uppercase tracking-wide ${
-                    a.status === "COMPLETED" ? "bg-green-500/20 text-green-400" :
-                    a.status === "CANCELLED" ? "bg-red-500/20 text-red-400" :
-                    "bg-yellow-500/20 text-yellow-400"
-                  }`}>
-                    {a.status === "COMPLETED" ? "Terminé" : a.status === "CANCELLED" ? "Annulé" : "En cours"}
+                  <h3 className="font-serif font-semibold text-white transition group-hover:text-[#D4AF37]">
+                    {a.title}
+                  </h3>
+                  <span
+                    className={`shrink-0 px-2 py-1 text-xs font-bold tracking-wide uppercase ${
+                      a.status === "COMPLETED"
+                        ? "bg-green-500/20 text-green-400"
+                        : a.status === "CANCELLED"
+                          ? "bg-red-500/20 text-red-400"
+                          : "bg-yellow-500/20 text-yellow-400"
+                    }`}
+                  >
+                    {a.status === "COMPLETED"
+                      ? "Terminé"
+                      : a.status === "CANCELLED"
+                        ? "Annulé"
+                        : "En cours"}
                   </span>
                 </div>
-                <p className="text-green-300 text-sm mt-2 line-clamp-2">{a.description}</p>
-                <p className="text-green-500 text-xs mt-3">Année {a.year}</p>
+                <p className="mt-2 line-clamp-2 text-sm text-green-300">{a.description}</p>
+                <p className="mt-3 text-xs text-green-500">Année {a.year}</p>
               </div>
             ))}
           </div>
@@ -280,29 +359,32 @@ export default async function HomePage() {
       </section>
 
       {/* COMMUNE IDENTITY */}
-      <section className="py-20 px-6 bg-[#FAFAF7]">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+      <section className="bg-[#FAFAF7] px-6 py-20">
+        <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-16 md:grid-cols-2">
           <div>
-            <p className="text-[#D4AF37] uppercase tracking-widest text-xs font-semibold mb-3">
+            <p className="mb-3 text-xs font-semibold tracking-widest text-[#D4AF37] uppercase">
               Commune de Zè
             </p>
-            <h2 className="text-4xl font-serif font-bold text-gray-900 mb-6 leading-tight">
+            <h2 className="mb-6 font-serif text-4xl leading-tight font-bold text-gray-900">
               Une commune riche de sa culture et de ses ressources
             </h2>
-            <p className="text-gray-600 leading-relaxed mb-4 text-justify">
-              Zè est reconnue pour ses cultures d'ananas, de manioc et d'huile de palme, 
-              témoins d'une agriculture vibrante portée par sa jeunesse. La commune abrite 
-              également des sites naturels et culturels d'exception : la <strong>forêt sacrée d'Assanmê</strong>, la <strong>forêt sacrée de Zannoudji</strong>, 
-              la <strong>forêt de Djigbé</strong> gérée par l'ONAB, et le célèbre <strong>marché de bétail</strong>, 
-              véritable poumon économique de la région.
+            <p className="mb-4 text-justify leading-relaxed text-gray-600">
+              Zè est reconnue pour ses cultures d'ananas, de manioc et d'huile de palme, témoins
+              d'une agriculture vibrante portée par sa jeunesse. La commune abrite également des
+              sites naturels et culturels d'exception : la <strong>forêt sacrée d'Assanmê</strong>,
+              la <strong>forêt sacrée de Zannoudji</strong>, la <strong>forêt de Djigbé</strong>{" "}
+              gérée par l'ONAB, et le célèbre <strong>marché de bétail</strong>, véritable poumon
+              économique de la région.
             </p>
-            <p className="text-gray-600 leading-relaxed mb-8 text-justify">
-              La Mairie des Jeunes s'engage à valoriser ce patrimoine naturel, culturel et 
-              économique pour les générations futures, à travers des actions concrètes 
-              inscrites dans notre Plan de Travail Annuel.
+            <p className="mb-8 text-justify leading-relaxed text-gray-600">
+              La Mairie des Jeunes s'engage à valoriser ce patrimoine naturel, culturel et
+              économique pour les générations futures, à travers des actions concrètes inscrites
+              dans notre Plan de Travail Annuel.
             </p>
-            <Link href="/presentation"
-              className="bg-green-800 text-white px-8 py-3 text-sm uppercase tracking-widest font-semibold hover:bg-green-700 transition inline-block">
+            <Link
+              href="/presentation"
+              className="inline-block bg-green-800 px-8 py-3 text-sm font-semibold tracking-widest text-white uppercase transition hover:bg-green-700"
+            >
               Notre mission →
             </Link>
           </div>
@@ -310,42 +392,71 @@ export default async function HomePage() {
           {/* Grid 6 photos: 2 colums, 3 rows */}
           <div className="grid grid-cols-2 gap-3">
             <div className="relative h-44 overflow-hidden">
-              <Image src="/culture-ananas.png" alt="Ananas de Zè" fill
-                className="object-cover hover:scale-105 transition-transform duration-500" />
+              <Image
+                src="/culture-ananas.png"
+                alt="Ananas de Zè"
+                fill
+                className="object-cover transition-transform duration-500 hover:scale-105"
+              />
             </div>
             <div className="relative h-44 overflow-hidden">
-              <Image src="/culture-palmes.png" alt="Palmes de Zè" fill
-                className="object-cover hover:scale-105 transition-transform duration-500" />
+              <Image
+                src="/culture-palmes.png"
+                alt="Palmes de Zè"
+                fill
+                className="object-cover transition-transform duration-500 hover:scale-105"
+              />
             </div>
             <div className="relative h-44 overflow-hidden">
-              <Image src="/culture-manioc.png" alt="Manioc de Zè" fill
-                className="object-cover hover:scale-105 transition-transform duration-500" />
+              <Image
+                src="/culture-manioc.png"
+                alt="Manioc de Zè"
+                fill
+                className="object-cover transition-transform duration-500 hover:scale-105"
+              />
             </div>
             <div className="relative h-44 overflow-hidden">
-              <Image src="/sites-touristiques.png" alt="Sites touristiques de Zè" fill
-                className="object-cover hover:scale-105 transition-transform duration-500" />
+              <Image
+                src="/sites-touristiques.png"
+                alt="Sites touristiques de Zè"
+                fill
+                className="object-cover transition-transform duration-500 hover:scale-105"
+              />
             </div>
             <div className="relative h-44 overflow-hidden">
-              <Image src="/foret-sacre.png" alt="Forêt sacrée d'Assanmê" fill
-                className="object-cover hover:scale-105 transition-transform duration-500" />
+              <Image
+                src="/foret-sacre.png"
+                alt="Forêt sacrée d'Assanmê"
+                fill
+                className="object-cover transition-transform duration-500 hover:scale-105"
+              />
             </div>
             <div className="relative h-44 overflow-hidden">
-              <Image src="/marche-de-betail.png" alt="Marché de bétail de Zè" fill
-                className="object-cover hover:scale-105 transition-transform duration-500" />
+              <Image
+                src="/marche-de-betail.png"
+                alt="Marché de bétail de Zè"
+                fill
+                className="object-cover transition-transform duration-500 hover:scale-105"
+              />
             </div>
           </div>
         </div>
       </section>
 
       {/* ARTICLES */}
-      <section className="py-20 px-6 bg-white border-t border-gray-100">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex items-end justify-between mb-12">
+      <section className="border-t border-gray-100 bg-white px-6 py-20">
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-12 flex items-end justify-between">
             <div>
-              <p className="text-[#D4AF37] uppercase tracking-widest text-xs font-semibold mb-2">Actualités</p>
-              <h2 className="text-4xl font-serif font-bold text-gray-900">Dernières nouvelles</h2>
+              <p className="mb-2 text-xs font-semibold tracking-widest text-[#D4AF37] uppercase">
+                Actualités
+              </p>
+              <h2 className="font-serif text-4xl font-bold text-gray-900">Dernières nouvelles</h2>
             </div>
-            <Link href="/articles" className="text-green-800 hover:underline text-sm uppercase tracking-widest font-semibold">
+            <Link
+              href="/articles"
+              className="text-sm font-semibold tracking-widest text-green-800 uppercase hover:underline"
+            >
               Voir tout →
             </Link>
           </div>
@@ -354,13 +465,21 @@ export default async function HomePage() {
               Aucune actualité publiée pour le moment.
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
               {articles.map((a, i) => (
                 <Link key={a.id} href={`/articles/${a.id}`} className="group">
-                  <div className={`bg-gray-50 border border-gray-100 p-8 h-full hover:border-[#D4AF37] hover:shadow-lg transition ${i === 0 ? "border-l-4 border-l-green-800" : ""}`}>
-                    <p className="text-[#D4AF37] text-xs uppercase tracking-widest font-semibold mb-3">Actualité</p>
-                    <h3 className="font-serif font-bold text-gray-900 text-lg mb-4 group-hover:text-green-800 transition leading-snug">{a.title}</h3>
-                    <p className="text-gray-400 text-sm">{formatDate(a.createdAt, { day: "numeric", month: "long", year: "numeric" })}</p>
+                  <div
+                    className={`h-full border border-gray-100 bg-gray-50 p-8 transition hover:border-[#D4AF37] hover:shadow-lg ${i === 0 ? "border-l-4 border-l-green-800" : ""}`}
+                  >
+                    <p className="mb-3 text-xs font-semibold tracking-widest text-[#D4AF37] uppercase">
+                      Actualité
+                    </p>
+                    <h3 className="mb-4 font-serif text-lg leading-snug font-bold text-gray-900 transition group-hover:text-green-800">
+                      {a.title}
+                    </h3>
+                    <p className="text-sm text-gray-400">
+                      {formatDate(a.createdAt, { day: "numeric", month: "long", year: "numeric" })}
+                    </p>
                   </div>
                 </Link>
               ))}
@@ -371,35 +490,48 @@ export default async function HomePage() {
 
       {/* OPPORTUNITIES */}
       {opportunities.length > 0 && (
-        <section className="py-20 px-6 bg-[#FAFAF7]">
-          <div className="max-w-6xl mx-auto">
-            <div className="flex items-end justify-between mb-12">
+        <section className="bg-[#FAFAF7] px-6 py-20">
+          <div className="mx-auto max-w-6xl">
+            <div className="mb-12 flex items-end justify-between">
               <div>
-                <p className="text-[#D4AF37] uppercase tracking-widest text-xs font-semibold mb-2">Jeunesse</p>
-                <h2 className="text-4xl font-serif font-bold text-gray-900">Offres & Formations</h2>
+                <p className="mb-2 text-xs font-semibold tracking-widest text-[#D4AF37] uppercase">
+                  Jeunesse
+                </p>
+                <h2 className="font-serif text-4xl font-bold text-gray-900">Offres & Formations</h2>
               </div>
-              <Link href="/opportunites" className="text-green-800 hover:underline text-sm uppercase tracking-widest font-semibold">
+              <Link
+                href="/opportunites"
+                className="text-sm font-semibold tracking-widest text-green-800 uppercase hover:underline"
+              >
                 Voir tout →
               </Link>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
               {opportunities.map((o) => (
-                <Link key={o.id} href={`/opportunites/${o.id}`}
-                  className="group border border-gray-200 bg-white p-8 hover:border-[#D4AF37] hover:shadow-lg transition">
-                  <span className={`text-xs font-bold uppercase tracking-widest px-2 py-1 ${
-                    o.type === "JOB" ? "bg-blue-50 text-blue-700" : "bg-purple-50 text-purple-700"
-                  }`}>
+                <Link
+                  key={o.id}
+                  href={`/opportunites/${o.id}`}
+                  className="group border border-gray-200 bg-white p-8 transition hover:border-[#D4AF37] hover:shadow-lg"
+                >
+                  <span
+                    className={`px-2 py-1 text-xs font-bold tracking-widest uppercase ${
+                      o.type === "JOB" ? "bg-blue-50 text-blue-700" : "bg-purple-50 text-purple-700"
+                    }`}
+                  >
                     {o.type === "JOB" ? "Emploi" : "Formation"}
                   </span>
-                  <h3 className="font-serif font-bold text-gray-900 mt-4 mb-3 group-hover:text-green-800 transition">{o.title}</h3>
-                  <p className="text-[#D4AF37] font-bold text-sm">{o.isFree ? "Gratuit" : `${formatPrice(o.price)} XOF`}</p>
+                  <h3 className="mt-4 mb-3 font-serif font-bold text-gray-900 transition group-hover:text-green-800">
+                    {o.title}
+                  </h3>
+                  <p className="text-sm font-bold text-[#D4AF37]">
+                    {o.isFree ? "Gratuit" : `${formatPrice(o.price)} XOF`}
+                  </p>
                 </Link>
               ))}
             </div>
           </div>
         </section>
       )}
-
     </main>
   );
 }

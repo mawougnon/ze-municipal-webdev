@@ -25,39 +25,46 @@ export default function CandidatureCard({ a }: { a: CandidatureWithOpportunity }
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+    <div className="rounded-xl border border-gray-100 bg-white p-6 shadow-sm">
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1">
-          <div className="flex items-center gap-3 mb-1">
+          <div className="mb-1 flex items-center gap-3">
             <h2 className="font-semibold text-gray-800">{a.fullName}</h2>
-            <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-              a.opportunity.type === "JOB"
-                ? "bg-blue-100 text-blue-700"
-                : "bg-purple-100 text-purple-700"
-            }`}>
+            <span
+              className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+                a.opportunity.type === "JOB"
+                  ? "bg-blue-100 text-blue-700"
+                  : "bg-purple-100 text-purple-700"
+              }`}
+            >
               {a.opportunity.type === "JOB" ? "Emploi" : "Formation"}
             </span>
           </div>
-          <p className="text-gray-500 text-sm">{a.opportunity.title}</p>
+          <p className="text-sm text-gray-500">{a.opportunity.title}</p>
 
-          <div className="flex flex-wrap gap-4 mt-3 text-sm text-gray-600">
+          <div className="mt-3 flex flex-wrap gap-4 text-sm text-gray-600">
             {a.phone && (
-              <a href={whatsappLink(a.phone)}
-                target="_blank" rel="noopener noreferrer"
-                className="flex items-center gap-1 text-green-600 hover:underline">
+              <a
+                href={whatsappLink(a.phone)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1 text-green-600 hover:underline"
+              >
                 📱 {a.phone} (WhatsApp)
               </a>
             )}
             {a.email && (
-              <a href={`mailto:${a.email}`}
-                className="flex items-center gap-1 text-blue-600 hover:underline">
+              <a
+                href={`mailto:${a.email}`}
+                className="flex items-center gap-1 text-blue-600 hover:underline"
+              >
                 📧 {a.email}
               </a>
             )}
           </div>
 
           {a.message && (
-            <p className="text-gray-600 text-sm mt-3 bg-gray-50 rounded-lg p-3 italic">
+            <p className="mt-3 rounded-lg bg-gray-50 p-3 text-sm text-gray-600 italic">
               "{a.message}"
             </p>
           )}
@@ -65,8 +72,13 @@ export default function CandidatureCard({ a }: { a: CandidatureWithOpportunity }
           {a.cvUrl && (
             <div className="mt-3 flex flex-wrap gap-2">
               {a.cvUrl.split(" | ").map((url, i) => (
-                <a key={i} href={url} target="_blank" rel="noopener noreferrer"
-                  className="text-blue-600 text-sm hover:underline border border-blue-100 px-3 py-1 rounded-lg">
+                <a
+                  key={i}
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-lg border border-blue-100 px-3 py-1 text-sm text-blue-600 hover:underline"
+                >
                   📎 Document {i + 1}
                 </a>
               ))}
@@ -74,15 +86,19 @@ export default function CandidatureCard({ a }: { a: CandidatureWithOpportunity }
           )}
         </div>
 
-        <div className="flex flex-col items-end gap-2 shrink-0">
+        <div className="flex shrink-0 flex-col items-end gap-2">
           <span className="text-xs text-gray-400">
             {formatDate(a.createdAt, {
-              day: "numeric", month: "long", year: "numeric",
+              day: "numeric",
+              month: "long",
+              year: "numeric",
             })}
           </span>
-          <button onClick={handleDelete}
-            className="text-red-400 hover:text-red-600 transition text-xs flex items-center gap-1"
-            title="Supprimer cette candidature">
+          <button
+            onClick={handleDelete}
+            className="flex items-center gap-1 text-xs text-red-400 transition hover:text-red-600"
+            title="Supprimer cette candidature"
+          >
             🗑️ Supprimer
           </button>
         </div>

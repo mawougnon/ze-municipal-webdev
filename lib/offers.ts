@@ -27,5 +27,8 @@ export const offerSchema = z
     price: z.number().positive("Le prix doit être positif.").nullable(),
     published: z.boolean().default(false),
   })
-  .refine((o) => o.isFree || o.price !== null, { message: "Indiquez le prix d'une offre payante.", path: ["price"] })
+  .refine((o) => o.isFree || o.price !== null, {
+    message: "Indiquez le prix d'une offre payante.",
+    path: ["price"],
+  })
   .transform((o) => ({ ...o, price: o.isFree ? null : o.price }));

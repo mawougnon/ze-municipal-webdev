@@ -24,7 +24,10 @@ const nextConfig: NextConfig = {
           // Prevents MIME type sniffing
           { key: "X-Content-Type-Options", value: "nosniff" },
           // Forces HTTPS
-          { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
+          {
+            key: "Strict-Transport-Security",
+            value: "max-age=63072000; includeSubDomains; preload",
+          },
           // Controls referrer information
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           // Content Security Policy. Fonts are self-hosted by next/font and only the

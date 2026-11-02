@@ -4,7 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 // Import the TopLoader component
-import NextTopLoader from 'nextjs-toploader';
+import NextTopLoader from "nextjs-toploader";
 
 const geist = Geist({ subsets: ["latin"] });
 
@@ -27,7 +27,7 @@ export default function RootLayout({
           NextTopLoader provides a visual progress bar at the top of the page 
           during route changes, giving the user instant feedback.
         */}
-        <NextTopLoader 
+        <NextTopLoader
           color="#D4AF37" // Matching your branding gold color
           initialPosition={0.08}
           crawlSpeed={200}
@@ -38,7 +38,7 @@ export default function RootLayout({
           speed={200}
           shadow="0 0 10px #D4AF37,0 0 5px #D4AF37"
         />
-        
+
         {children}
       </body>
     </html>

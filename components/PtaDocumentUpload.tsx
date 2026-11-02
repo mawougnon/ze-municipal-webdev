@@ -38,17 +38,23 @@ export default function PtaDocumentUpload({ currentPdfUrl, currentYear }: Props)
 
   return (
     <div className="space-y-4">
-      
       {/* If a PDF already exists */}
       {pdfUrl && (
-        <div className="flex items-center justify-between bg-green-50 border border-green-200 rounded-lg px-4 py-3">
-          <a href={pdfUrl} target="_blank" rel="noopener noreferrer"
-            className="text-green-700 hover:underline text-sm font-medium">
+        <div className="flex items-center justify-between rounded-lg border border-green-200 bg-green-50 px-4 py-3">
+          <a
+            href={pdfUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm font-medium text-green-700 hover:underline"
+          >
             📄 PTA {year} : voir le document actuel
           </a>
           <div className="flex gap-2">
-            <button onClick={handleDelete} disabled={deleting}
-              className="text-xs text-red-500 hover:text-red-700 border border-red-200 px-3 py-1 rounded-lg transition disabled:opacity-50">
+            <button
+              onClick={handleDelete}
+              disabled={deleting}
+              className="rounded-lg border border-red-200 px-3 py-1 text-xs text-red-500 transition hover:text-red-700 disabled:opacity-50"
+            >
               {deleting ? "Suppression..." : "Supprimer"}
             </button>
           </div>
@@ -57,26 +63,25 @@ export default function PtaDocumentUpload({ currentPdfUrl, currentYear }: Props)
 
       {/* Upload new file */}
       <div className="space-y-3">
-        <div className="flex gap-3 items-center flex-wrap">
+        <div className="flex flex-wrap items-center gap-3">
           <input
             type="text"
             value={year}
             onChange={(e) => setYear(e.target.value)}
             placeholder="Ex: 2025-2030"
-            className="border border-gray-300 rounded-lg px-3 py-2 text-sm w-32 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-32 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
-          <FileUpload
-            bucket="documents"
-            accept=".pdf"
-            onUpload={(url) => setPdfUrl(url)}
-          />
+          <FileUpload bucket="documents" accept=".pdf" onUpload={(url) => setPdfUrl(url)} />
         </div>
 
         {pdfUrl && (
           <div className="flex items-center gap-3">
-            <p className="text-green-600 text-sm">✅ PDF prêt à enregistrer</p>
-            <button onClick={handleSave} disabled={saving}
-              className="bg-green-700 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-800 transition disabled:opacity-50">
+            <p className="text-sm text-green-600">✅ PDF prêt à enregistrer</p>
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="rounded-lg bg-green-700 px-4 py-2 text-sm text-white transition hover:bg-green-800 disabled:opacity-50"
+            >
               {saving ? "Enregistrement..." : saved ? "✅ Enregistré" : "Enregistrer"}
             </button>
           </div>

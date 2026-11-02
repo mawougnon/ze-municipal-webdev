@@ -5,7 +5,11 @@ import Link from "next/link";
 import ApplicationForm from "@/components/ApplicationForm";
 import { isOpen } from "@/lib/offers";
 
-export default async function OpportuniteDetailPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function OpportuniteDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
   const opportunity = await prisma.opportunity.findUnique({
     where: { id, published: true },
@@ -15,24 +19,26 @@ export default async function OpportuniteDetailPage({ params }: { params: Promis
 
   return (
     <main className="min-h-screen bg-white">
-      <section className="bg-green-700 text-white py-12 px-6 text-center">
-        <span className={`text-xs px-3 py-1 rounded-full mb-4 inline-block ${
-          opportunity.type === "JOB" ? "bg-blue-500" : "bg-purple-500"
-        }`}>
+      <section className="bg-green-700 px-6 py-12 text-center text-white">
+        <span
+          className={`mb-4 inline-block rounded-full px-3 py-1 text-xs ${
+            opportunity.type === "JOB" ? "bg-blue-500" : "bg-purple-500"
+          }`}
+        >
           {opportunity.type === "JOB" ? "Offre d'emploi" : "Formation"}
         </span>
-        <h1 className="text-3xl font-bold mt-2">{opportunity.title}</h1>
-        <p className="text-green-100 mt-2 font-semibold">
+        <h1 className="mt-2 text-3xl font-bold">{opportunity.title}</h1>
+        <p className="mt-2 font-semibold text-green-100">
           {opportunity.isFree ? "Gratuit" : `${formatPrice(opportunity.price)} XOF`}
         </p>
       </section>
 
-      <section className="max-w-3xl mx-auto px-6 py-12">
-        <div className="bg-gray-50 rounded-xl p-6 border border-gray-100 mb-10">
-          <h2 className="font-semibold text-gray-800 mb-3">Description</h2>
-          <p className="text-gray-600 whitespace-pre-line">{opportunity.description}</p>
+      <section className="mx-auto max-w-3xl px-6 py-12">
+        <div className="mb-10 rounded-xl border border-gray-100 bg-gray-50 p-6">
+          <h2 className="mb-3 font-semibold text-gray-800">Description</h2>
+          <p className="whitespace-pre-line text-gray-600">{opportunity.description}</p>
           {opportunity.deadline && (
-            <p className="text-red-500 text-sm mt-4 font-medium">
+            <p className="mt-4 text-sm font-medium text-red-500">
               ⏳ Date limite : {formatDate(opportunity.deadline)}
             </p>
           )}
@@ -47,13 +53,15 @@ export default async function OpportuniteDetailPage({ params }: { params: Promis
             type={opportunity.type}
           />
         ) : (
-          <div className="bg-gray-50 border border-gray-200 rounded-xl p-8 text-center text-gray-600">
+          <div className="rounded-xl border border-gray-200 bg-gray-50 p-8 text-center text-gray-600">
             Les candidatures pour cette offre sont closes.
           </div>
         )}
 
         <div className="mt-8">
-          <Link href="/opportunites" className="text-gray-400 hover:text-gray-600 text-sm">← Retour aux offres</Link>
+          <Link href="/opportunites" className="text-sm text-gray-400 hover:text-gray-600">
+            ← Retour aux offres
+          </Link>
         </div>
       </section>
     </main>

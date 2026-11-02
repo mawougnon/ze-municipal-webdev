@@ -75,59 +75,50 @@ export default function NouvelArticlePage() {
 
   return (
     <main className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-3xl mx-auto">
-        <h1 className="text-2xl font-bold text-gray-800 mb-8">
-          Nouvel article
-        </h1>
+      <div className="mx-auto max-w-3xl">
+        <h1 className="mb-8 text-2xl font-bold text-gray-800">Nouvel article</h1>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Title */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Titre
-            </label>
+            <label className="mb-1 block text-sm font-medium text-gray-700">Titre</label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
             />
           </div>
 
           {/* Cover image */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="mb-1 block text-sm font-medium text-gray-700">
               Photo de couverture (optionnel)
             </label>
-            <FileUpload
-              bucket="photos"
-              onUpload={(url) => setCoverImageUrl(url)}
-            />
+            <FileUpload bucket="photos" onUpload={(url) => setCoverImageUrl(url)} />
             {coverImageUrl && (
               <img
                 src={coverImageUrl}
                 alt="cover preview"
-                className="mt-3 w-full h-48 object-cover rounded-lg"
+                className="mt-3 h-48 w-full rounded-lg object-cover"
               />
             )}
           </div>
 
           {/* Rich text editor */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Contenu
-            </label>
+            <label className="mb-1 block text-sm font-medium text-gray-700">Contenu</label>
 
             {/* Toolbar: explicit text color so buttons are always visible */}
-            <div className="flex gap-2 mb-2">
+            <div className="mb-2 flex gap-2">
               {toolbarButtons.map((btn) => (
                 <button
                   key={btn.title}
                   type="button"
                   onClick={btn.action}
                   title={btn.title}
-                  className="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded text-sm font-medium text-gray-800"
+                  className="rounded bg-gray-100 px-3 py-1 text-sm font-medium text-gray-800 hover:bg-gray-200"
                 >
                   {btn.label}
                 </button>
@@ -135,25 +126,23 @@ export default function NouvelArticlePage() {
             </div>
 
             {/* Editor wrapper: white background + dark text forced so ProseMirror content is always readable */}
-            <div className="border border-gray-300 rounded-lg p-4 min-h-[200px] bg-white focus-within:ring-2 focus-within:ring-blue-500 editor-wrapper">
+            <div className="editor-wrapper min-h-[200px] rounded-lg border border-gray-300 bg-white p-4 focus-within:ring-2 focus-within:ring-blue-500">
               <EditorContent editor={editor} />
             </div>
           </div>
 
           {/* Error message */}
-          {error && <p className="text-red-500 text-sm">{error}</p>}
+          {error && <p className="text-sm text-red-500">{error}</p>}
 
           {/* Publish toggle */}
-          <label className="flex items-center gap-3 cursor-pointer">
+          <label className="flex cursor-pointer items-center gap-3">
             <input
               type="checkbox"
               checked={published}
               onChange={(e) => setPublished(e.target.checked)}
-              className="w-4 h-4"
+              className="h-4 w-4"
             />
-            <span className="text-sm text-gray-700">
-              Publier immédiatement en ligne
-            </span>
+            <span className="text-sm text-gray-700">Publier immédiatement en ligne</span>
           </label>
 
           {/* Actions */}
@@ -161,18 +150,18 @@ export default function NouvelArticlePage() {
             <button
               type="submit"
               disabled={loading}
-              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
+              className="rounded-lg bg-blue-600 px-6 py-2 text-white transition hover:bg-blue-700 disabled:opacity-50"
             >
               {loading
                 ? "Enregistrement..."
                 : published
-                ? "Publier"
-                : "Enregistrer comme brouillon"}
+                  ? "Publier"
+                  : "Enregistrer comme brouillon"}
             </button>
             <button
               type="button"
               onClick={() => router.back()}
-              className="px-6 py-2 rounded-lg border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 transition text-sm"
+              className="rounded-lg border border-gray-300 bg-white px-6 py-2 text-sm text-gray-700 transition hover:bg-gray-50"
             >
               Annuler
             </button>

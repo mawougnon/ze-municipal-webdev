@@ -26,26 +26,23 @@ const schema = z.object({
   phone: z
     .string()
     .transform(normalizeBeninPhone)
-    .pipe(z.string().regex(BENIN_PHONE, "Le numéro doit comporter 10 chiffres et commencer par 01.")),
+    .pipe(
+      z.string().regex(BENIN_PHONE, "Le numéro doit comporter 10 chiffres et commencer par 01."),
+    ),
 
-  email: z
-    .string()
-    .email("Adresse email invalide.")
-    .optional()
-    .or(z.literal("")),
+  email: z.string().email("Adresse email invalide.").optional().or(z.literal("")),
 
-  message: z
-    .string()
-    .max(1000, "Message trop long (max 1000 caractères).")
-    .optional(),
+  message: z.string().max(1000, "Message trop long (max 1000 caractères).").optional(),
 });
-
 
 type FormData = z.infer<typeof schema>;
 
 export default function ApplicationForm({ opportunityId, isFree, price, type }: Props) {
   const [form, setForm] = useState<FormData>({
-    fullName: "", phone: "", email: "", message: "",
+    fullName: "",
+    phone: "",
+    email: "",
+    message: "",
   });
   const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
   const [wantsToUploadCV, setWantsToUploadCV] = useState(false);
@@ -176,48 +173,51 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
 
   if (success) {
     return (
-      <div className="bg-green-50 border border-green-200 rounded-xl p-8 text-center">
-        <p className="text-green-700 font-bold text-lg">✅ Candidature reçue !</p>
-        
+      <div className="rounded-xl border border-green-200 bg-green-50 p-8 text-center">
+        <p className="text-lg font-bold text-green-700">✅ Candidature reçue !</p>
+
         {/* Payment message: only shown for paid opportunities */}
         {!isFree && (
-          <p className="text-gray-600 mt-3 leading-relaxed">
-            Pour finaliser votre candidature, nos services vous contacteront 
-            dans les plus brefs délais via WhatsApp pour vous accompagner 
-            dans la procédure de règlement.
+          <p className="mt-3 leading-relaxed text-gray-600">
+            Pour finaliser votre candidature, nos services vous contacteront dans les plus brefs
+            délais via WhatsApp pour vous accompagner dans la procédure de règlement.
           </p>
         )}
 
-        <p className="text-gray-400 text-sm mt-3">
-          Merci de votre intérêt pour cette opportunité.
-        </p>
+        <p className="mt-3 text-sm text-gray-400">Merci de votre intérêt pour cette opportunité.</p>
       </div>
     );
   }
   const uploadSection = (label: string) => (
-    <div className="border border-dashed border-gray-200 rounded-lg p-4">
-      <label className="flex items-center gap-3 cursor-pointer mb-3">
-        <input type="checkbox" checked={wantsToUploadCV}
+    <div className="rounded-lg border border-dashed border-gray-200 p-4">
+      <label className="mb-3 flex cursor-pointer items-center gap-3">
+        <input
+          type="checkbox"
+          checked={wantsToUploadCV}
           onChange={(e) => setWantsToUploadCV(e.target.checked)}
-          className="w-4 h-4" />
+          className="h-4 w-4"
+        />
         <span className="text-sm font-medium text-gray-700">{label}</span>
       </label>
 
       {wantsToUploadCV && (
         <div>
-          <p className="text-sm text-gray-500 mb-2">
+          <p className="mb-2 text-sm text-gray-500">
             Format accepté : PDF uniquement (5 fichiers au maximum, 5 Mo chacun)
           </p>
           <input
-            type="file" multiple
+            type="file"
+            multiple
             accept="application/pdf,.pdf"
             onChange={handleFileUpload}
             disabled={uploading}
-            className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-green-50 file:text-green-700 hover:file:bg-green-100 cursor-pointer"
+            className="block w-full cursor-pointer text-sm text-gray-500 file:mr-4 file:rounded-lg file:border-0 file:bg-green-50 file:px-4 file:py-2 file:text-green-700 hover:file:bg-green-100"
           />
-          {uploading && <p className="text-sm text-gray-400 mt-2">Envoi en cours...</p>}
+          {uploading && <p className="mt-2 text-sm text-gray-400">Envoi en cours...</p>}
           {cvFiles.map((_, i) => (
-            <p key={i} className="text-green-600 text-sm mt-1">✅ Fichier {i + 1} uploadé</p>
+            <p key={i} className="mt-1 text-sm text-green-600">
+              ✅ Fichier {i + 1} uploadé
+            </p>
           ))}
         </div>
       )}
@@ -225,66 +225,88 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
   );
 
   return (
-    <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
-      <h2 className="font-bold text-gray-800 text-lg mb-6">
+    <div className="rounded-xl border border-gray-100 bg-white p-6 shadow-sm">
+      <h2 className="mb-6 text-lg font-bold text-gray-800">
         {isFree ? "Postuler gratuitement" : `Postuler (${formatPrice(price)} XOF)`}
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-5" noValidate>
-
         {/* Full name: letters only */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="mb-1 block text-sm font-medium text-gray-700">
             Nom complet <span className="text-red-500">*</span>
           </label>
-          <input type="text" name="fullName" required
-            onChange={handleChange} onBlur={handleBlur}
-            className={`w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${errors.fullName ? "border-red-400" : "border-gray-300"}`} />
-          {errors.fullName && <p className="text-red-500 text-xs mt-1">{errors.fullName}</p>}
+          <input
+            type="text"
+            name="fullName"
+            required
+            onChange={handleChange}
+            onBlur={handleBlur}
+            className={`w-full rounded-lg border px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none ${errors.fullName ? "border-red-400" : "border-gray-300"}`}
+          />
+          {errors.fullName && <p className="mt-1 text-xs text-red-500">{errors.fullName}</p>}
         </div>
 
         {/* WhatsApp: Benin format */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="mb-1 block text-sm font-medium text-gray-700">
             Numéro WhatsApp <span className="text-red-500">*</span>
           </label>
-          <input type="tel" name="phone" required
-            onChange={handleChange} onBlur={handleBlur}
+          <input
+            type="tel"
+            name="phone"
+            required
+            onChange={handleChange}
+            onBlur={handleBlur}
             placeholder="01 XX XX XX XX"
-            className={`w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${errors.phone ? "border-red-400" : "border-gray-300"}`} />
-          {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
+            className={`w-full rounded-lg border px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none ${errors.phone ? "border-red-400" : "border-gray-300"}`}
+          />
+          {errors.phone && <p className="mt-1 text-xs text-red-500">{errors.phone}</p>}
         </div>
 
         {/* Email: optional */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="mb-1 block text-sm font-medium text-gray-700">
             Adresse email (optionnel)
           </label>
-          <input type="email" name="email"
-            onChange={handleChange} onBlur={handleBlur}
-            className={`w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${errors.email ? "border-red-400" : "border-gray-300"}`} />
-          {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
+          <input
+            type="email"
+            name="email"
+            onChange={handleChange}
+            onBlur={handleBlur}
+            className={`w-full rounded-lg border px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none ${errors.email ? "border-red-400" : "border-gray-300"}`}
+          />
+          {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email}</p>}
         </div>
 
         {/* Message: optional */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="mb-1 block text-sm font-medium text-gray-700">
             Message de motivation (optionnel)
           </label>
-          <textarea name="message" rows={3}
-            onChange={handleChange} onBlur={handleBlur}
-            className={`w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${errors.message ? "border-red-400" : "border-gray-300"}`} />
-          {errors.message && <p className="text-red-500 text-xs mt-1">{errors.message}</p>}
+          <textarea
+            name="message"
+            rows={3}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            className={`w-full rounded-lg border px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none ${errors.message ? "border-red-400" : "border-gray-300"}`}
+          />
+          {errors.message && <p className="mt-1 text-xs text-red-500">{errors.message}</p>}
         </div>
 
         {/* File upload: optional, toggled */}
-        {type === "JOB" && uploadSection("Je souhaite joindre des documents (CV, lettre de motivation...)")}
-        {type === "TRAINING" && uploadSection("Je souhaite joindre des documents (attestations, diplômes...)")}
+        {type === "JOB" &&
+          uploadSection("Je souhaite joindre des documents (CV, lettre de motivation...)")}
+        {type === "TRAINING" &&
+          uploadSection("Je souhaite joindre des documents (attestations, diplômes...)")}
 
-        {serverError && <p className="text-red-500 text-sm">{serverError}</p>}
+        {serverError && <p className="text-sm text-red-500">{serverError}</p>}
 
-        <button type="submit" disabled={loading || uploading}
-          className="w-full bg-green-700 text-white py-3 rounded-lg font-semibold hover:bg-green-800 transition disabled:opacity-50">
+        <button
+          type="submit"
+          disabled={loading || uploading}
+          className="w-full rounded-lg bg-green-700 py-3 font-semibold text-white transition hover:bg-green-800 disabled:opacity-50"
+        >
           {loading ? "Envoi en cours..." : "Envoyer ma candidature"}
         </button>
       </form>

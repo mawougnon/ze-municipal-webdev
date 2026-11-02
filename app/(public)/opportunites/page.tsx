@@ -12,39 +12,41 @@ export default async function OpportunitesPublicPage() {
     orderBy: { createdAt: "desc" },
   });
 
-  const jobs = opportunities.filter(o => o.type === "JOB");
-  const trainings = opportunities.filter(o => o.type === "TRAINING");
+  const jobs = opportunities.filter((o) => o.type === "JOB");
+  const trainings = opportunities.filter((o) => o.type === "TRAINING");
 
   return (
     <main className="min-h-screen bg-white">
-      <section className="bg-green-700 text-white py-12 px-6 text-center">
+      <section className="bg-green-700 px-6 py-12 text-center text-white">
         <h1 className="text-3xl font-bold">Offres d'emploi & Formations</h1>
-        <p className="text-green-100 mt-2">Opportunités disponibles pour la jeunesse de Zè</p>
+        <p className="mt-2 text-green-100">Opportunités disponibles pour la jeunesse de Zè</p>
       </section>
 
-      <section className="max-w-4xl mx-auto px-6 py-12 space-y-12">
-
+      <section className="mx-auto max-w-4xl space-y-12 px-6 py-12">
         {/* Jobs */}
         <div>
-          <h2 className="text-xl font-bold text-gray-800 mb-6">Offres d'emploi</h2>
+          <h2 className="mb-6 text-xl font-bold text-gray-800">Offres d'emploi</h2>
           {jobs.length === 0 ? (
             <p className="text-gray-400">Aucune offre d'emploi disponible.</p>
           ) : (
             <div className="space-y-4">
               {jobs.map((o) => (
-                <Link key={o.id} href={`/opportunites/${o.id}`}
-                  className="block bg-gray-50 rounded-xl p-6 border border-gray-100 hover:shadow-md transition">
+                <Link
+                  key={o.id}
+                  href={`/opportunites/${o.id}`}
+                  className="block rounded-xl border border-gray-100 bg-gray-50 p-6 transition hover:shadow-md"
+                >
                   <div className="flex items-start justify-between">
                     <div>
                       <h3 className="font-semibold text-gray-800">{o.title}</h3>
-                      <p className="text-gray-500 text-sm mt-1 line-clamp-2">{o.description}</p>
+                      <p className="mt-1 line-clamp-2 text-sm text-gray-500">{o.description}</p>
                       {o.deadline && (
-                        <p className="text-gray-400 text-xs mt-2">
+                        <p className="mt-2 text-xs text-gray-400">
                           Date limite : {formatDate(o.deadline)}
                         </p>
                       )}
                     </div>
-                    <span className="text-sm font-semibold text-green-700 ml-4 shrink-0">
+                    <span className="ml-4 shrink-0 text-sm font-semibold text-green-700">
                       {o.isFree ? "Gratuit" : `${formatPrice(o.price)} XOF`}
                     </span>
                   </div>
@@ -56,25 +58,28 @@ export default async function OpportunitesPublicPage() {
 
         {/* Trainings */}
         <div>
-          <h2 className="text-xl font-bold text-gray-800 mb-6">Formations</h2>
+          <h2 className="mb-6 text-xl font-bold text-gray-800">Formations</h2>
           {trainings.length === 0 ? (
             <p className="text-gray-400">Aucune formation disponible.</p>
           ) : (
             <div className="space-y-4">
               {trainings.map((o) => (
-                <Link key={o.id} href={`/opportunites/${o.id}`}
-                  className="block bg-gray-50 rounded-xl p-6 border border-gray-100 hover:shadow-md transition">
+                <Link
+                  key={o.id}
+                  href={`/opportunites/${o.id}`}
+                  className="block rounded-xl border border-gray-100 bg-gray-50 p-6 transition hover:shadow-md"
+                >
                   <div className="flex items-start justify-between">
                     <div>
                       <h3 className="font-semibold text-gray-800">{o.title}</h3>
-                      <p className="text-gray-500 text-sm mt-1 line-clamp-2">{o.description}</p>
+                      <p className="mt-1 line-clamp-2 text-sm text-gray-500">{o.description}</p>
                       {o.deadline && (
-                        <p className="text-gray-400 text-xs mt-2">
+                        <p className="mt-2 text-xs text-gray-400">
                           Date limite : {formatDate(o.deadline)}
                         </p>
                       )}
                     </div>
-                    <span className="text-sm font-semibold text-green-700 ml-4 shrink-0">
+                    <span className="ml-4 shrink-0 text-sm font-semibold text-green-700">
                       {o.isFree ? "Gratuit" : `${formatPrice(o.price)} XOF`}
                     </span>
                   </div>
@@ -84,7 +89,9 @@ export default async function OpportunitesPublicPage() {
           )}
         </div>
 
-        <Link href="/" className="text-gray-400 hover:text-gray-600 text-sm inline-block">← Retour à l'accueil</Link>
+        <Link href="/" className="inline-block text-sm text-gray-400 hover:text-gray-600">
+          ← Retour à l'accueil
+        </Link>
       </section>
     </main>
   );

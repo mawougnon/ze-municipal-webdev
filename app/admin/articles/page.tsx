@@ -16,14 +16,13 @@ export default async function ArticlesPage() {
 
   return (
     <main className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-4xl mx-auto">
-
+      <div className="mx-auto max-w-4xl">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="mb-8 flex items-center justify-between">
           <h1 className="text-2xl font-bold text-gray-800">Articles</h1>
           <Link
             href="/admin/articles/nouveau"
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+            className="rounded-lg bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-700"
           >
             + Nouvel article
           </Link>
@@ -31,7 +30,7 @@ export default async function ArticlesPage() {
 
         {/* Articles list */}
         {articles.length === 0 ? (
-          <div className="bg-white rounded-xl p-8 text-center text-gray-400">
+          <div className="rounded-xl bg-white p-8 text-center text-gray-400">
             Aucun article pour le moment.
           </div>
         ) : (
@@ -39,20 +38,20 @@ export default async function ArticlesPage() {
             {articles.map((article) => (
               <div
                 key={article.id}
-                className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 flex items-center justify-between"
+                className="flex items-center justify-between rounded-xl border border-gray-100 bg-white p-6 shadow-sm"
               >
                 <div>
                   <h2 className="font-semibold text-gray-800">{article.title}</h2>
-                  <div className="flex items-center gap-3 mt-1">
-                    <span className="text-gray-400 text-sm">
-                      {formatDate(article.createdAt)}
-                    </span>
+                  <div className="mt-1 flex items-center gap-3">
+                    <span className="text-sm text-gray-400">{formatDate(article.createdAt)}</span>
                     {/* Publication status badge */}
-                    <span className={`text-xs px-2 py-0.5 rounded-full ${
-                      article.published
-                        ? "bg-green-100 text-green-700"
-                        : "bg-yellow-100 text-yellow-700"
-                    }`}>
+                    <span
+                      className={`rounded-full px-2 py-0.5 text-xs ${
+                        article.published
+                          ? "bg-green-100 text-green-700"
+                          : "bg-yellow-100 text-yellow-700"
+                      }`}
+                    >
                       {article.published ? "Publié" : "Brouillon"}
                     </span>
                   </div>
@@ -60,7 +59,7 @@ export default async function ArticlesPage() {
 
                 <Link
                   href={`/admin/articles/${article.id}`}
-                  className="text-blue-600 hover:underline text-sm"
+                  className="text-sm text-blue-600 hover:underline"
                 >
                   Modifier
                 </Link>
@@ -71,11 +70,10 @@ export default async function ArticlesPage() {
 
         {/* Back to dashboard */}
         <div className="mt-6">
-          <Link href="/admin" className="text-gray-400 hover:text-gray-600 text-sm">
+          <Link href="/admin" className="text-sm text-gray-400 hover:text-gray-600">
             ← Retour au tableau de bord
           </Link>
         </div>
-
       </div>
     </main>
   );

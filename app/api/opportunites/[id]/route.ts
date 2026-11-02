@@ -7,29 +7,30 @@ import { offerSchema } from "@/lib/offers";
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
-  
+
   const { id } = await params;
   const result = offerSchema.safeParse(await req.json().catch(() => null));
-  if (!result.success) return NextResponse.json({ error: result.error.issues[0].message }, { status: 400 });
+  if (!result.success)
+    return NextResponse.json({ error: result.error.issues[0].message }, { status: 400 });
 
   try {
     const opportunity = await prisma.opportunity.update({ where: { id }, data: result.data });
 
     revalidatePath("/opportunites");
-    revalidatePath("/"); 
+    revalidatePath("/");
 
     return NextResponse.json(opportunity);
-  } catch { 
-    return NextResponse.json({ error: "Introuvable." }, { status: 404 }); 
+  } catch {
+    return NextResponse.json({ error: "Introuvable." }, { status: 404 });
   }
 }
 
 export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
-  
+
   const { id } = await params;
-  
+
   try {
     await prisma.opportunity.delete({ where: { id } });
 
@@ -38,19 +39,19 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
     revalidatePath("/");
 
     return NextResponse.json({ success: true });
-  } catch { 
-    return NextResponse.json({ error: "Introuvable." }, { status: 404 }); 
+  } catch {
+    return NextResponse.json({ error: "Introuvable." }, { status: 404 });
   }
 }
 
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const opportunity = await prisma.opportunity.findUnique({ where: { id } });
-  
+
   // An unpublished offer is reported as missing unless an admin is logged in
   if (!opportunity || (!opportunity.published && !(await auth()))) {
     return NextResponse.json({ error: "Introuvable." }, { status: 404 });
   }
-  
+
   return NextResponse.json(opportunity);
 }

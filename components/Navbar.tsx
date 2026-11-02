@@ -3,40 +3,73 @@ import Image from "next/image";
 
 export default function Navbar() {
   return (
-    <header className="bg-white border-b border-gray-100 sticky top-0 z-50 shadow-sm">
-      <div className="max-w-6xl mx-auto px-4 md:px-6 py-3 flex items-center justify-between">
-
+    <header className="sticky top-0 z-50 border-b border-gray-100 bg-white shadow-sm">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 md:px-6">
         {/* Logo gauche */}
         <Link href="/" className="flex items-center">
-          <Image src="/logo-benin.png" alt="Mairie des Jeunes de Zè"
-            width={120} height={48}
-            className="object-contain h-10 md:h-12 w-auto" preload />
+          <Image
+            src="/logo-benin.png"
+            alt="Mairie des Jeunes de Zè"
+            width={120}
+            height={48}
+            className="h-10 w-auto object-contain md:h-12"
+            preload
+          />
         </Link>
 
         {/* Navigation desktop */}
-        <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-gray-600">
-          <Link href="/" className="hover:text-green-700 transition">Accueil</Link>
-          <Link href="/articles" className="hover:text-green-700 transition">Actualités</Link>
-          <Link href="/pta" className="hover:text-green-700 transition">PTA</Link>
-          <Link href="/presentation" className="hover:text-green-700 transition">Présentation</Link>
-          <Link href="/opportunites" className="hover:text-green-700 transition">Opportunités</Link>
-          <Link href="/contact" className="hover:text-green-700 transition">Contact</Link>
+        <nav className="hidden items-center gap-6 text-sm font-medium text-gray-600 md:flex">
+          <Link href="/" className="transition hover:text-green-700">
+            Accueil
+          </Link>
+          <Link href="/articles" className="transition hover:text-green-700">
+            Actualités
+          </Link>
+          <Link href="/pta" className="transition hover:text-green-700">
+            PTA
+          </Link>
+          <Link href="/presentation" className="transition hover:text-green-700">
+            Présentation
+          </Link>
+          <Link href="/opportunites" className="transition hover:text-green-700">
+            Opportunités
+          </Link>
+          <Link href="/contact" className="transition hover:text-green-700">
+            Contact
+          </Link>
         </nav>
 
         {/* Logo droite */}
-        <Image src="/logo-commune-ze.jpg" alt="Commune de Zè"
-          width={100} height={50}
-          className="object-contain h-10 md:h-12 w-auto" preload />
+        <Image
+          src="/logo-commune-ze.jpg"
+          alt="Commune de Zè"
+          width={100}
+          height={50}
+          className="h-10 w-auto object-contain md:h-12"
+          preload
+        />
       </div>
 
       {/* Navigation mobile: barre scrollable */}
-      <div className="md:hidden border-t border-gray-100 px-4 py-2 flex gap-5 overflow-x-auto text-xs font-medium text-gray-500 whitespace-nowrap scrollbar-hide">
-        <Link href="/" className="hover:text-green-700 shrink-0">Accueil</Link>
-        <Link href="/articles" className="hover:text-green-700 shrink-0">Actualités</Link>
-        <Link href="/pta" className="hover:text-green-700 shrink-0">PTA</Link>
-        <Link href="/presentation" className="hover:text-green-700 shrink-0">Présentation</Link>
-        <Link href="/opportunites" className="hover:text-green-700 shrink-0">Opportunités</Link>
-        <Link href="/contact" className="hover:text-green-700 shrink-0">Contact</Link>
+      <div className="scrollbar-hide flex gap-5 overflow-x-auto border-t border-gray-100 px-4 py-2 text-xs font-medium whitespace-nowrap text-gray-500 md:hidden">
+        <Link href="/" className="shrink-0 hover:text-green-700">
+          Accueil
+        </Link>
+        <Link href="/articles" className="shrink-0 hover:text-green-700">
+          Actualités
+        </Link>
+        <Link href="/pta" className="shrink-0 hover:text-green-700">
+          PTA
+        </Link>
+        <Link href="/presentation" className="shrink-0 hover:text-green-700">
+          Présentation
+        </Link>
+        <Link href="/opportunites" className="shrink-0 hover:text-green-700">
+          Opportunités
+        </Link>
+        <Link href="/contact" className="shrink-0 hover:text-green-700">
+          Contact
+        </Link>
       </div>
     </header>
   );

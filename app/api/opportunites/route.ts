@@ -17,14 +17,15 @@ export async function GET() {
 export async function POST(req: Request) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
-  
+
   const result = offerSchema.safeParse(await req.json().catch(() => null));
-  if (!result.success) return NextResponse.json({ error: result.error.issues[0].message }, { status: 400 });
+  if (!result.success)
+    return NextResponse.json({ error: result.error.issues[0].message }, { status: 400 });
 
   const opportunity = await prisma.opportunity.create({ data: result.data });
 
   revalidatePath("/opportunites");
-  revalidatePath("/"); 
+  revalidatePath("/");
 
   return NextResponse.json(opportunity, { status: 201 });
 }
