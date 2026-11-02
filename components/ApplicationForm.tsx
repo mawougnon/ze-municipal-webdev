@@ -2,8 +2,8 @@
 
 import { formatPrice } from "@/lib/format";
 import { useState } from "react";
-import { z } from "zod";
-import { BENIN_PHONE, normalizeBeninPhone } from "@/lib/phone";
+import type { z } from "zod";
+import { applicantSchema } from "@/lib/candidatures";
 import { safeFileName } from "@/lib/storage";
 
 interface Props {
@@ -13,29 +13,7 @@ interface Props {
   type: string;
 }
 
-const schema = z.object({
-  fullName: z
-    .string()
-    .trim()
-    .min(3, "Le nom doit contenir au moins 3 caractères.")
-    .regex(/^[a-zA-ZÀ-ÿ\s\-']+$/, "Le nom ne peut contenir que des lettres.")
-    .refine((val) => val.split(/\s+/).filter(Boolean).length >= 2, {
-      message: "Veuillez saisir votre nom et votre prénom.",
-    }),
-
-  phone: z
-    .string()
-    .transform(normalizeBeninPhone)
-    .pipe(
-      z.string().regex(BENIN_PHONE, "Le numéro doit comporter 10 chiffres et commencer par 01."),
-    ),
-
-  email: z.string().email("Adresse email invalide.").optional().or(z.literal("")),
-
-  message: z.string().max(1000, "Message trop long (max 1000 caractères).").optional(),
-});
-
-type FormData = z.infer<typeof schema>;
+type FormData = z.input<typeof applicantSchema>;
 
 export default function ApplicationForm({ opportunityId, isFree, price, type }: Props) {
   const [form, setForm] = useState<FormData>({
@@ -62,7 +40,7 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
   // Validate a single field on blur
   function handleBlur(e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) {
     const { name } = e.target;
-    const result = schema.safeParse(form);
+    const result = applicantSchema.safeParse(form);
     if (!result.success) {
       const fieldError = result.error.flatten().fieldErrors[name as keyof FormData];
       if (fieldError) setErrors((prev) => ({ ...prev, [name]: fieldError[0] }));
@@ -123,7 +101,7 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
     e.preventDefault();
     setServerError("");
 
-    const result = schema.safeParse(form);
+    const result = applicantSchema.safeParse(form);
     if (!result.success) {
       const fieldErrors = result.error.flatten().fieldErrors;
       setErrors({

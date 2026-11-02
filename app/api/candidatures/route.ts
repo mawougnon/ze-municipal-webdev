@@ -1,47 +1,11 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
-import { z } from "zod";
 import { isOpen } from "@/lib/offers";
-import { isProjectFile } from "@/lib/storage";
-import { BENIN_PHONE, normalizeBeninPhone } from "@/lib/phone";
+import { candidatureSchema } from "@/lib/candidatures";
 
 // Limits counted in the database (no external service)
 const MAX_PER_PHONE_PER_HOUR = 3;
 const MAX_TOTAL_PER_HOUR = 100;
-
-// Zod Schema for validation
-const candidatureSchema = z.object({
-  opportunityId: z.string().min(1),
-  fullName: z
-    .string()
-    .trim()
-    .min(3, "Le nom doit contenir au moins 3 caractères.")
-    .regex(/^[a-zA-ZÀ-ÿ\s\-']+$/, "Le nom ne peut contenir que des lettres.")
-    .refine((val) => val.split(/\s+/).filter(Boolean).length >= 2, {
-      message: "Veuillez saisir votre nom et votre prénom.",
-    }),
-  phone: z
-    .string()
-    .transform(normalizeBeninPhone)
-    .pipe(
-      z.string().regex(BENIN_PHONE, "Le numéro doit comporter 10 chiffres et commencer par 01."),
-    ),
-  email: z.string().email("Adresse email invalide.").optional().or(z.literal("")).or(z.null()),
-  message: z.string().max(1000, "Message trop long.").optional().or(z.null()),
-  cvUrl: z
-    .string()
-    .optional()
-    .or(z.null())
-    .refine((val) => {
-      if (!val) return true;
-      const urls = val.split(" | ");
-      // Only files from the project's bucket: an applicant cannot plant an outside link
-      return (
-        urls.length <= 5 &&
-        urls.every((url) => isProjectFile(url, "documents") && /\.pdf$/i.test(url))
-      );
-    }, "Document invalide."),
-});
 
 // GET: Fetch applications (Protected)
 export async function GET() {
