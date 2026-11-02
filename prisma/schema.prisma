@@ -4,7 +4,9 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url       = env("DATABASE_URL")
+  // Migrations need a direct (session mode) connection, the app uses the pooled one
+  directUrl = env("DIRECT_URL")
 }
 
 // Platform users (Admin, Secretary, Super Admin)
