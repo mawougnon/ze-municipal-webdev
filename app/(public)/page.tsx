@@ -43,18 +43,20 @@ export default async function HomePage() {
         <div className="relative z-10 text-center text-white px-6 max-w-4xl mx-auto">
           {/* Logos row */}
           
-          <div className="flex justify-center items-center gap-3 mb-6">
+          {/* width and height keep each file's real ratio (square, then 720x377), so the
+              logos never stretch, and are large enough to stay sharp at their display size */}
+          <div className="flex justify-center items-center gap-3 md:gap-4 mb-6">
             <Image src="/logo-association-mj-benin.jpg" alt="AMJB"
-              width={50} height={50}
-              className="rounded-full bg-white p-1 object-contain shadow-lg w-10 h-10 md:w-16 md:h-16" preload />
-            <div className="w-px h-8 bg-white/30" />
+              width={128} height={128}
+              className="rounded-full bg-white p-1.5 object-contain shadow-lg w-14 h-14 md:w-24 md:h-24" preload />
+            <div className="w-px h-10 md:h-16 bg-white/30" />
             <Image src="/logo-association-mj-ze.jpg" alt="Mairie des Jeunes de Zè"
-              width={100} height={40}
-              className="bg-white rounded-lg px-2 py-1 object-contain shadow-lg h-8 w-auto md:h-12" preload />
-            <div className="w-px h-8 bg-white/30" />
+              width={192} height={100}
+              className="bg-white rounded-lg px-2 py-1 object-contain shadow-lg h-11 w-auto md:h-[4.5rem]" preload />
+            <div className="w-px h-10 md:h-16 bg-white/30" />
             <Image src="/logo-commune-ze.jpg" alt="Commune de Zè"
-              width={50} height={50}
-              className="rounded-full bg-white p-1 object-contain shadow-lg w-10 h-10 md:w-16 md:h-16" preload />
+              width={128} height={128}
+              className="rounded-full bg-white p-1.5 object-contain shadow-lg w-14 h-14 md:w-24 md:h-24" preload />
           </div>
 
           {/* Eyebrow */}
