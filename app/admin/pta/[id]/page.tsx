@@ -57,7 +57,7 @@ export default function ModifierPtaPage({ params }: { params: Promise<{ id: stri
   return (
     <main className="min-h-screen bg-gray-50 p-8">
       <div className="mx-auto max-w-3xl">
-        <h1 className="mb-8 text-2xl font-bold text-gray-800">Modifier l'activité</h1>
+        <h1 className="mb-8 text-2xl font-bold text-gray-800">Modifier l’activité</h1>
         <form onSubmit={handleUpdate} className="space-y-5 rounded-xl bg-white p-6 shadow-sm">
           {[
             { label: "Année", name: "year", type: "text" },
@@ -69,7 +69,7 @@ export default function ModifierPtaPage({ params }: { params: Promise<{ id: stri
               <input
                 type={field.type}
                 name={field.name}
-                value={(form as any)[field.name]}
+                value={form[field.name as keyof typeof form]}
                 onChange={handleChange}
                 className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />

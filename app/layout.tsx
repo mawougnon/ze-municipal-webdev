@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 // Import the TopLoader component
 import NextTopLoader from "nextjs-toploader";
 
@@ -13,13 +11,7 @@ export const metadata: Metadata = {
   description: "Initiative · Engagement · Développement",
 };
 
-export default function RootLayout({
-  children,
-  params,
-}: {
-  children: React.ReactNode;
-  params: any;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fr" className="scroll-smooth">
       <body className={geist.className}>

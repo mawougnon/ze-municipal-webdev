@@ -70,8 +70,9 @@ export default function LoginPage() {
       setError("Code ou mot de passe incorrect.");
       setLoading(false);
     } else {
-      // The TopLoader in layout.tsx will trigger during this redirect
-      window.location.href = "/admin";
+      // replace: the back button must not return to the login form
+      router.replace("/admin");
+      router.refresh();
     }
   }
 
@@ -223,7 +224,7 @@ export default function LoginPage() {
                   onClick={goBack}
                   className="w-full text-xs text-gray-400 underline underline-offset-2 transition hover:text-gray-600"
                 >
-                  ← Changer d'adresse email
+                  ← Changer d’adresse email
                 </button>
               </form>
             )}

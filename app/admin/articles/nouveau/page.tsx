@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import FileUpload from "@/components/FileUpload";
+import Image from "next/image";
 
 export default function NouvelArticlePage() {
   const router = useRouter();
@@ -98,11 +99,15 @@ export default function NouvelArticlePage() {
             </label>
             <FileUpload bucket="photos" onUpload={(url) => setCoverImageUrl(url)} />
             {coverImageUrl && (
-              <img
-                src={coverImageUrl}
-                alt="cover preview"
-                className="mt-3 h-48 w-full rounded-lg object-cover"
-              />
+              <div className="relative mt-3 h-48 w-full overflow-hidden rounded-lg">
+                <Image
+                  src={coverImageUrl}
+                  alt="Aperçu de la couverture"
+                  fill
+                  sizes="768px"
+                  className="object-cover"
+                />
+              </div>
             )}
           </div>
 

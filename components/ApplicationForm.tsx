@@ -164,8 +164,10 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
       }
 
       setSuccess(true);
-    } catch (err: any) {
-      setServerError(err.message || "Une erreur est survenue. Veuillez réessayer.");
+    } catch (err) {
+      setServerError(
+        err instanceof Error ? err.message : "Une erreur est survenue. Veuillez réessayer.",
+      );
     } finally {
       setLoading(false);
     }

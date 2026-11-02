@@ -369,15 +369,15 @@ export default async function HomePage() {
               Une commune riche de sa culture et de ses ressources
             </h2>
             <p className="mb-4 text-justify leading-relaxed text-gray-600">
-              Zè est reconnue pour ses cultures d'ananas, de manioc et d'huile de palme, témoins
-              d'une agriculture vibrante portée par sa jeunesse. La commune abrite également des
-              sites naturels et culturels d'exception : la <strong>forêt sacrée d'Assanmê</strong>,
+              Zè est reconnue pour ses cultures d’ananas, de manioc et d’huile de palme, témoins
+              d’une agriculture vibrante portée par sa jeunesse. La commune abrite également des
+              sites naturels et culturels d’exception : la <strong>forêt sacrée d’Assanmê</strong>,
               la <strong>forêt sacrée de Zannoudji</strong>, la <strong>forêt de Djigbé</strong>{" "}
-              gérée par l'ONAB, et le célèbre <strong>marché de bétail</strong>, véritable poumon
+              gérée par l’ONAB, et le célèbre <strong>marché de bétail</strong>, véritable poumon
               économique de la région.
             </p>
             <p className="mb-8 text-justify leading-relaxed text-gray-600">
-              La Mairie des Jeunes s'engage à valoriser ce patrimoine naturel, culturel et
+              La Mairie des Jeunes s’engage à valoriser ce patrimoine naturel, culturel et
               économique pour les générations futures, à travers des actions concrètes inscrites
               dans notre Plan de Travail Annuel.
             </p>

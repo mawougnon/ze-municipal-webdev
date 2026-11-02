@@ -23,7 +23,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
     }
 
     return NextResponse.json(article);
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "Erreur serveur." }, { status: 500 });
   }
 }
@@ -52,7 +52,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     revalidatePath("/");
 
     return NextResponse.json(article);
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "Échec de la mise à jour de l'article." }, { status: 500 });
   }
 }
@@ -79,7 +79,7 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
     revalidatePath("/");
 
     return NextResponse.json({ success: true, message: "Article deleted" });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "Article introuvable ou déjà supprimé." }, { status: 404 });
   }
 }

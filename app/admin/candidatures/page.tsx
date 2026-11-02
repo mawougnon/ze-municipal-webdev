@@ -39,7 +39,7 @@ export default async function CandidaturesPage({ searchParams }: Props) {
         {/* Filters */}
         <div className="mb-6 flex flex-wrap gap-4 rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
           <div>
-            <label className="mb-1 block text-xs font-medium text-gray-500">Type d'offre</label>
+            <label className="mb-1 block text-xs font-medium text-gray-500">Type d’offre</label>
             <div className="flex gap-2">
               {[
                 { label: "Toutes", value: "" },

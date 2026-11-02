@@ -89,7 +89,7 @@ export default function ModifierOpportunitePage({ params }: { params: Promise<{ 
   return (
     <main className="min-h-screen bg-gray-50 p-8">
       <div className="mx-auto max-w-3xl">
-        <h1 className="mb-8 text-2xl font-bold text-gray-800">Modifier l'offre</h1>
+        <h1 className="mb-8 text-2xl font-bold text-gray-800">Modifier l’offre</h1>
         <form onSubmit={handleUpdate} className="space-y-5 rounded-xl bg-white p-6 shadow-sm">
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700">Type</label>
@@ -99,7 +99,7 @@ export default function ModifierOpportunitePage({ params }: { params: Promise<{ 
               onChange={handleChange}
               className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
             >
-              <option value="JOB">Offre d'emploi</option>
+              <option value="JOB">Offre d’emploi</option>
               <option value="TRAINING">Formation</option>
             </select>
           </div>

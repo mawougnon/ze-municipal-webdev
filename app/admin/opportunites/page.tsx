@@ -13,7 +13,7 @@ export default async function OpportunitesPage() {
     <main className="min-h-screen bg-gray-50 p-8">
       <div className="mx-auto max-w-4xl">
         <div className="mb-8 flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-gray-800">Offres d'emploi & formations</h1>
+          <h1 className="text-2xl font-bold text-gray-800">Offres d’emploi & formations</h1>
           <Link
             href="/admin/opportunites/nouveau"
             className="rounded-lg bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-700"

@@ -1,5 +1,6 @@
 import { formatDate } from "@/lib/format";
 import { prisma } from "@/lib/prisma";
+import Image from "next/image";
 import Link from "next/link";
 
 export default async function ArticlesPublicPage() {
@@ -27,7 +28,15 @@ export default async function ArticlesPublicPage() {
               >
                 {/* Cover image on the card */}
                 {a.coverImageUrl ? (
-                  <img src={a.coverImageUrl} alt={a.title} className="h-48 w-full object-cover" />
+                  <div className="relative h-48 w-full">
+                    <Image
+                      src={a.coverImageUrl}
+                      alt={a.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                      className="object-cover"
+                    />
+                  </div>
                 ) : (
                   <div className="flex h-48 w-full items-center justify-center bg-green-50">
                     <span className="text-4xl text-green-200">📰</span>
@@ -55,7 +64,7 @@ export default async function ArticlesPublicPage() {
         )}
         <div className="mt-8">
           <Link href="/" className="text-sm text-gray-400 hover:text-gray-600">
-            ← Retour à l'accueil
+            ← Retour à l’accueil
           </Link>
         </div>
       </section>

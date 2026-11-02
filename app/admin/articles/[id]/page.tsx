@@ -5,6 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import FileUpload from "@/components/FileUpload";
+import Image from "next/image";
 
 export default function ArticleFormPage() {
   const router = useRouter();
@@ -107,7 +108,7 @@ export default function ArticleFormPage() {
     },
   ];
 
-  if (loading) return <div className="p-8 text-center">Chargement des données de l'article...</div>;
+  if (loading) return <div className="p-8 text-center">Chargement des données de l’article...</div>;
 
   return (
     <main className="min-h-screen bg-gray-50 p-8">
@@ -136,11 +137,15 @@ export default function ArticleFormPage() {
             </label>
             <FileUpload bucket="photos" onUpload={(url) => setCoverImageUrl(url)} />
             {coverImageUrl && (
-              <img
-                src={coverImageUrl}
-                alt="cover preview"
-                className="mt-3 h-48 w-full rounded-lg object-cover"
-              />
+              <div className="relative mt-3 h-48 w-full overflow-hidden rounded-lg">
+                <Image
+                  src={coverImageUrl}
+                  alt="Aperçu de la couverture"
+                  fill
+                  sizes="768px"
+                  className="object-cover"
+                />
+              </div>
             )}
           </div>
 

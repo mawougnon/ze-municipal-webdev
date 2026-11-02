@@ -18,16 +18,16 @@ export default async function OpportunitesPublicPage() {
   return (
     <main className="min-h-screen bg-white">
       <section className="bg-green-700 px-6 py-12 text-center text-white">
-        <h1 className="text-3xl font-bold">Offres d'emploi & Formations</h1>
+        <h1 className="text-3xl font-bold">Offres d’emploi & Formations</h1>
         <p className="mt-2 text-green-100">Opportunités disponibles pour la jeunesse de Zè</p>
       </section>
 
       <section className="mx-auto max-w-4xl space-y-12 px-6 py-12">
         {/* Jobs */}
         <div>
-          <h2 className="mb-6 text-xl font-bold text-gray-800">Offres d'emploi</h2>
+          <h2 className="mb-6 text-xl font-bold text-gray-800">Offres d’emploi</h2>
           {jobs.length === 0 ? (
-            <p className="text-gray-400">Aucune offre d'emploi disponible.</p>
+            <p className="text-gray-400">Aucune offre d’emploi disponible.</p>
           ) : (
             <div className="space-y-4">
               {jobs.map((o) => (
@@ -90,7 +90,7 @@ export default async function OpportunitesPublicPage() {
         </div>
 
         <Link href="/" className="inline-block text-sm text-gray-400 hover:text-gray-600">
-          ← Retour à l'accueil
+          ← Retour à l’accueil
         </Link>
       </section>
     </main>

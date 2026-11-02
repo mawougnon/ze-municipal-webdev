@@ -17,7 +17,7 @@ export default function Footer() {
             className="mb-3 object-contain"
           />
           <p className="text-sm text-green-200">Initiative · Engagement · Développement</p>
-          <p className="mt-1 text-sm text-green-300">Zè, Département de l'Atlantique, Bénin</p>
+          <p className="mt-1 text-sm text-green-300">Zè, Département de l’Atlantique, Bénin</p>
         </div>
 
         {/* Quick links */}

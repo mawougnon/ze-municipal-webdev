@@ -47,9 +47,9 @@ export default function PresentationPage() {
         <div className="mb-16 border-l-4 border-[#D4AF37] pl-8">
           <p className="text-lg leading-relaxed text-gray-700 italic">
             Bienvenue sur la plateforme officielle de la Mairie des Jeunes de la Commune de Zè,
-            représentation locale de l'Association Mairie des Jeunes du Bénin (AMJB), organisation
+            représentation locale de l’Association Mairie des Jeunes du Bénin (AMJB), organisation
             reconnue comme
-            <strong> une école d'apprentissage de la gestion du pouvoir public</strong>.
+            <strong> une école d’apprentissage de la gestion du pouvoir public</strong>.
           </p>
           <p className="mt-4 text-sm text-gray-500">
             Autorisation n°2021/029/PDO/SG/SAG/SA du 10 mai 2021
@@ -57,10 +57,10 @@ export default function PresentationPage() {
         </div>
 
         <p className="mb-6 leading-relaxed text-gray-600">
-          La Mairie des Jeunes de Zè s'inscrit dans une dynamique de formation, d'engagement citoyen
+          La Mairie des Jeunes de Zè s’inscrit dans une dynamique de formation, d’engagement citoyen
           et de participation active des jeunes au développement local. Dans le cadre du mandat
           2025-2030, le Bureau Exécutif Communal de Zè se positionne comme un acteur clé de
-          mobilisation, d'encadrement et de valorisation des initiatives portées par les jeunes au
+          mobilisation, d’encadrement et de valorisation des initiatives portées par les jeunes au
           sein de la commune.
         </p>
       </section>
@@ -94,7 +94,7 @@ export default function PresentationPage() {
             <h2 className="mb-6 font-serif text-3xl font-bold">Ce que nous voulons devenir</h2>
             <p className="leading-relaxed text-green-100">
               La Mairie des Jeunes de Zè ambitionne de devenir un cadre de référence en matière
-              d'engagement et de gouvernance participative des jeunes, contribuant efficacement à un
+              d’engagement et de gouvernance participative des jeunes, contribuant efficacement à un
               développement local inclusif, durable et porté par une jeunesse responsable et
               engagée.
             </p>
@@ -166,7 +166,7 @@ export default function PresentationPage() {
 
       <div className="pb-12 text-center">
         <Link href="/" className="text-sm text-gray-400 hover:text-gray-600">
-          ← Retour à l'accueil
+          ← Retour à l’accueil
         </Link>
       </div>
     </main>

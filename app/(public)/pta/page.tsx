@@ -81,7 +81,7 @@ export default async function PtaPublicPage() {
 
         <div className="mt-8">
           <Link href="/" className="text-sm text-gray-400 hover:text-gray-600">
-            ← Retour à l'accueil
+            ← Retour à l’accueil
           </Link>
         </div>
       </section>

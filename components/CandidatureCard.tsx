@@ -65,7 +65,7 @@ export default function CandidatureCard({ a }: { a: CandidatureWithOpportunity }
 
           {a.message && (
             <p className="mt-3 rounded-lg bg-gray-50 p-3 text-sm text-gray-600 italic">
-              "{a.message}"
+              « {a.message} »
             </p>
           )}
 

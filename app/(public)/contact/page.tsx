@@ -1,5 +1,3 @@
-import Link from "next/link";
-import Image from "next/image";
 import {
   FaWhatsapp,
   FaFacebook,
@@ -54,7 +52,7 @@ export default function ContactPage() {
               <FaMapMarkerAlt className="mt-1 text-xl text-green-700" />
               <div>
                 <p className="font-semibold text-gray-800">Adresse</p>
-                <p className="text-gray-600">Zè, Département de l'Atlantique, Bénin</p>
+                <p className="text-gray-600">Zè, Département de l’Atlantique, Bénin</p>
               </div>
             </div>
           </div>
