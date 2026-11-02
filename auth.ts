@@ -118,7 +118,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.role = (user as any).role;
+        token.role = user.role;
         return token;
       }
       // Read the account again on every request: a removed admin loses access at once
@@ -131,7 +131,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return token;
     },
     async session({ session, token }) {
-      if (session.user) (session.user as any).role = token.role;
+      session.user.role = token.role;
       return session;
     },
   },

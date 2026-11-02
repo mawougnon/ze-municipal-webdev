@@ -61,7 +61,7 @@ export default async function AdminPage() {
           </div>
           <div>
             <p className="text-sm font-semibold text-gray-800">{session?.user?.name}</p>
-            <p className="text-xs text-gray-400">{(session?.user as any)?.role}</p>
+            <p className="text-xs text-gray-400">{session.user.role}</p>
           </div>
         </div>
 
