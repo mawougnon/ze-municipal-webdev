@@ -1,8 +1,5 @@
 import type { NextConfig } from "next";
 
-// Next.js only needs eval in development (hot reload)
-const isDev = process.env.NODE_ENV !== "production";
-
 const nextConfig: NextConfig = {
   // Do not announce the framework in every response
   poweredByHeader: false,
@@ -16,6 +13,14 @@ const nextConfig: NextConfig = {
   },
   async headers() {
     return [
+      // Pages get a strict CSP with a nonce from proxy.ts. API answers are JSON and
+      // never need to load or run anything.
+      {
+        source: "/api/:path*",
+        headers: [
+          { key: "Content-Security-Policy", value: "default-src 'none'; frame-ancestors 'none'" },
+        ],
+      },
       {
         source: "/(.*)",
         headers: [
@@ -30,20 +35,6 @@ const nextConfig: NextConfig = {
           },
           // Controls referrer information
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-          // Content Security Policy. Fonts are self-hosted by next/font and only the
-          // server talks to Resend, so neither needs an outside origin here.
-          {
-            key: "Content-Security-Policy",
-            value: [
-              "default-src 'self'",
-              `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
-              "style-src 'self' 'unsafe-inline'",
-              "font-src 'self'",
-              "img-src 'self' data: blob: https://*.supabase.co",
-              "connect-src 'self' https://*.supabase.co",
-              "frame-ancestors 'none'",
-            ].join("; "),
-          },
           // Permissions policy
           {
             key: "Permissions-Policy",

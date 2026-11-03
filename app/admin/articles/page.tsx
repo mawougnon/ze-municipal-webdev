@@ -3,8 +3,6 @@ import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 
-export const dynamic = "force-dynamic";
-
 // Fetch articles directly on the server: no useEffect needed
 export default async function ArticlesPage() {
   await requireAdmin();

@@ -3,8 +3,6 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import PtaDocumentUpload from "@/components/PtaDocumentUpload";
 
-export const dynamic = "force-dynamic";
-
 export default async function PtaPage() {
   await requireAdmin();
 

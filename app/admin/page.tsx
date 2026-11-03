@@ -3,7 +3,6 @@ import { signOut } from "@/auth";
 import { requireAdmin } from "@/lib/admin";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-export const revalidate = 0;
 
 export default async function AdminPage() {
   const session = await requireAdmin();

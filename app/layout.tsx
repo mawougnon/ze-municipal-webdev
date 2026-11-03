@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { Geist } from "next/font/google";
 import "./globals.css";
 // Import the TopLoader component
@@ -11,7 +12,11 @@ export const metadata: Metadata = {
   description: "Initiative · Engagement · Développement",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  // Reading the request renders every page per request, which the CSP nonce requires:
+  // a page built in advance could not carry the nonce of the request being served.
+  await headers();
+
   return (
     <html lang="fr" className="scroll-smooth">
       <body className={geist.className}>

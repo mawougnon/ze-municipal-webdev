@@ -3,9 +3,6 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { openOffersWhere } from "@/lib/offers";
 
-// The list depends on the current date, so it cannot stay frozen until the next edit
-export const revalidate = 60;
-
 export default async function OpportunitesPublicPage() {
   const opportunities = await prisma.opportunity.findMany({
     where: openOffersWhere(),
