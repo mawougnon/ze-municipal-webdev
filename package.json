@@ -17,7 +17,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "db:migrate": "prisma migrate deploy",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "db:check-security": "node scripts/check-database-security.mjs"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
