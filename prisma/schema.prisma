@@ -14,7 +14,6 @@ model User {
   id            String   @id @default(cuid())
   name          String?
   email         String   @unique
-  password      String?
   otpHash       String?   // hache avec bcrypt, jamais le code en clair
   otpExpires    DateTime?
   otpAttempts   Int      @default(0) // garde-fou anti-force-brute

@@ -158,10 +158,20 @@ export default async function AdminPage() {
   );
 }
 
+// Login events written by lib/login.ts; older rows may still carry LOGIN_PASSWORD_* actions
+const LOG_LABELS: Record<string, { label: string; color: string }> = {
+  LOGIN_OTP_SENT: { label: "Code envoyé", color: "text-gray-500" },
+  LOGIN_OTP_SUCCESS: { label: "Connexion", color: "text-green-600" },
+  LOGIN_PASSWORD_SUCCESS: { label: "Connexion (ancien mot de passe)", color: "text-green-600" },
+  LOGIN_OTP_FAILED: { label: "Code incorrect", color: "text-red-500" },
+  LOGIN_PASSWORD_FAILED: { label: "Mot de passe incorrect", color: "text-red-500" },
+  LOGIN_OTP_LOCKED: { label: "Code bloqué après 5 essais", color: "text-red-600" },
+};
+
 async function AuditLogPreview() {
   const logs = await prisma.auditLog.findMany({
     orderBy: { createdAt: "desc" },
-    take: 5,
+    take: 10,
   });
 
   if (logs.length === 0) return null;
@@ -169,36 +179,30 @@ async function AuditLogPreview() {
   return (
     <div className="rounded-xl border border-gray-100 bg-white p-6 shadow-sm">
       <h3 className="mb-4 text-sm font-semibold tracking-widest text-gray-700 uppercase">
-        Dernières connexions
+        Journal de sécurité
       </h3>
       <div className="space-y-3">
-        {logs.map((log) => (
-          <div
-            key={log.id}
-            className="flex items-center justify-between border-b border-gray-50 pb-3 text-sm last:border-0 last:pb-0"
-          >
-            <span
-              className={`font-medium ${
-                log.action.includes("SUCCESS") ? "text-green-600" : "text-red-500"
-              }`}
+        {logs.map((log) => {
+          const entry = LOG_LABELS[log.action] ?? { label: log.action, color: "text-gray-500" };
+          return (
+            <div
+              key={log.id}
+              className="grid grid-cols-1 gap-1 border-b border-gray-50 pb-3 text-sm last:border-0 last:pb-0 md:grid-cols-4 md:items-center"
             >
-              {log.action === "LOGIN_OTP_SUCCESS"
-                ? "✅ Connexion OTP"
-                : log.action === "LOGIN_PASSWORD_SUCCESS"
-                  ? "✅ Connexion mot de passe"
-                  : "❌ Tentative échouée"}
-            </span>
-            <span className="text-xs text-gray-400">{log.userEmail}</span>
-            <span className="text-xs text-gray-300">
-              {formatDate(log.createdAt, {
-                day: "numeric",
-                month: "short",
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
-            </span>
-          </div>
-        ))}
+              <span className={`font-medium ${entry.color}`}>{entry.label}</span>
+              <span className="text-xs text-gray-400">{log.userEmail}</span>
+              <span className="text-xs text-gray-400">{log.ipAddress ?? "IP inconnue"}</span>
+              <span className="text-xs text-gray-300 md:text-right">
+                {formatDate(log.createdAt, {
+                  day: "numeric",
+                  month: "short",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </span>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

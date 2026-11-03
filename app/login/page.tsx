@@ -4,21 +4,17 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-// Import the spinner icon
 import { Loader2 } from "lucide-react";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
-  const [password, setPassword] = useState("");
   const [step, setStep] = useState<1 | 2>(1);
-  const [usePassword, setUsePassword] = useState(false);
-  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
 
-  // Step 1: send OTP to email
+  // Step 1: ask for a code. The answer is the same whether or not the address has an account.
   async function handleSendOtp(e: React.FormEvent) {
     e.preventDefault();
     setError("");
@@ -31,15 +27,12 @@ export default function LoginPage() {
         body: JSON.stringify({ email }),
       });
 
-      const data = await res.json();
-
       if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
         setError(data.error ?? "Une erreur est survenue.");
-        setLoading(false); // Ensure loading stops on error
         return;
       }
 
-      setIsSuperAdmin(data.isSuperAdmin ?? false);
       setStep(2);
     } catch {
       setError("Impossible de contacter le serveur.");
@@ -48,26 +41,16 @@ export default function LoginPage() {
     }
   }
 
-  // Step 2: verify OTP or password
+  // Step 2: check the code
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     setError("");
     setLoading(true);
 
-    const credentials: Record<string, string> = { email };
-    if (usePassword) {
-      credentials.password = password;
-    } else {
-      credentials.otp = otp;
-    }
-
-    const result = await signIn("credentials", {
-      ...credentials,
-      redirect: false,
-    });
+    const result = await signIn("credentials", { email, otp, redirect: false });
 
     if (result?.error) {
-      setError("Code ou mot de passe incorrect.");
+      setError("Code incorrect ou expiré.");
       setLoading(false);
     } else {
       // replace: the back button must not return to the login form
@@ -79,10 +62,7 @@ export default function LoginPage() {
   function goBack() {
     setStep(1);
     setOtp("");
-    setPassword("");
     setError("");
-    setUsePassword(false);
-    setIsSuperAdmin(false);
   }
 
   return (
@@ -125,11 +105,16 @@ export default function LoginPage() {
             {step === 1 && (
               <form onSubmit={handleSendOtp} className="space-y-5">
                 <div>
-                  <label className="mb-1.5 block text-xs tracking-widest text-gray-400 uppercase">
+                  <label
+                    htmlFor="email"
+                    className="mb-1.5 block text-xs tracking-widest text-gray-400 uppercase"
+                  >
                     Adresse email
                   </label>
                   <input
+                    id="email"
                     type="email"
+                    autoComplete="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="votre@email.com"
@@ -137,7 +122,6 @@ export default function LoginPage() {
                     className="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm text-gray-800 transition-colors placeholder:text-gray-300 focus:border-[#1a3a2a] focus:outline-none"
                   />
                 </div>
-                {/* Updated Button with Spinner */}
                 <button
                   type="submit"
                   disabled={loading}
@@ -152,63 +136,36 @@ export default function LoginPage() {
 
             {step === 2 && (
               <form onSubmit={handleLogin} className="space-y-5">
-                <p className="text-center text-xs text-gray-400">
-                  Code envoyé à <span className="font-semibold text-gray-700">{email}</span>
+                <p className="text-center text-xs text-gray-500">
+                  Si <span className="font-semibold text-gray-700">{email}</span> correspond à un
+                  compte, un code vient d’y être envoyé. Pensez à vérifier les courriers
+                  indésirables.
                 </p>
 
-                {!usePassword ? (
-                  <div>
-                    <label className="mb-1.5 block text-xs tracking-widest text-gray-400 uppercase">
-                      Code OTP à 6 chiffres
-                    </label>
-                    <input
-                      type="text"
-                      inputMode="numeric"
-                      value={otp}
-                      onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
-                      placeholder="000000"
-                      maxLength={6}
-                      required
-                      className="w-full rounded-lg border border-gray-200 px-4 py-4 text-center text-3xl font-bold tracking-[0.4em] text-[#1a3a2a] transition-colors placeholder:text-gray-200 focus:border-[#1a3a2a] focus:outline-none"
-                    />
-                    <p className="mt-2 text-center text-xs text-gray-400">
-                      Ce code expire dans 10 minutes.
-                    </p>
-                  </div>
-                ) : (
-                  <div>
-                    <label className="mb-1.5 block text-xs tracking-widest text-gray-400 uppercase">
-                      Mot de passe
-                    </label>
-                    <input
-                      type="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="••••••••"
-                      required
-                      className="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm text-gray-800 transition-colors focus:border-[#1a3a2a] focus:outline-none"
-                    />
-                  </div>
-                )}
-
-                {isSuperAdmin && (
-                  <label className="flex cursor-pointer items-center gap-2.5">
-                    <input
-                      type="checkbox"
-                      checked={usePassword}
-                      onChange={() => {
-                        setUsePassword((v) => !v);
-                        setError("");
-                      }}
-                      className="h-4 w-4 cursor-pointer accent-[#1a3a2a]"
-                    />
-                    <span className="text-xs text-gray-500">
-                      Utiliser mon mot de passe à la place
-                    </span>
+                <div>
+                  <label
+                    htmlFor="otp"
+                    className="mb-1.5 block text-xs tracking-widest text-gray-400 uppercase"
+                  >
+                    Code à 6 chiffres
                   </label>
-                )}
+                  <input
+                    id="otp"
+                    type="text"
+                    inputMode="numeric"
+                    autoComplete="one-time-code"
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
+                    placeholder="000000"
+                    maxLength={6}
+                    required
+                    className="w-full rounded-lg border border-gray-200 px-4 py-4 text-center text-3xl font-bold tracking-[0.4em] text-[#1a3a2a] transition-colors placeholder:text-gray-200 focus:border-[#1a3a2a] focus:outline-none"
+                  />
+                  <p className="mt-2 text-center text-xs text-gray-400">
+                    Ce code expire dans 10 minutes.
+                  </p>
+                </div>
 
-                {/* Updated Login Button with Spinner */}
                 <button
                   type="submit"
                   disabled={loading}
