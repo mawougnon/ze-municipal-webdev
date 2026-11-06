@@ -3,6 +3,7 @@ import { auth } from "@/auth";
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { offerSchema } from "@/lib/offers";
+import { logAdminAction } from "@/lib/audit";
 
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
@@ -14,7 +15,12 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     return NextResponse.json({ error: result.error.issues[0].message }, { status: 400 });
 
   try {
-    const opportunity = await prisma.opportunity.update({ where: { id }, data: result.data });
+    const opportunity = await prisma.$transaction(async (tx) => {
+      const updated = await tx.opportunity.update({ where: { id }, data: result.data });
+      const action = updated.published ? "OFFER_SAVED_ONLINE" : "OFFER_SAVED_DRAFT";
+      await logAdminAction(tx, session, req, action, updated.title);
+      return updated;
+    });
 
     revalidatePath("/opportunites");
     revalidatePath("/");
@@ -32,7 +38,10 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
   const { id } = await params;
 
   try {
-    await prisma.opportunity.delete({ where: { id } });
+    await prisma.$transaction(async (tx) => {
+      const deleted = await tx.opportunity.delete({ where: { id } });
+      await logAdminAction(tx, session, req, "OFFER_DELETED", deleted.title);
+    });
 
     // 3. Mise à jour du cache après suppression
     revalidatePath("/opportunites");

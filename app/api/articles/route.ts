@@ -3,6 +3,7 @@ import { auth } from "@/auth";
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { articleSchema } from "@/lib/articles";
+import { logAdminAction } from "@/lib/audit";
 
 // GET /api/articles: fetch all articles
 export async function GET() {
@@ -25,7 +26,12 @@ export async function POST(req: Request) {
   if (!result.success)
     return NextResponse.json({ error: result.error.issues[0].message }, { status: 400 });
 
-  const article = await prisma.article.create({ data: result.data });
+  const article = await prisma.$transaction(async (tx) => {
+    const created = await tx.article.create({ data: result.data });
+    const action = created.published ? "ARTICLE_SAVED_ONLINE" : "ARTICLE_SAVED_DRAFT";
+    await logAdminAction(tx, session, req, action, created.title);
+    return created;
+  });
 
   revalidatePath("/articles");
   revalidatePath("/"); //

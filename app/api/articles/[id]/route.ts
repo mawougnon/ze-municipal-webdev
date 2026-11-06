@@ -3,6 +3,7 @@ import { auth } from "@/auth";
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { articleSchema } from "@/lib/articles";
+import { logAdminAction } from "@/lib/audit";
 
 /**
  * GET /api/articles/:id
@@ -45,7 +46,12 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
 
   try {
     const { id } = await params;
-    const article = await prisma.article.update({ where: { id }, data: result.data });
+    const article = await prisma.$transaction(async (tx) => {
+      const updated = await tx.article.update({ where: { id }, data: result.data });
+      const action = updated.published ? "ARTICLE_SAVED_ONLINE" : "ARTICLE_SAVED_DRAFT";
+      await logAdminAction(tx, session, req, action, updated.title);
+      return updated;
+    });
 
     revalidatePath("/articles");
     revalidatePath(`/articles/${id}`);
@@ -71,8 +77,9 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
   try {
     const { id } = await params;
 
-    await prisma.article.delete({
-      where: { id },
+    await prisma.$transaction(async (tx) => {
+      const deleted = await tx.article.delete({ where: { id } });
+      await logAdminAction(tx, session, req, "ARTICLE_DELETED", deleted.title);
     });
 
     revalidatePath("/articles");

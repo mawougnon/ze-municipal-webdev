@@ -98,7 +98,8 @@ model PtaDocument {
 // Security audit log: tracks login attempts and admin actions
 model AuditLog {
   id        String   @id @default(cuid())
-  action    String   // e.g. "LOGIN_SUCCESS", "LOGIN_FAILED", "ARTICLE_DELETED"
+  action    String   // e.g. "LOGIN_OTP_SUCCESS", "ARTICLE_DELETED"
+  target    String?  // what the action applied to
   userEmail String
   ipAddress String?
   createdAt DateTime @default(now())
