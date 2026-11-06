@@ -1,18 +1,20 @@
-import { formatDate } from "@/lib/format";
 import { signOut } from "@/auth";
 import { requireAdmin } from "@/lib/admin";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { ROLE_LABELS } from "@/lib/accounts";
 
 export default async function AdminPage() {
   const session = await requireAdmin();
 
-  const [articleCount, ptaCount, opportunityCount, applicationCount] = await Promise.all([
-    prisma.article.count(),
-    prisma.ptaActivity.count(),
-    prisma.opportunity.count(),
-    prisma.application.count(),
-  ]);
+  const [articleCount, ptaCount, opportunityCount, applicationCount, accountCount] =
+    await Promise.all([
+      prisma.article.count(),
+      prisma.ptaActivity.count(),
+      prisma.opportunity.count(),
+      prisma.application.count(),
+      prisma.user.count(),
+    ]);
 
   const publishedArticles = await prisma.article.count({ where: { published: true } });
   const completedPta = await prisma.ptaActivity.count({ where: { status: "COMPLETED" } });
@@ -48,6 +50,22 @@ export default async function AdminPage() {
       icon: "📨",
       stat: `${applicationCount} candidature(s)`,
     },
+    ...(session.user.role === "SUPERADMIN"
+      ? [
+          {
+            label: "Comptes",
+            href: "/admin/comptes",
+            icon: "👥",
+            stat: `${accountCount} compte(s)`,
+          },
+          {
+            label: "Journal d’activité",
+            href: "/admin/journal",
+            icon: "🔒",
+            stat: "Connexions et modifications",
+          },
+        ]
+      : []),
   ];
 
   return (
@@ -60,7 +78,9 @@ export default async function AdminPage() {
           </div>
           <div>
             <p className="text-sm font-semibold text-gray-800">{session?.user?.name}</p>
-            <p className="text-xs text-gray-400">{session.user.role}</p>
+            <p className="text-xs text-gray-400">
+              {session.user.role && ROLE_LABELS[session.user.role]}
+            </p>
           </div>
         </div>
 
@@ -127,7 +147,7 @@ export default async function AdminPage() {
         </div>
 
         {/* Navigation cards */}
-        <div className="mb-10 grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {sections.map((s) => (
             <Link
               key={s.href}
@@ -149,60 +169,7 @@ export default async function AdminPage() {
             </Link>
           ))}
         </div>
-
-        {/* Audit log preview */}
-        <AuditLogPreview />
       </div>
     </main>
-  );
-}
-
-// Login events written by lib/login.ts; older rows may still carry LOGIN_PASSWORD_* actions
-const LOG_LABELS: Record<string, { label: string; color: string }> = {
-  LOGIN_OTP_SENT: { label: "Code envoyé", color: "text-gray-500" },
-  LOGIN_OTP_SUCCESS: { label: "Connexion", color: "text-green-600" },
-  LOGIN_PASSWORD_SUCCESS: { label: "Connexion (ancien mot de passe)", color: "text-green-600" },
-  LOGIN_OTP_FAILED: { label: "Code incorrect", color: "text-red-500" },
-  LOGIN_PASSWORD_FAILED: { label: "Mot de passe incorrect", color: "text-red-500" },
-  LOGIN_OTP_LOCKED: { label: "Code bloqué après 5 essais", color: "text-red-600" },
-};
-
-async function AuditLogPreview() {
-  const logs = await prisma.auditLog.findMany({
-    orderBy: { createdAt: "desc" },
-    take: 10,
-  });
-
-  if (logs.length === 0) return null;
-
-  return (
-    <div className="rounded-xl border border-gray-100 bg-white p-6 shadow-sm">
-      <h3 className="mb-4 text-sm font-semibold tracking-widest text-gray-700 uppercase">
-        Journal de sécurité
-      </h3>
-      <div className="space-y-3">
-        {logs.map((log) => {
-          const entry = LOG_LABELS[log.action] ?? { label: log.action, color: "text-gray-500" };
-          return (
-            <div
-              key={log.id}
-              className="grid grid-cols-1 gap-1 border-b border-gray-50 pb-3 text-sm last:border-0 last:pb-0 md:grid-cols-4 md:items-center"
-            >
-              <span className={`font-medium ${entry.color}`}>{entry.label}</span>
-              <span className="text-xs text-gray-400">{log.userEmail}</span>
-              <span className="text-xs text-gray-400">{log.ipAddress ?? "IP inconnue"}</span>
-              <span className="text-xs text-gray-300 md:text-right">
-                {formatDate(log.createdAt, {
-                  day: "numeric",
-                  month: "short",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </span>
-            </div>
-          );
-        })}
-      </div>
-    </div>
   );
 }
