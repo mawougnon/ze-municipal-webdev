@@ -107,7 +107,7 @@ export default function LoginPage() {
                 <div>
                   <label
                     htmlFor="email"
-                    className="mb-1.5 block text-xs tracking-widest text-gray-400 uppercase"
+                    className="mb-1.5 block text-xs tracking-widest text-gray-500 uppercase"
                   >
                     Adresse email
                   </label>
@@ -145,7 +145,7 @@ export default function LoginPage() {
                 <div>
                   <label
                     htmlFor="otp"
-                    className="mb-1.5 block text-xs tracking-widest text-gray-400 uppercase"
+                    className="mb-1.5 block text-xs tracking-widest text-gray-500 uppercase"
                   >
                     Code à 6 chiffres
                   </label>
@@ -161,7 +161,7 @@ export default function LoginPage() {
                     required
                     className="w-full rounded-lg border border-gray-200 px-4 py-4 text-center text-3xl font-bold tracking-[0.4em] text-[#1a3a2a] transition-colors placeholder:text-gray-200 focus:border-[#1a3a2a] focus:outline-none"
                   />
-                  <p className="mt-2 text-center text-xs text-gray-400">
+                  <p className="mt-2 text-center text-xs text-gray-500">
                     Ce code expire dans 10 minutes.
                   </p>
                 </div>
@@ -179,7 +179,7 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={goBack}
-                  className="w-full text-xs text-gray-400 underline underline-offset-2 transition hover:text-gray-600"
+                  className="w-full text-xs text-gray-500 underline underline-offset-2 transition hover:text-gray-600"
                 >
                   ← Changer d’adresse email
                 </button>
@@ -188,7 +188,7 @@ export default function LoginPage() {
           </div>
 
           <div className="border-t border-gray-100 bg-gray-50 px-8 py-4 text-center">
-            <p className="text-xs text-gray-300">
+            <p className="text-xs text-gray-500">
               Accès réservé aux membres autorisés de la Mairie des Jeunes de Zè
             </p>
           </div>
