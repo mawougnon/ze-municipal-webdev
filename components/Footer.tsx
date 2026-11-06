@@ -22,7 +22,7 @@ export default function Footer() {
 
         {/* Quick links */}
         <div>
-          <h3 className="mb-3 font-semibold text-white">Navigation</h3>
+          <h2 className="mb-3 font-semibold text-white">Navigation</h2>
           <ul className="space-y-2 text-sm">
             {[
               { label: "Actualités", href: "/articles" },
@@ -42,7 +42,7 @@ export default function Footer() {
 
         {/* AMJB logo */}
         <div className="flex flex-col items-start">
-          <h3 className="mb-3 font-semibold text-white">Membre de</h3>
+          <h2 className="mb-3 font-semibold text-white">Membre de</h2>
           <Image
             src="/logo-association-mj-benin.jpg"
             alt="Association Mairie des Jeunes du Bénin"

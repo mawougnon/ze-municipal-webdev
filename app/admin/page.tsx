@@ -78,7 +78,7 @@ export default async function AdminPage() {
           </div>
           <div>
             <p className="text-sm font-semibold text-gray-800">{session?.user?.name}</p>
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-gray-500">
               {session.user.role && ROLE_LABELS[session.user.role]}
             </p>
           </div>
@@ -91,7 +91,7 @@ export default async function AdminPage() {
           <form action={handleSignOut}>
             <button
               type="submit"
-              className="rounded-lg border border-red-200 px-4 py-2 text-xs text-red-500 transition hover:border-red-400 hover:text-red-700"
+              className="rounded-lg border border-red-200 px-4 py-2 text-xs text-red-700 transition hover:border-red-400 hover:text-red-900"
             >
               Se déconnecter
             </button>
@@ -108,7 +108,7 @@ export default async function AdminPage() {
           <h1 className="font-serif text-3xl font-bold text-gray-900">
             Bonjour, {session?.user?.name} 👋
           </h1>
-          <p className="mt-1 text-sm text-gray-400">
+          <p className="mt-1 text-sm text-gray-500">
             Mairie des Jeunes de Zè · Espace Administration
           </p>
         </div>
@@ -141,7 +141,7 @@ export default async function AdminPage() {
               className={`${s.bg} rounded-xl border border-gray-100 p-5 text-center`}
             >
               <p className={`text-3xl font-bold ${s.color}`}>{s.value}</p>
-              <p className="mt-1 text-xs tracking-wide text-gray-500 uppercase">{s.label}</p>
+              <p className="mt-1 text-xs tracking-wide text-gray-700 uppercase">{s.label}</p>
             </div>
           ))}
         </div>
@@ -160,9 +160,9 @@ export default async function AdminPage() {
                   <h3 className="font-semibold text-gray-800 transition group-hover:text-green-700">
                     {s.label}
                   </h3>
-                  <p className="mt-1 text-sm text-gray-400">{s.stat}</p>
+                  <p className="mt-1 text-sm text-gray-500">{s.stat}</p>
                 </div>
-                <span className="text-xl text-gray-300 transition group-hover:text-green-600">
+                <span className="text-xl text-gray-500 transition group-hover:text-green-600">
                   →
                 </span>
               </div>

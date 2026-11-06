@@ -109,7 +109,7 @@ export default function FileUpload({
           className="block w-full cursor-pointer text-sm text-gray-500 file:mr-4 file:rounded-lg file:border-0 file:bg-green-50 file:px-4 file:py-2 file:text-green-700 hover:file:bg-green-100"
         />
       </label>
-      {uploading && <p className="mt-1 text-sm text-gray-400">Envoi en cours...</p>}
+      {uploading && <p className="mt-1 text-sm text-gray-500">Envoi en cours...</p>}
       {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
     </div>
   );

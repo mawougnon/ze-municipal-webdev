@@ -35,6 +35,7 @@ export default function ArticleForm({ id, initial }: Props) {
     extensions: [StarterKit],
     content: initial.content,
     immediatelyRender: false,
+    editorProps: { attributes: { "aria-label": "Contenu de l’article" } },
   });
 
   async function send(url: string, method: string, body?: object) {

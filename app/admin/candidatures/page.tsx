@@ -95,7 +95,7 @@ export default async function CandidaturesPage({ searchParams }: Props) {
 
         {/* Applications list */}
         {applications.length === 0 ? (
-          <div className="rounded-xl bg-white p-8 text-center text-gray-400">
+          <div className="rounded-xl bg-white p-8 text-center text-gray-500">
             Aucune candidature pour le moment.
           </div>
         ) : (
@@ -107,7 +107,7 @@ export default async function CandidaturesPage({ searchParams }: Props) {
         )}
 
         <div className="mt-6">
-          <Link href="/admin" className="text-sm text-gray-400 hover:text-gray-600">
+          <Link href="/admin" className="text-sm text-gray-500 hover:text-gray-600">
             ← Retour au tableau de bord
           </Link>
         </div>

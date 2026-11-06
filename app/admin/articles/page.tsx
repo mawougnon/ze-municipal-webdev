@@ -28,7 +28,7 @@ export default async function ArticlesPage() {
 
         {/* Articles list */}
         {articles.length === 0 ? (
-          <div className="rounded-xl bg-white p-8 text-center text-gray-400">
+          <div className="rounded-xl bg-white p-8 text-center text-gray-500">
             Aucun article pour le moment.
           </div>
         ) : (
@@ -41,7 +41,7 @@ export default async function ArticlesPage() {
                 <div>
                   <h2 className="font-semibold text-gray-800">{article.title}</h2>
                   <div className="mt-1 flex items-center gap-3">
-                    <span className="text-sm text-gray-400">{formatDate(article.createdAt)}</span>
+                    <span className="text-sm text-gray-500">{formatDate(article.createdAt)}</span>
                     {/* Publication status badge */}
                     <span
                       className={`rounded-full px-2 py-0.5 text-xs ${
@@ -68,7 +68,7 @@ export default async function ArticlesPage() {
 
         {/* Back to dashboard */}
         <div className="mt-6">
-          <Link href="/admin" className="text-sm text-gray-400 hover:text-gray-600">
+          <Link href="/admin" className="text-sm text-gray-500 hover:text-gray-600">
             ← Retour au tableau de bord
           </Link>
         </div>

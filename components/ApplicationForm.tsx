@@ -170,7 +170,7 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
           </p>
         )}
 
-        <p className="mt-3 text-sm text-gray-400">Merci de votre intérêt pour cette opportunité.</p>
+        <p className="mt-3 text-sm text-gray-500">Merci de votre intérêt pour cette opportunité.</p>
       </div>
     );
   }
@@ -194,13 +194,14 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
           </p>
           <input
             type="file"
+            aria-label="Choisir les documents à joindre"
             multiple
             accept="application/pdf,.pdf"
             onChange={handleFileUpload}
             disabled={uploading}
             className="block w-full cursor-pointer text-sm text-gray-500 file:mr-4 file:rounded-lg file:border-0 file:bg-green-50 file:px-4 file:py-2 file:text-green-700 hover:file:bg-green-100"
           />
-          {uploading && <p className="mt-2 text-sm text-gray-400">Envoi en cours...</p>}
+          {uploading && <p className="mt-2 text-sm text-gray-500">Envoi en cours...</p>}
           {cvFiles.map((_, i) => (
             <p key={i} className="mt-1 text-sm text-green-600">
               ✅ Fichier {i + 1} uploadé
@@ -220,11 +221,15 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
       <form onSubmit={handleSubmit} className="space-y-5" noValidate>
         {/* Full name: letters only */}
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="application-fullName"
+            className="mb-1 block text-sm font-medium text-gray-700"
+          >
             Nom complet <span className="text-red-500">*</span>
           </label>
           <input
             type="text"
+            id="application-fullName"
             name="fullName"
             required
             onChange={handleChange}
@@ -236,11 +241,15 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
 
         {/* WhatsApp: Benin format */}
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="application-phone"
+            className="mb-1 block text-sm font-medium text-gray-700"
+          >
             Numéro WhatsApp <span className="text-red-500">*</span>
           </label>
           <input
             type="tel"
+            id="application-phone"
             name="phone"
             required
             onChange={handleChange}
@@ -253,11 +262,15 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
 
         {/* Email: optional */}
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="application-email"
+            className="mb-1 block text-sm font-medium text-gray-700"
+          >
             Adresse email (optionnel)
           </label>
           <input
             type="email"
+            id="application-email"
             name="email"
             onChange={handleChange}
             onBlur={handleBlur}
@@ -268,10 +281,14 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
 
         {/* Message: optional */}
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="application-message"
+            className="mb-1 block text-sm font-medium text-gray-700"
+          >
             Message de motivation (optionnel)
           </label>
           <textarea
+            id="application-message"
             name="message"
             rows={3}
             onChange={handleChange}

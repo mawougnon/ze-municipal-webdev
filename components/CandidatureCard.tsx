@@ -88,7 +88,7 @@ export default function CandidatureCard({ a }: { a: CandidatureWithOpportunity }
         </div>
 
         <div className="flex shrink-0 flex-col items-end gap-2">
-          <span className="text-xs text-gray-400">
+          <span className="text-xs text-gray-500">
             {formatDate(a.createdAt, {
               day: "numeric",
               month: "long",
