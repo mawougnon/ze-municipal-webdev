@@ -1,3 +1,6 @@
+// The cover plus these make the 10 photos an article can show
+export const MAX_GALLERY_PHOTOS = 9;
+
 // The name of a file stored directly in one of the project's public buckets, read from its
 // public URL. Anything else (outside domain, other bucket, sub folder, "..") gives null.
 export function projectFileName(url: string, bucket: "photos" | "documents") {

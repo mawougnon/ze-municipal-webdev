@@ -16,7 +16,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
 
     const article = await prisma.article.findUnique({
       where: { id },
-      include: { photos: true },
+      include: { photos: { orderBy: { position: "asc" } } },
     });
 
     // A draft is reported as missing unless an admin is logged in
@@ -48,15 +48,30 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
   try {
     const { id } = await params;
     const { article, previous } = await prisma.$transaction(async (tx) => {
-      const previous = await tx.article.findUniqueOrThrow({ where: { id } });
-      const updated = await tx.article.update({ where: { id }, data: result.data });
+      const previous = await tx.article.findUniqueOrThrow({
+        where: { id },
+        include: { photos: true },
+      });
+      const { photos, ...fields } = result.data;
+      const updated = await tx.article.update({
+        where: { id },
+        data: {
+          ...fields,
+          photos: {
+            deleteMany: {},
+            create: photos.map((url, position) => ({ url, position })),
+          },
+        },
+      });
       const action = updated.published ? "ARTICLE_SAVED_ONLINE" : "ARTICLE_SAVED_DRAFT";
       await logAdminAction(tx, session, req, action, updated.title);
       return { article: updated, previous };
     });
-    if (previous.coverImageUrl !== article.coverImageUrl) {
-      await removePublicFile("photos", previous.coverImageUrl);
-    }
+    const kept = new Set([article.coverImageUrl, ...result.data.photos]);
+    const before = [previous.coverImageUrl, ...previous.photos.map((p) => p.url)];
+    await Promise.all(
+      before.filter((url) => !kept.has(url)).map((url) => removePublicFile("photos", url)),
+    );
 
     revalidatePath("/articles");
     revalidatePath(`/articles/${id}`);
@@ -83,11 +98,12 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
     const { id } = await params;
 
     const deleted = await prisma.$transaction(async (tx) => {
-      const article = await tx.article.delete({ where: { id } });
+      const article = await tx.article.delete({ where: { id }, include: { photos: true } });
       await logAdminAction(tx, session, req, "ARTICLE_DELETED", article.title);
       return article;
     });
-    await removePublicFile("photos", deleted.coverImageUrl);
+    const files = [deleted.coverImageUrl, ...deleted.photos.map((p) => p.url)];
+    await Promise.all(files.map((url) => removePublicFile("photos", url)));
 
     revalidatePath("/articles");
     revalidatePath("/");

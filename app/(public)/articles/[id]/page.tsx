@@ -1,6 +1,7 @@
 import { formatDate } from "@/lib/format";
 import { cleanArticleHtml } from "@/lib/articles";
 import { prisma } from "@/lib/prisma";
+import ArticleGallery from "@/components/ArticleGallery";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -9,7 +10,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
   const { id } = await params;
   const article = await prisma.article.findUnique({
     where: { id, published: true },
-    include: { photos: true },
+    include: { photos: { orderBy: { position: "asc" } } },
   });
 
   if (!article) notFound();
@@ -31,15 +32,15 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
           {article.title}
         </h1>
 
-        {/* Cover image: shown if available */}
+        {/* Cover image: shown whole, whatever its shape */}
         {article.coverImageUrl && (
-          <div className="relative mb-8 h-72 w-full overflow-hidden rounded-xl">
+          <div className="relative mb-8 aspect-[3/2] w-full overflow-hidden rounded-xl bg-gray-100">
             <Image
               src={article.coverImageUrl}
               alt={article.title}
               fill
               sizes="(max-width: 768px) 100vw, 768px"
-              className="object-cover"
+              className="object-contain"
               preload
             />
           </div>
@@ -51,21 +52,8 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
           dangerouslySetInnerHTML={{ __html: cleanArticleHtml(article.content) }}
         />
 
-        {/* Additional photos */}
         {article.photos.length > 0 && (
-          <div className="mt-10 grid grid-cols-2 gap-4">
-            {article.photos.map((p) => (
-              <div key={p.id} className="relative h-48 w-full overflow-hidden rounded-xl">
-                <Image
-                  src={p.url}
-                  alt=""
-                  fill
-                  sizes="(max-width: 768px) 50vw, 384px"
-                  className="object-cover"
-                />
-              </div>
-            ))}
-          </div>
+          <ArticleGallery photos={article.photos.map((p) => p.url)} title={article.title} />
         )}
 
         <div className="mt-10 border-t border-gray-100 pt-6">

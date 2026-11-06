@@ -40,6 +40,20 @@ describe("articleSchema", () => {
     expect(articleSchema.safeParse({ ...base, coverImageUrl: cover }).success).toBe(true);
   });
 
+  it("accepts 9 photos besides the cover, not 10", () => {
+    const photos = Array.from(
+      { length: 10 },
+      (_, i) => `https://project.supabase.co/storage/v1/object/public/photos/${i}.jpg`,
+    );
+    expect(articleSchema.safeParse({ ...base, photos: photos.slice(0, 9) }).success).toBe(true);
+    expect(articleSchema.safeParse({ ...base, photos }).success).toBe(false);
+  });
+
+  it("refuses a photo hosted anywhere else", () => {
+    const photos = ["https://tracker.example/pixel.gif"];
+    expect(articleSchema.safeParse({ ...base, photos }).success).toBe(false);
+  });
+
   it("refuses a cover hosted anywhere else", () => {
     expect(
       articleSchema.safeParse({ ...base, coverImageUrl: "https://tracker.example/pixel.gif" })

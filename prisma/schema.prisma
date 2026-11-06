@@ -44,6 +44,7 @@ model ArticlePhoto {
   url       String
   articleId String
   article   Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  position  Int     @default(0)
 
   @@index([articleId])
 }

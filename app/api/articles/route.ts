@@ -12,7 +12,7 @@ export async function GET() {
   const articles = await prisma.article.findMany({
     where: session ? undefined : { published: true },
     orderBy: { createdAt: "desc" },
-    include: { photos: true },
+    include: { photos: { orderBy: { position: "asc" } } },
   });
   return NextResponse.json(articles);
 }
@@ -27,7 +27,13 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: result.error.issues[0].message }, { status: 400 });
 
   const article = await prisma.$transaction(async (tx) => {
-    const created = await tx.article.create({ data: result.data });
+    const { photos, ...fields } = result.data;
+    const created = await tx.article.create({
+      data: {
+        ...fields,
+        photos: { create: photos.map((url, position) => ({ url, position })) },
+      },
+    });
     const action = created.published ? "ARTICLE_SAVED_ONLINE" : "ARTICLE_SAVED_DRAFT";
     await logAdminAction(tx, session, req, action, created.title);
     return created;

@@ -1,7 +1,7 @@
 import "server-only";
 import { z } from "zod";
 import sanitizeHtml from "sanitize-html";
-import { isProjectFile } from "@/lib/storage";
+import { isProjectFile, MAX_GALLERY_PHOTOS } from "@/lib/storage";
 
 // What an admin may send when creating or editing an article
 export const articleSchema = z.object({
@@ -11,6 +11,10 @@ export const articleSchema = z.object({
     .string()
     .refine((url) => url === "" || isProjectFile(url, "photos"), "Image de couverture invalide.")
     .nullish(),
+  photos: z
+    .array(z.string().refine((url) => isProjectFile(url, "photos"), "Photo invalide."))
+    .max(MAX_GALLERY_PHOTOS, "Un article compte 10 photos au plus, couverture comprise.")
+    .default([]),
   published: z.boolean().default(false),
 });
 
