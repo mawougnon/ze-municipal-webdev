@@ -1,5 +1,6 @@
 "use client";
 
+import PublishButtons, { wantsPublish } from "@/components/PublishButtons";
 import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 
@@ -46,6 +47,7 @@ export default function ModifierOpportunitePage({ params }: { params: Promise<{ 
 
   async function handleUpdate(e: React.FormEvent) {
     e.preventDefault();
+    const nextPublished = wantsPublish(e);
     setLoading(true);
     setError("");
     const res = await fetch(`/api/opportunites/${id}`, {
@@ -54,7 +56,7 @@ export default function ModifierOpportunitePage({ params }: { params: Promise<{ 
       body: JSON.stringify({
         ...form,
         isFree,
-        published,
+        published: nextPublished,
         price: isFree ? null : parseFloat(form.price),
         deadline: form.deadline ? new Date(form.deadline).toISOString() : null,
       }),
@@ -160,26 +162,10 @@ export default function ModifierOpportunitePage({ params }: { params: Promise<{ 
             </div>
           )}
 
-          <label className="flex w-fit cursor-pointer items-center gap-3">
-            <input
-              type="checkbox"
-              checked={published}
-              onChange={(e) => setPublished(e.target.checked)}
-              className="h-4 w-4 cursor-pointer"
-            />
-            <span className="text-sm text-gray-700">Publier cette offre</span>
-          </label>
-
           {error && <p className="text-sm text-red-500">{error}</p>}
 
-          <div className="flex gap-3 pt-2">
-            <button
-              type="submit"
-              disabled={loading}
-              className="rounded-lg bg-blue-600 px-6 py-2 text-white transition hover:bg-blue-700 disabled:opacity-50"
-            >
-              {loading ? "Enregistrement..." : "Enregistrer"}
-            </button>
+          <div className="flex flex-wrap gap-3 pt-2">
+            <PublishButtons isPublished={published} saving={loading} />
             <button
               type="button"
               onClick={handleDelete}

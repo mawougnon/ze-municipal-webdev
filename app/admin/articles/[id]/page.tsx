@@ -1,5 +1,6 @@
 "use client";
 
+import PublishButtons, { wantsPublish } from "@/components/PublishButtons";
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useEditor, EditorContent } from "@tiptap/react";
@@ -51,6 +52,7 @@ export default function ArticleFormPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    const nextPublished = wantsPublish(e);
     setIsSaving(true);
     setError("");
 
@@ -71,7 +73,7 @@ export default function ArticleFormPage() {
       const res = await fetch(url, {
         method: method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, content, coverImageUrl, published }),
+        body: JSON.stringify({ title, content, coverImageUrl, published: nextPublished }),
       });
 
       if (!res.ok) {
@@ -171,30 +173,9 @@ export default function ArticleFormPage() {
 
           {error && <p className="text-sm text-red-500">{error}</p>}
 
-          {/* Visibility Toggle */}
-          <label className="flex cursor-pointer items-center gap-3">
-            <input
-              type="checkbox"
-              checked={published}
-              onChange={(e) => setPublished(e.target.checked)}
-              className="h-4 w-4"
-            />
-            <span className="text-sm text-gray-700">Publier immédiatement</span>
-          </label>
-
           {/* Form Actions */}
           <div className="flex flex-wrap gap-3">
-            <button
-              type="submit"
-              disabled={isSaving}
-              className="rounded-lg bg-blue-600 px-6 py-2 text-white hover:bg-blue-700 disabled:opacity-50"
-            >
-              {isSaving
-                ? "Enregistrement..."
-                : published
-                  ? "Publier"
-                  : "Enregistrer comme brouillon"}
-            </button>
+            <PublishButtons isPublished={published} saving={isSaving} />
 
             {/* NOUVEAU : Bouton supprimer uniquement en mode édition */}
             {isEditing && (

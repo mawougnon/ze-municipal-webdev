@@ -1,5 +1,6 @@
 "use client";
 
+import PublishButtons, { wantsPublish } from "@/components/PublishButtons";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useEditor, EditorContent } from "@tiptap/react";
@@ -13,7 +14,6 @@ export default function NouvelArticlePage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [coverImageUrl, setCoverImageUrl] = useState("");
-  const [published, setPublished] = useState(false);
 
   const editor = useEditor({
     extensions: [StarterKit],
@@ -23,6 +23,7 @@ export default function NouvelArticlePage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    const published = wantsPublish(e);
     setLoading(true);
     setError("");
 
@@ -139,30 +140,9 @@ export default function NouvelArticlePage() {
           {/* Error message */}
           {error && <p className="text-sm text-red-500">{error}</p>}
 
-          {/* Publish toggle */}
-          <label className="flex cursor-pointer items-center gap-3">
-            <input
-              type="checkbox"
-              checked={published}
-              onChange={(e) => setPublished(e.target.checked)}
-              className="h-4 w-4"
-            />
-            <span className="text-sm text-gray-700">Publier immédiatement en ligne</span>
-          </label>
-
           {/* Actions */}
           <div className="flex flex-wrap gap-3">
-            <button
-              type="submit"
-              disabled={loading}
-              className="rounded-lg bg-blue-600 px-6 py-2 text-white transition hover:bg-blue-700 disabled:opacity-50"
-            >
-              {loading
-                ? "Enregistrement..."
-                : published
-                  ? "Publier"
-                  : "Enregistrer comme brouillon"}
-            </button>
+            <PublishButtons isPublished={false} saving={loading} />
             <button
               type="button"
               onClick={() => router.back()}

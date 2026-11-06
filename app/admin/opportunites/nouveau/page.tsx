@@ -1,5 +1,6 @@
 "use client";
 
+import PublishButtons, { wantsPublish } from "@/components/PublishButtons";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -7,7 +8,6 @@ export default function NouvelleOpportunitePage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [isFree, setIsFree] = useState(true);
-  const [published, setPublished] = useState(false);
   const [error, setError] = useState("");
   const [form, setForm] = useState({
     type: "JOB",
@@ -25,6 +25,7 @@ export default function NouvelleOpportunitePage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    const published = wantsPublish(e);
     setLoading(true);
     setError("");
     const res = await fetch("/api/opportunites", {
@@ -121,31 +122,9 @@ export default function NouvelleOpportunitePage() {
             </div>
           )}
 
-          <label className="flex w-fit cursor-pointer items-center gap-3">
-            <input
-              type="checkbox"
-              checked={published}
-              onChange={(e) => setPublished(e.target.checked)}
-              className="h-4 w-4 cursor-pointer"
-            />
-            <span className="text-sm text-gray-700 select-none">
-              Publier immédiatement en ligne
-            </span>
-          </label>
-
           {error && <p className="text-sm text-red-500">{error}</p>}
-          <div className="flex gap-3 pt-2">
-            <button
-              type="submit"
-              disabled={loading}
-              className="rounded-lg bg-blue-600 px-6 py-2 text-white transition hover:bg-blue-700 disabled:opacity-50"
-            >
-              {loading
-                ? "Enregistrement..."
-                : published
-                  ? "Publier"
-                  : "Enregistrer comme brouillon"}
-            </button>
+          <div className="flex flex-wrap gap-3 pt-2">
+            <PublishButtons isPublished={false} saving={loading} />
             <button
               type="button"
               onClick={() => router.back()}
