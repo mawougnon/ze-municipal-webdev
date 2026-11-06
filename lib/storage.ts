@@ -1,10 +1,20 @@
-// True for the public URL of a file stored directly in one of the project's buckets.
-// Anything else (outside domain, other bucket, sub folder, "..") is refused.
-export function isProjectFile(url: string, bucket: "photos" | "documents") {
+// The name of a file stored directly in one of the project's public buckets, read from its
+// public URL. Anything else (outside domain, other bucket, sub folder, "..") gives null.
+export function projectFileName(url: string, bucket: "photos" | "documents") {
   const base = (process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").replace(/\/+$/, "");
   const prefix = `${base}/storage/v1/object/public/${bucket}/`;
-  const name = url.slice(prefix.length);
-  return url.startsWith(prefix) && name.length > 0 && !name.includes("/") && !name.includes("..");
+  if (!url.startsWith(prefix)) return null;
+  try {
+    // Checked once decoded: %2F and %2e%2e are a slash and ".." as well
+    const name = decodeURIComponent(url.slice(prefix.length));
+    return name && !name.includes("/") && !name.includes("..") ? name : null;
+  } catch {
+    return null;
+  }
+}
+
+export function isProjectFile(url: string, bucket: "photos" | "documents") {
+  return projectFileName(url, bucket) !== null;
 }
 
 // Supabase only accepts plain ASCII object names: "Hounkpè CV.pdf" becomes "Hounkpe_CV.pdf".

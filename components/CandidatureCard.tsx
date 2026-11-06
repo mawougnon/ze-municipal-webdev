@@ -2,11 +2,12 @@
 
 import { formatDate } from "@/lib/format";
 import { useRouter } from "next/navigation";
-import { Application, Opportunity } from "@prisma/client";
+import { Application, ApplicationFile, Opportunity } from "@prisma/client";
 import { whatsappLink } from "@/lib/phone";
 
 type CandidatureWithOpportunity = Application & {
   opportunity: Pick<Opportunity, "title" | "type">;
+  files: ApplicationFile[];
 };
 
 export default function CandidatureCard({ a }: { a: CandidatureWithOpportunity }) {
@@ -69,12 +70,12 @@ export default function CandidatureCard({ a }: { a: CandidatureWithOpportunity }
             </p>
           )}
 
-          {a.cvUrl && (
+          {a.files.length > 0 && (
             <div className="mt-3 flex flex-wrap gap-2">
-              {a.cvUrl.split(" | ").map((url, i) => (
+              {a.files.map((file, i) => (
                 <a
-                  key={i}
-                  href={url}
+                  key={file.path}
+                  href={`/api/fichiers-candidature/${encodeURIComponent(file.path)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="rounded-lg border border-blue-100 px-3 py-1 text-sm text-blue-600 hover:underline"

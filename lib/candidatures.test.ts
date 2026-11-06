@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 import { candidatureSchema } from "@/lib/candidatures";
 
 const base = { opportunityId: "offre-1", fullName: "Jean Hounkpè", phone: "0197123456" };
-const DOCS = "https://project.supabase.co/storage/v1/object/public/documents/";
 
 describe("names", () => {
   it.each(["Jean Hounkpè", "Sèïgbénan Alphonse", "Agbɔ Ɖɛ́ka", "Jean-Marie Adjovi", "O’Neil Kossi"])(
@@ -37,16 +36,19 @@ describe("phone", () => {
 });
 
 describe("documents", () => {
-  it("accepts up to five PDF files from the project's bucket", () => {
-    const cvUrl = [1, 2, 3, 4, 5].map((i) => `${DOCS}cv-${i}.pdf`).join(" | ");
-    expect(candidatureSchema.safeParse({ ...base, cvUrl }).success).toBe(true);
+  const issued = (i: number) => `123e4567-e89b-12d3-a456-42661417400${i}.pdf`;
+
+  it("accepts up to five names issued by the server", () => {
+    const files = [1, 2, 3, 4, 5].map(issued);
+    expect(candidatureSchema.safeParse({ ...base, files }).success).toBe(true);
   });
 
   it.each([
-    ["an outside link", "https://evil.com/cv.pdf"],
-    ["a file that is not a PDF", `${DOCS}cv.docx`],
-    ["six files", [1, 2, 3, 4, 5, 6].map((i) => `${DOCS}cv-${i}.pdf`).join(" | ")],
-  ])("rejects %s", (_, cvUrl) => {
-    expect(candidatureSchema.safeParse({ ...base, cvUrl }).success).toBe(false);
+    ["an outside link", ["https://evil.com/cv.pdf"]],
+    ["a path into another folder", ["../123e4567-e89b-12d3-a456-426614174000.pdf"]],
+    ["a file that is not a PDF", ["123e4567-e89b-12d3-a456-426614174000.docx"]],
+    ["six files", [1, 2, 3, 4, 5, 6].map(issued)],
+  ])("rejects %s", (_, files) => {
+    expect(candidatureSchema.safeParse({ ...base, files }).success).toBe(false);
   });
 });

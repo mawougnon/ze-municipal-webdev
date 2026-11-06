@@ -28,6 +28,8 @@ const LABELS: Record<string, { label: string; color: string }> = {
   DOCUMENT_SAVED_ONLINE: { label: "Document enregistré, en ligne", color: "text-gray-700" },
   DOCUMENT_SAVED_DRAFT: { label: "Document enregistré, brouillon", color: "text-gray-700" },
   DOCUMENT_DELETED: { label: "Document supprimé", color: "text-gray-700" },
+  APPLICATION_FILE_OPENED: { label: "Document de candidature ouvert", color: "text-gray-700" },
+  RETENTION_PURGE: { label: "Suppression automatique", color: "text-amber-700" },
   APPLICATION_DELETED: { label: "Candidature supprimée", color: "text-gray-700" },
 };
 

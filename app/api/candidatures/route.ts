@@ -7,22 +7,7 @@ import { candidatureSchema } from "@/lib/candidatures";
 const MAX_PER_PHONE_PER_HOUR = 3;
 const MAX_TOTAL_PER_HOUR = 100;
 
-// GET: Fetch applications (Protected)
-export async function GET() {
-  const { auth } = await import("@/auth");
-  const session = await auth();
-
-  if (!session) {
-    return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
-  }
-
-  const applications = await prisma.application.findMany({
-    orderBy: { createdAt: "desc" },
-    include: { opportunity: { select: { title: true, type: true } } },
-  });
-
-  return NextResponse.json(applications);
-}
+class UnknownFileError extends Error {}
 
 // POST: Submit a new application (Rate-limited)
 export async function POST(req: Request) {
@@ -69,19 +54,36 @@ export async function POST(req: Request) {
       );
     }
 
-    // D. Create Database Entry
-    const application = await prisma.application.create({
-      data: {
-        opportunityId: result.data.opportunityId,
-        fullName: result.data.fullName,
-        phone: result.data.phone,
-        email: result.data.email || null,
-        message: result.data.message || null,
-        cvUrl: result.data.cvUrl || null,
-      },
-    });
+    // D. Save the application and attach its documents. A document already attached, or
+    // never issued, cancels everything.
+    const { files } = result.data;
+    const attached = await prisma
+      .$transaction(async (tx) => {
+        const application = await tx.application.create({
+          data: {
+            opportunityId: result.data.opportunityId,
+            fullName: result.data.fullName,
+            phone: result.data.phone,
+            email: result.data.email || null,
+            message: result.data.message || null,
+          },
+        });
+        const { count } = await tx.applicationFile.updateMany({
+          where: { path: { in: files }, applicationId: null },
+          data: { applicationId: application.id },
+        });
+        if (count !== files.length) throw new UnknownFileError();
+        return true;
+      })
+      .catch((error) => {
+        if (error instanceof UnknownFileError) return false;
+        throw error;
+      });
 
-    return NextResponse.json(application, { status: 201 });
+    if (!attached) {
+      return NextResponse.json({ error: "Document invalide." }, { status: 400 });
+    }
+    return NextResponse.json({ success: true }, { status: 201 });
   } catch (error) {
     console.error("APPLICATION_POST_ERROR:", error);
     return NextResponse.json({ error: "Erreur serveur." }, { status: 500 });

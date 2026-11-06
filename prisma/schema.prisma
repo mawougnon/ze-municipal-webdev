@@ -71,7 +71,7 @@ model Application {
   email           String?
   phone           String      // WhatsApp-compatible number preferred
   message         String?
-  cvUrl           String?     // optional, mainly used for job offers
+  files           ApplicationFile[]
   createdAt       DateTime    @default(now())
 
   @@index([opportunityId])
@@ -103,5 +103,18 @@ model AuditLog {
   ipAddress String?
   createdAt DateTime @default(now())
 
+  @@index([createdAt])
+}
+
+// A document sent with an application, in the private bucket. Without application: the form
+// was not sent yet, or the application is gone. The daily purge deletes those after a day.
+model ApplicationFile {
+  path          String       @id
+  applicationId String?
+  application   Application? @relation(fields: [applicationId], references: [id], onDelete: SetNull)
+  ipAddress     String?
+  createdAt     DateTime     @default(now())
+
+  @@index([applicationId])
   @@index([createdAt])
 }

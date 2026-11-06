@@ -24,6 +24,20 @@ try {
     GROUP BY grantee, table_name`;
   for (const g of grants)
     problems.push(`table "${g.table_name}": ${g.grantee} can ${g.privileges}`);
+
+  // Skipped on plain PostgreSQL, which has no storage schema
+  const [{ storage }] =
+    await prisma.$queryRaw`SELECT to_regclass('storage.buckets')::text AS storage`;
+  if (storage) {
+    const storagePolicies = await prisma.$queryRaw`
+      SELECT policyname FROM pg_policies WHERE schemaname = 'storage' AND tablename = 'objects'`;
+    for (const p of storagePolicies) problems.push(`storage: unexpected policy "${p.policyname}"`);
+
+    const [applications] = await prisma.$queryRaw`
+      SELECT public FROM storage.buckets WHERE id = 'applications'`;
+    if (applications?.public !== false)
+      problems.push("storage: applications bucket is not private");
+  }
 } finally {
   await prisma.$disconnect();
 }
@@ -33,5 +47,5 @@ if (problems.length) {
   process.exit(1);
 }
 console.log(
-  "Database security check passed: every public table is closed to the Supabase API roles.",
+  "Database security check passed: tables and files are closed to the Supabase API roles.",
 );

@@ -1,6 +1,5 @@
 import { z } from "zod";
 import { BENIN_PHONE, normalizeBeninPhone } from "@/lib/phone";
-import { isProjectFile } from "@/lib/storage";
 
 // One schema for the form in the browser and for the API on the server,
 // so the two can never accept different data.
@@ -33,19 +32,11 @@ export const candidatureSchema = z.object({
     .max(1000, "Message trop long (1000 caractères au maximum).")
     .optional()
     .or(z.null()),
-  cvUrl: z
-    .string()
-    .optional()
-    .or(z.null())
-    .refine((val) => {
-      if (!val) return true;
-      const urls = val.split(" | ");
-      // Only files from the project's bucket: an applicant cannot plant an outside link
-      return (
-        urls.length <= 5 &&
-        urls.every((url) => isProjectFile(url, "documents") && /\.pdf$/i.test(url))
-      );
-    }, "Document invalide."),
+  // Names issued by the server: an applicant cannot point to anything else
+  files: z
+    .array(z.string().regex(/^[0-9a-f-]{36}\.pdf$/, "Document invalide."))
+    .max(5, "5 documents au maximum.")
+    .default([]),
 });
 
 // The fields the applicant types in the form

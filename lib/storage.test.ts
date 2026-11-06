@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { isProjectFile, safeFileName } from "@/lib/storage";
+import { isProjectFile, projectFileName, safeFileName } from "@/lib/storage";
 
 const DOCS = "https://project.supabase.co/storage/v1/object/public/documents/";
 
@@ -39,5 +39,15 @@ describe("safeFileName", () => {
       expect(clean).toMatch(/^[A-Za-z0-9._-]+$/);
       expect(isProjectFile(`${DOCS}cv-1-${clean}`, "documents")).toBe(true);
     }
+  });
+});
+
+describe("projectFileName", () => {
+  it("reads the real name of a file", () => {
+    expect(projectFileName(`${DOCS}PLAN%20ACTION.pdf`, "documents")).toBe("PLAN ACTION.pdf");
+  });
+
+  it.each(["a%2Fb.pdf", "%2e%2e%2fb.pdf", "%zz.pdf", ""])("refuses %s", (name) => {
+    expect(projectFileName(`${DOCS}${name}`, "documents")).toBeNull();
   });
 });

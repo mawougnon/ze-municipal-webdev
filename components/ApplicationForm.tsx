@@ -4,7 +4,6 @@ import { formatPrice } from "@/lib/format";
 import { useState } from "react";
 import type { z } from "zod";
 import { applicantSchema } from "@/lib/candidatures";
-import { safeFileName } from "@/lib/storage";
 
 interface Props {
   opportunityId: string;
@@ -52,7 +51,7 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
     if (!files.length) return;
 
     // Max 5 files, max 5MB each
-    if (files.length > 5) {
+    if (cvFiles.length + files.length > 5) {
       setServerError("Maximum 5 fichiers autorisés.");
       return;
     }
@@ -76,14 +75,15 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
     for (const file of files) {
       try {
         const { supabase } = await import("@/lib/supabase");
-        const filename = `cv-${Date.now()}-${safeFileName(file.name)}`;
+        const res = await fetch("/api/fichiers-candidature", { method: "POST" });
+        if (!res.ok) throw new Error();
+        const { path, token } = await res.json();
         const { error } = await supabase.storage
-          .from("documents")
-          .upload(filename, file, { upsert: false });
+          .from("applications")
+          .uploadToSignedUrl(path, token, file, { contentType: "application/pdf" });
 
         if (error) throw error;
-        const { data } = supabase.storage.from("documents").getPublicUrl(filename);
-        uploaded.push(data.publicUrl);
+        uploaded.push(path);
       } catch {
         failed.push(file.name);
       }
@@ -122,7 +122,7 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
         body: JSON.stringify({
           ...form,
           opportunityId,
-          cvUrl: cvFiles.length > 0 ? cvFiles.join(" | ") : null,
+          files: cvFiles,
         }),
       });
 
@@ -183,7 +183,8 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
       {wantsToUploadCV && (
         <div>
           <p className="mb-2 text-sm text-gray-500">
-            Format accepté : PDF uniquement (5 fichiers au maximum, 5 Mo chacun)
+            Format accepté : PDF uniquement (5 fichiers au maximum, 5 Mo chacun). Ils ne sont
+            visibles que par l’équipe de la mairie et supprimés au plus tard 6 mois après l’envoi.
           </p>
           <input
             type="file"

@@ -18,7 +18,7 @@ export default async function CandidaturesPage({ searchParams }: Props) {
       ...(opportunityId ? { opportunityId } : {}),
       ...(type ? { opportunity: { type } } : {}),
     },
-    include: { opportunity: { select: { title: true, type: true } } },
+    include: { files: true, opportunity: { select: { title: true, type: true } } },
   });
 
   const opportunities = await prisma.opportunity.findMany({
