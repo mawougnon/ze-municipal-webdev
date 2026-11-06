@@ -1,6 +1,7 @@
 import { beforeEach, expect, it, vi } from "vitest";
 
 const auth = vi.hoisted(() => vi.fn());
+const removePublicFile = vi.hoisted(() => vi.fn());
 const db = vi.hoisted(() => ({
   $transaction: vi.fn(),
   article: { delete: vi.fn() },
@@ -9,6 +10,7 @@ const db = vi.hoisted(() => ({
 vi.mock("@/auth", () => ({ auth }));
 vi.mock("@/lib/prisma", () => ({ prisma: db }));
 vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
+vi.mock("@/lib/supabase-admin", () => ({ removePublicFile }));
 
 const { DELETE } = await import("./route");
 const remove = () =>
@@ -23,13 +25,14 @@ beforeEach(() => {
 });
 
 it("records the title of a deleted article", async () => {
-  db.article.delete.mockResolvedValue({ title: "Rentrée citoyenne" });
+  db.article.delete.mockResolvedValue({ title: "Rentrée citoyenne", coverImageUrl: "cover" });
   expect((await remove()).status).toBe(200);
   expect(db.auditLog.create.mock.calls[0][0].data).toMatchObject({
     action: "ARTICLE_DELETED",
     target: "Rentrée citoyenne",
     userEmail: "admin@example.com",
   });
+  expect(removePublicFile).toHaveBeenCalledWith("photos", "cover");
 });
 
 it("writes nothing to the log when the deletion fails", async () => {

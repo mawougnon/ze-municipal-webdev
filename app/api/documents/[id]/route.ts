@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { logAdminAction } from "@/lib/audit";
 import { documentSchema } from "@/lib/documents";
 import { prisma } from "@/lib/prisma";
+import { removePublicFile } from "@/lib/supabase-admin";
 import { NextResponse } from "next/server";
 
 type Context = { params: Promise<{ id: string }> };
@@ -17,15 +18,19 @@ export async function PUT(req: Request, { params }: Context) {
   const { id } = await params;
   const { data } = result;
   try {
-    const document = await prisma.$transaction(async (tx) => {
+    const { document, previous } = await prisma.$transaction(async (tx) => {
+      const previous = await tx.document.findUniqueOrThrow({ where: { id } });
       if (data.featured && data.published) {
         await tx.document.updateMany({ where: { featured: true }, data: { featured: false } });
       }
       const updated = await tx.document.update({ where: { id }, data });
       const action = updated.published ? "DOCUMENT_SAVED_ONLINE" : "DOCUMENT_SAVED_DRAFT";
       await logAdminAction(tx, session, req, action, updated.title);
-      return updated;
+      return { document: updated, previous };
     });
+    if (previous.fileUrl !== document.fileUrl) {
+      await removePublicFile("documents", previous.fileUrl);
+    }
     return NextResponse.json(document);
   } catch {
     return NextResponse.json({ error: "Document introuvable." }, { status: 404 });
@@ -38,10 +43,12 @@ export async function DELETE(req: Request, { params }: Context) {
 
   const { id } = await params;
   try {
-    await prisma.$transaction(async (tx) => {
-      const deleted = await tx.document.delete({ where: { id } });
-      await logAdminAction(tx, session, req, "DOCUMENT_DELETED", deleted.title);
+    const deleted = await prisma.$transaction(async (tx) => {
+      const document = await tx.document.delete({ where: { id } });
+      await logAdminAction(tx, session, req, "DOCUMENT_DELETED", document.title);
+      return document;
     });
+    await removePublicFile("documents", deleted.fileUrl);
     return NextResponse.json({ success: true });
   } catch {
     return NextResponse.json({ error: "Document introuvable." }, { status: 404 });

@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { safeFileName } from "@/lib/storage";
 
 interface Props {
   bucket: "photos" | "documents";
@@ -62,10 +61,16 @@ export default function FileUpload({ bucket, onUpload, accept = "image/*" }: Pro
       return;
     }
 
-    const filename = `${Date.now()}-${safeFileName(file.name)}`;
-    const { error: uploadError } = await supabase.storage
-      .from(bucket)
-      .upload(filename, file, { upsert: false });
+    // The server decides who may upload and gives a one-time link
+    const res = await fetch("/api/uploads", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ bucket, fileName: file.name }),
+    }).catch(() => null);
+    const upload = res?.ok ? await res.json() : null;
+    const { error: uploadError } = upload
+      ? await supabase.storage.from(bucket).uploadToSignedUrl(upload.path, upload.token, file)
+      : { error: true };
 
     if (uploadError) {
       setError("L'envoi a échoué. Réessayez.");
@@ -73,7 +78,7 @@ export default function FileUpload({ bucket, onUpload, accept = "image/*" }: Pro
       return;
     }
 
-    const { data } = supabase.storage.from(bucket).getPublicUrl(filename);
+    const { data } = supabase.storage.from(bucket).getPublicUrl(upload.path);
     onUpload(data.publicUrl);
     setUploading(false);
   }

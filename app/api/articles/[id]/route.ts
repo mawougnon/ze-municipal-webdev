@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { articleSchema } from "@/lib/articles";
 import { logAdminAction } from "@/lib/audit";
+import { removePublicFile } from "@/lib/supabase-admin";
 
 /**
  * GET /api/articles/:id
@@ -46,12 +47,16 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
 
   try {
     const { id } = await params;
-    const article = await prisma.$transaction(async (tx) => {
+    const { article, previous } = await prisma.$transaction(async (tx) => {
+      const previous = await tx.article.findUniqueOrThrow({ where: { id } });
       const updated = await tx.article.update({ where: { id }, data: result.data });
       const action = updated.published ? "ARTICLE_SAVED_ONLINE" : "ARTICLE_SAVED_DRAFT";
       await logAdminAction(tx, session, req, action, updated.title);
-      return updated;
+      return { article: updated, previous };
     });
+    if (previous.coverImageUrl !== article.coverImageUrl) {
+      await removePublicFile("photos", previous.coverImageUrl);
+    }
 
     revalidatePath("/articles");
     revalidatePath(`/articles/${id}`);
@@ -77,10 +82,12 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
   try {
     const { id } = await params;
 
-    await prisma.$transaction(async (tx) => {
-      const deleted = await tx.article.delete({ where: { id } });
-      await logAdminAction(tx, session, req, "ARTICLE_DELETED", deleted.title);
+    const deleted = await prisma.$transaction(async (tx) => {
+      const article = await tx.article.delete({ where: { id } });
+      await logAdminAction(tx, session, req, "ARTICLE_DELETED", article.title);
+      return article;
     });
+    await removePublicFile("photos", deleted.coverImageUrl);
 
     revalidatePath("/articles");
     revalidatePath("/");
