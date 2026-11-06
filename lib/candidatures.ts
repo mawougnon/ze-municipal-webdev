@@ -32,6 +32,7 @@ export const candidatureSchema = z.object({
     .max(1000, "Message trop long (1000 caractères au maximum).")
     .optional()
     .or(z.null()),
+  consent: z.literal(true, { error: "Votre accord est nécessaire pour envoyer la candidature." }),
   // Names issued by the server: an applicant cannot point to anything else
   files: z
     .array(z.string().regex(/^[0-9a-f-]{36}\.pdf$/, "Document invalide."))

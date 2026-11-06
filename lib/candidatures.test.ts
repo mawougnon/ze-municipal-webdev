@@ -1,7 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { candidatureSchema } from "@/lib/candidatures";
 
-const base = { opportunityId: "offre-1", fullName: "Jean Hounkpè", phone: "0197123456" };
+const base = {
+  opportunityId: "offre-1",
+  fullName: "Jean Hounkpè",
+  phone: "0197123456",
+  consent: true,
+};
 
 describe("names", () => {
   it.each(["Jean Hounkpè", "Sèïgbénan Alphonse", "Agbɔ Ɖɛ́ka", "Jean-Marie Adjovi", "O’Neil Kossi"])(
@@ -32,6 +37,12 @@ describe("phone", () => {
     expect(candidatureSchema.parse({ ...base, phone: "+229 01 97 12 34 56" }).phone).toBe(
       "0197123456",
     );
+  });
+});
+
+describe("consent", () => {
+  it.each([[false], [undefined], ["true"]])("refuses %s", (consent) => {
+    expect(candidatureSchema.safeParse({ ...base, consent }).success).toBe(false);
   });
 });
 

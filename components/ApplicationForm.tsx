@@ -1,6 +1,7 @@
 "use client";
 
 import { formatPrice } from "@/lib/format";
+import Link from "next/link";
 import { useState } from "react";
 import type { z } from "zod";
 import { applicantSchema } from "@/lib/candidatures";
@@ -22,6 +23,8 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
     message: "",
   });
   const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
+  const [consent, setConsent] = useState(false);
+  const [consentError, setConsentError] = useState("");
   const [wantsToUploadCV, setWantsToUploadCV] = useState(false);
   const [cvFiles, setCvFiles] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -101,6 +104,7 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
     e.preventDefault();
     setServerError("");
 
+    setConsentError(consent ? "" : "Votre accord est nécessaire pour envoyer la candidature.");
     const result = applicantSchema.safeParse(form);
     if (!result.success) {
       const fieldErrors = result.error.flatten().fieldErrors;
@@ -112,6 +116,7 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
       });
       return;
     }
+    if (!consent) return;
 
     setLoading(true);
 
@@ -123,6 +128,7 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
           ...form,
           opportunityId,
           files: cvFiles,
+          consent,
         }),
       });
 
@@ -280,6 +286,30 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
           uploadSection("Je souhaite joindre des documents (CV, lettre de motivation...)")}
         {type === "TRAINING" &&
           uploadSection("Je souhaite joindre des documents (attestations, diplômes...)")}
+
+        {/* A separate statement, never ticked in advance */}
+        <div>
+          <label className="flex items-start gap-3 text-sm text-gray-700">
+            <input
+              type="checkbox"
+              checked={consent}
+              onChange={(e) => {
+                setConsent(e.target.checked);
+                setConsentError("");
+              }}
+              className="mt-0.5 h-4 w-4 shrink-0"
+            />
+            <span>
+              J’accepte que ma candidature et mes documents soient conservés hors du Bénin, sur des
+              serveurs en Irlande, pendant 6 mois au plus. Je peux retirer cet accord à tout moment.{" "}
+              <Link href="/confidentialite" target="_blank" className="text-green-800 underline">
+                Politique de confidentialité
+              </Link>{" "}
+              <span className="text-red-500">*</span>
+            </span>
+          </label>
+          {consentError && <p className="mt-1 text-xs text-red-500">{consentError}</p>}
+        </div>
 
         {serverError && <p className="text-sm text-red-500">{serverError}</p>}
 

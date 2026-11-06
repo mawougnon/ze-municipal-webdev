@@ -103,8 +103,16 @@ export default function Footer() {
         </a>
       </div>
 
-      <div className="mx-auto mt-8 flex max-w-6xl items-center justify-between border-t border-green-700 pt-6 text-xs text-green-400">
+      <div className="mx-auto mt-8 flex max-w-6xl flex-wrap items-center justify-between gap-3 border-t border-green-700 pt-6 text-xs text-green-300">
         <p>© {new Date().getFullYear()} Mairie des Jeunes de Zè</p>
+        <div className="flex flex-wrap gap-4">
+          <Link href="/mentions-legales" className="hover:text-white">
+            Mentions légales
+          </Link>
+          <Link href="/confidentialite" className="hover:text-white">
+            Politique de confidentialité
+          </Link>
+        </div>
       </div>
     </footer>
   );

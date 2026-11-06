@@ -10,7 +10,12 @@ vi.mock("@/lib/prisma", () => ({ prisma: db }));
 
 const { POST } = await import("./route");
 
-const valid = { opportunityId: "offre-1", fullName: "Jean Hounkpè", phone: "+229 01 97 12 34 56" };
+const valid = {
+  opportunityId: "offre-1",
+  fullName: "Jean Hounkpè",
+  phone: "+229 01 97 12 34 56",
+  consent: true,
+};
 const post = (body: unknown) =>
   POST(
     new Request("http://localhost/api/candidatures", {
@@ -41,6 +46,13 @@ describe("POST /api/candidatures", () => {
     const res = await post({ ...valid, files: ["https://evil.com/cv.pdf"] });
     expect(res.status).toBe(400);
     expect(db.opportunity.findUnique).not.toHaveBeenCalled();
+  });
+
+  it("refuses an application without consent and dates the one given", async () => {
+    expect((await post({ ...valid, consent: false })).status).toBe(400);
+    expect(db.application.create).not.toHaveBeenCalled();
+    await post(valid);
+    expect(db.application.create.mock.calls[0][0].data.consentAt).toBeInstanceOf(Date);
   });
 
   it("attaches the documents the server issued", async () => {

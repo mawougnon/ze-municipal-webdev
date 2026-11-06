@@ -66,6 +66,7 @@ export async function POST(req: Request) {
             phone: result.data.phone,
             email: result.data.email || null,
             message: result.data.message || null,
+            consentAt: new Date(),
           },
         });
         const { count } = await tx.applicationFile.updateMany({

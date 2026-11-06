@@ -73,6 +73,7 @@ model Application {
   phone           String      // WhatsApp-compatible number preferred
   message         String?
   files           ApplicationFile[]
+  consentAt       DateTime?   // accepted that the data is stored outside Benin
   createdAt       DateTime    @default(now())
 
   @@index([opportunityId])
