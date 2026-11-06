@@ -7,30 +7,6 @@ import { logAdminAction } from "@/lib/audit";
 import { removePublicFile } from "@/lib/supabase-admin";
 
 /**
- * GET /api/articles/:id
- * Fetch a single article by ID
- */
-export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
-  try {
-    const { id } = await params;
-
-    const article = await prisma.article.findUnique({
-      where: { id },
-      include: { photos: { orderBy: { position: "asc" } } },
-    });
-
-    // A draft is reported as missing unless an admin is logged in
-    if (!article || (!article.published && !(await auth()))) {
-      return NextResponse.json({ error: "Article introuvable." }, { status: 404 });
-    }
-
-    return NextResponse.json(article);
-  } catch {
-    return NextResponse.json({ error: "Erreur serveur." }, { status: 500 });
-  }
-}
-
-/**
  * PUT /api/articles/:id
  * Update an existing article
  */

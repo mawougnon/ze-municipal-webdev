@@ -52,15 +52,3 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
     return NextResponse.json({ error: "Introuvable." }, { status: 404 });
   }
 }
-
-export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
-  const opportunity = await prisma.opportunity.findUnique({ where: { id } });
-
-  // An unpublished offer is reported as missing unless an admin is logged in
-  if (!opportunity || (!opportunity.published && !(await auth()))) {
-    return NextResponse.json({ error: "Introuvable." }, { status: 404 });
-  }
-
-  return NextResponse.json(opportunity);
-}

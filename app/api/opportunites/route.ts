@@ -5,16 +5,6 @@ import { revalidatePath } from "next/cache";
 import { offerSchema } from "@/lib/offers";
 import { logAdminAction } from "@/lib/audit";
 
-export async function GET() {
-  // Unpublished offers are only returned to a logged-in admin
-  const session = await auth();
-  const opportunities = await prisma.opportunity.findMany({
-    where: session ? undefined : { published: true },
-    orderBy: { createdAt: "desc" },
-  });
-  return NextResponse.json(opportunities);
-}
-
 export async function POST(req: Request) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
