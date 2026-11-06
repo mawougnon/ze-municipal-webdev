@@ -27,6 +27,7 @@ export default async function HomePage() {
           src="/population-ze.png"
           alt="Commune de Zè"
           fill
+          sizes="100vw"
           className="scale-105 object-cover"
           preload
         />
@@ -127,7 +128,7 @@ export default async function HomePage() {
       <section className="bg-[#FAFAF7] px-6 py-20">
         <div className="mx-auto max-w-6xl">
           <div className="mb-14 text-center">
-            <p className="mb-2 text-xs font-semibold tracking-widest text-[#D4AF37] uppercase">
+            <p className="mb-2 text-xs font-semibold tracking-widest text-[#8A6D1A] uppercase">
               Leadership
             </p>
             <h2 className="font-serif text-4xl font-bold text-gray-900">Notre Bureau Exécutif</h2>
@@ -148,7 +149,7 @@ export default async function HomePage() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
               </div>
-              <p className="text-xs font-semibold tracking-widest text-[#D4AF37] uppercase">
+              <p className="text-xs font-semibold tracking-widest text-[#8A6D1A] uppercase">
                 1er Adjoint
               </p>
               <h3 className="mt-1 px-2 font-serif text-sm font-bold text-gray-800 md:text-base">
@@ -173,7 +174,7 @@ export default async function HomePage() {
                   </span>
                 </div>
               </div>
-              <p className="text-xs font-bold tracking-widest text-[#D4AF37] uppercase">Maire</p>
+              <p className="text-xs font-bold tracking-widest text-[#8A6D1A] uppercase">Maire</p>
               <h3 className="mt-1 font-serif text-lg font-bold text-gray-800 md:text-xl">
                 Marius SALANON
               </h3>
@@ -190,7 +191,7 @@ export default async function HomePage() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
               </div>
-              <p className="text-xs font-semibold tracking-widest text-[#D4AF37] uppercase">
+              <p className="text-xs font-semibold tracking-widest text-[#8A6D1A] uppercase">
                 2e Adjoint
               </p>
               <h3 className="mt-1 font-serif text-sm font-bold text-gray-800 md:text-base">
@@ -207,7 +208,7 @@ export default async function HomePage() {
           {" "}
           {/* Augmenté à 6xl pour plus d'espace */}
           <div className="mb-10 text-center">
-            <p className="mb-2 text-xs font-semibold tracking-widest text-[#D4AF37] uppercase">
+            <p className="mb-2 text-xs font-semibold tracking-widest text-[#E8C547] uppercase">
               Autorités de Tutelle & Parrainage
             </p>
           </div>
@@ -219,10 +220,11 @@ export default async function HomePage() {
                   src="/president-amjb-benin.jpg"
                   alt="Président AMJB Bénin"
                   fill
+                  sizes="(max-width: 768px) 112px, 144px"
                   className="object-cover object-top"
                 />
               </div>
-              <p className="flex min-h-[32px] items-center justify-center text-[10px] font-bold tracking-widest text-[#D4AF37] uppercase md:text-xs">
+              <p className="flex min-h-[32px] items-center justify-center text-[10px] font-bold tracking-widest text-[#E8C547] uppercase md:text-xs">
                 Président National AMJ-Bénin
               </p>
               <p className="mt-2 font-serif text-sm font-bold text-white md:text-base">
@@ -241,10 +243,11 @@ export default async function HomePage() {
                   src="/parrain-mandature.jpg"
                   alt="Parrain de la mandature"
                   fill
+                  sizes="(max-width: 768px) 112px, 144px"
                   className="object-cover object-top"
                 />
               </div>
-              <p className="flex min-h-[32px] items-center justify-center text-[10px] font-bold tracking-widest text-[#D4AF37] uppercase md:text-xs">
+              <p className="flex min-h-[32px] items-center justify-center text-[10px] font-bold tracking-widest text-[#E8C547] uppercase md:text-xs">
                 Parrain de la mandature
               </p>
               <p className="mt-2 font-serif text-sm font-bold text-white md:text-base">
@@ -263,10 +266,11 @@ export default async function HomePage() {
                   src="/prefet.jpg"
                   alt="Préfet des Jeunes"
                   fill
+                  sizes="(max-width: 768px) 112px, 144px"
                   className="object-cover object-top"
                 />
               </div>
-              <p className="flex min-h-[32px] items-center justify-center px-2 text-[10px] font-bold tracking-widest text-[#D4AF37] uppercase md:text-xs">
+              <p className="flex min-h-[32px] items-center justify-center px-2 text-[10px] font-bold tracking-widest text-[#E8C547] uppercase md:text-xs">
                 Préfet des Jeunes de l’Atlantique <br /> Chargé de Mission
               </p>
               <p className="mt-2 font-serif text-sm font-bold text-white md:text-base">
@@ -283,7 +287,7 @@ export default async function HomePage() {
           <div className="mx-auto max-w-6xl">
             <div className="mb-12 flex flex-col justify-between gap-4 md:flex-row md:items-end">
               <div>
-                <p className="mb-2 text-xs font-semibold tracking-widest text-[#D4AF37] uppercase">
+                <p className="mb-2 text-xs font-semibold tracking-widest text-[#E8C547] uppercase">
                   Transparence
                 </p>
                 <h2 className="font-serif text-4xl font-bold">Nos documents</h2>
@@ -291,7 +295,7 @@ export default async function HomePage() {
               </div>
               <Link
                 href="/documents"
-                className="text-sm tracking-widest text-[#D4AF37] uppercase hover:underline"
+                className="text-sm tracking-widest text-[#E8C547] uppercase hover:underline"
               >
                 Tous les documents →
               </Link>
@@ -337,7 +341,7 @@ export default async function HomePage() {
       <section className="bg-[#FAFAF7] px-6 py-20">
         <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-16 md:grid-cols-2">
           <div>
-            <p className="mb-3 text-xs font-semibold tracking-widest text-[#D4AF37] uppercase">
+            <p className="mb-3 text-xs font-semibold tracking-widest text-[#8A6D1A] uppercase">
               Commune de Zè
             </p>
             <h2 className="mb-6 font-serif text-4xl leading-tight font-bold text-gray-900">
@@ -371,6 +375,7 @@ export default async function HomePage() {
                 src="/culture-ananas.png"
                 alt="Ananas de Zè"
                 fill
+                sizes="(max-width: 768px) 50vw, 288px"
                 className="object-cover transition-transform duration-500 hover:scale-105"
               />
             </div>
@@ -379,6 +384,7 @@ export default async function HomePage() {
                 src="/culture-palmes.png"
                 alt="Palmes de Zè"
                 fill
+                sizes="(max-width: 768px) 50vw, 288px"
                 className="object-cover transition-transform duration-500 hover:scale-105"
               />
             </div>
@@ -387,6 +393,7 @@ export default async function HomePage() {
                 src="/culture-manioc.png"
                 alt="Manioc de Zè"
                 fill
+                sizes="(max-width: 768px) 50vw, 288px"
                 className="object-cover transition-transform duration-500 hover:scale-105"
               />
             </div>
@@ -395,6 +402,7 @@ export default async function HomePage() {
                 src="/sites-touristiques.png"
                 alt="Sites touristiques de Zè"
                 fill
+                sizes="(max-width: 768px) 50vw, 288px"
                 className="object-cover transition-transform duration-500 hover:scale-105"
               />
             </div>
@@ -403,6 +411,7 @@ export default async function HomePage() {
                 src="/foret-sacre.png"
                 alt="Forêt sacrée d'Assanmê"
                 fill
+                sizes="(max-width: 768px) 50vw, 288px"
                 className="object-cover transition-transform duration-500 hover:scale-105"
               />
             </div>
@@ -411,6 +420,7 @@ export default async function HomePage() {
                 src="/marche-de-betail.png"
                 alt="Marché de bétail de Zè"
                 fill
+                sizes="(max-width: 768px) 50vw, 288px"
                 className="object-cover transition-transform duration-500 hover:scale-105"
               />
             </div>
@@ -423,7 +433,7 @@ export default async function HomePage() {
         <div className="mx-auto max-w-6xl">
           <div className="mb-12 flex items-end justify-between">
             <div>
-              <p className="mb-2 text-xs font-semibold tracking-widest text-[#D4AF37] uppercase">
+              <p className="mb-2 text-xs font-semibold tracking-widest text-[#8A6D1A] uppercase">
                 Actualités
               </p>
               <h2 className="font-serif text-4xl font-bold text-gray-900">Dernières nouvelles</h2>
@@ -436,7 +446,7 @@ export default async function HomePage() {
             </Link>
           </div>
           {articles.length === 0 ? (
-            <div className="border border-dashed border-gray-200 p-16 text-center text-gray-400">
+            <div className="border border-dashed border-gray-200 p-16 text-center text-gray-500">
               Aucune actualité publiée pour le moment.
             </div>
           ) : (
@@ -446,13 +456,13 @@ export default async function HomePage() {
                   <div
                     className={`h-full border border-gray-100 bg-gray-50 p-8 transition hover:border-[#D4AF37] hover:shadow-lg ${i === 0 ? "border-l-4 border-l-green-800" : ""}`}
                   >
-                    <p className="mb-3 text-xs font-semibold tracking-widest text-[#D4AF37] uppercase">
+                    <p className="mb-3 text-xs font-semibold tracking-widest text-[#8A6D1A] uppercase">
                       Actualité
                     </p>
                     <h3 className="mb-4 font-serif text-lg leading-snug font-bold text-gray-900 transition group-hover:text-green-800">
                       {a.title}
                     </h3>
-                    <p className="text-sm text-gray-400">
+                    <p className="text-sm text-gray-500">
                       {formatDate(a.createdAt, { day: "numeric", month: "long", year: "numeric" })}
                     </p>
                   </div>
@@ -469,7 +479,7 @@ export default async function HomePage() {
           <div className="mx-auto max-w-6xl">
             <div className="mb-12 flex items-end justify-between">
               <div>
-                <p className="mb-2 text-xs font-semibold tracking-widest text-[#D4AF37] uppercase">
+                <p className="mb-2 text-xs font-semibold tracking-widest text-[#8A6D1A] uppercase">
                   Jeunesse
                 </p>
                 <h2 className="font-serif text-4xl font-bold text-gray-900">Offres & Formations</h2>
@@ -498,7 +508,7 @@ export default async function HomePage() {
                   <h3 className="mt-4 mb-3 font-serif font-bold text-gray-900 transition group-hover:text-green-800">
                     {o.title}
                   </h3>
-                  <p className="text-sm font-bold text-[#D4AF37]">
+                  <p className="text-sm font-bold text-[#8A6D1A]">
                     {o.isFree ? "Gratuit" : `${formatPrice(o.price)} XOF`}
                   </p>
                 </Link>

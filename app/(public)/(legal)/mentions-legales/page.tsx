@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Mentions légales | Mairie des Jeunes de Zè",
+  title: "Mentions légales",
   description: "Éditeur, directeur de la publication et hébergeurs du site.",
 };
 

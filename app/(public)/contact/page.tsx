@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import {
   FaWhatsapp,
   FaFacebook,
@@ -8,12 +9,17 @@ import {
   FaBullhorn,
 } from "react-icons/fa";
 
+export const metadata: Metadata = {
+  title: "Contact",
+  description: "Comment joindre la Mairie des Jeunes de Zè.",
+};
+
 export default function ContactPage() {
   return (
     <main className="min-h-screen bg-[#FAFAF7]">
       {/* Hero */}
       <section className="bg-green-900 px-6 py-16 text-center text-white">
-        <p className="mb-3 text-xs font-semibold tracking-widest text-[#D4AF37] uppercase">
+        <p className="mb-3 text-xs font-semibold tracking-widest text-[#E8C547] uppercase">
           Nous contacter
         </p>
         <h1 className="font-serif text-4xl font-bold">Contact</h1>
@@ -66,7 +72,7 @@ export default function ContactPage() {
                 href="https://wa.me/2290198704584"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 rounded-lg bg-green-600 px-3 py-2 text-xs font-medium text-white transition hover:bg-green-700"
+                className="flex items-center gap-2 rounded-lg bg-green-700 px-3 py-2 text-xs font-medium text-white transition hover:bg-green-700"
               >
                 <FaWhatsapp className="text-base" /> WhatsApp
               </a>
@@ -86,7 +92,7 @@ export default function ContactPage() {
                 href="https://chat.whatsapp.com/KvlauYJX31kHHfBZXvqllc"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 rounded-lg bg-emerald-600 px-3 py-2 text-xs font-medium text-white transition hover:bg-emerald-700"
+                className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-2 text-xs font-medium text-white transition hover:bg-emerald-800"
               >
                 <FaUsers className="text-base" /> Groupe
               </a>

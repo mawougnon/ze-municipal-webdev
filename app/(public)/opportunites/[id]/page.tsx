@@ -1,19 +1,32 @@
 import { formatDate, formatPrice } from "@/lib/format";
 import { prisma } from "@/lib/prisma";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { cache } from "react";
 import Link from "next/link";
 import ApplicationForm from "@/components/ApplicationForm";
 import { isOpen } from "@/lib/offers";
 
-export default async function OpportuniteDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = await params;
-  const opportunity = await prisma.opportunity.findUnique({
-    where: { id, published: true },
-  });
+type Props = { params: Promise<{ id: string }> };
+
+// The title of the page and the page itself share one query
+const getOpportunity = cache((id: string) =>
+  prisma.opportunity.findUnique({ where: { id, published: true } }),
+);
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const opportunity = await getOpportunity((await params).id);
+  if (!opportunity) return {};
+  const description = opportunity.description.replace(/\s+/g, " ").slice(0, 160);
+  return {
+    title: opportunity.title,
+    description,
+    openGraph: { title: opportunity.title, description },
+  };
+}
+
+export default async function OpportuniteDetailPage({ params }: Props) {
+  const opportunity = await getOpportunity((await params).id);
 
   if (!opportunity) notFound();
 
@@ -22,7 +35,7 @@ export default async function OpportuniteDetailPage({
       <section className="bg-green-700 px-6 py-12 text-center text-white">
         <span
           className={`mb-4 inline-block rounded-full px-3 py-1 text-xs ${
-            opportunity.type === "JOB" ? "bg-blue-500" : "bg-purple-500"
+            opportunity.type === "JOB" ? "bg-blue-700" : "bg-purple-700"
           }`}
         >
           {opportunity.type === "JOB" ? "Offre d'emploi" : "Formation"}
@@ -38,7 +51,7 @@ export default async function OpportuniteDetailPage({
           <h2 className="mb-3 font-semibold text-gray-800">Description</h2>
           <p className="whitespace-pre-line text-gray-600">{opportunity.description}</p>
           {opportunity.deadline && (
-            <p className="mt-4 text-sm font-medium text-red-500">
+            <p className="mt-4 text-sm font-medium text-red-700">
               ⏳ Date limite : {formatDate(opportunity.deadline)}
             </p>
           )}
@@ -59,7 +72,7 @@ export default async function OpportuniteDetailPage({
         )}
 
         <div className="mt-8">
-          <Link href="/opportunites" className="text-sm text-gray-400 hover:text-gray-600">
+          <Link href="/opportunites" className="text-sm text-gray-500 hover:text-gray-600">
             ← Retour aux offres
           </Link>
         </div>

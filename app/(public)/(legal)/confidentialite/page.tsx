@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Politique de confidentialité | Mairie des Jeunes de Zè",
+  title: "Politique de confidentialité",
   description: "Quelles données le site collecte, pourquoi, combien de temps, et vos droits.",
 };
 

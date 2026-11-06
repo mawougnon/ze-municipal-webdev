@@ -3,7 +3,7 @@ import { DOCUMENT_DATE, publishedDocuments } from "@/lib/documents";
 import { formatDate } from "@/lib/format";
 
 export const metadata: Metadata = {
-  title: "Documents | Mairie des Jeunes de Zè",
+  title: "Documents",
   description: "Le Plan de Travail Annuel et les bilans de la Mairie des Jeunes de Zè.",
 };
 

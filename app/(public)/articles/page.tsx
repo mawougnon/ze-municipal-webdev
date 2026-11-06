@@ -1,7 +1,13 @@
+import type { Metadata } from "next";
 import { formatDate } from "@/lib/format";
 import { prisma } from "@/lib/prisma";
 import Image from "next/image";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Actualités",
+  description: "Les actualités de la Mairie des Jeunes de Zè.",
+};
 
 export default async function ArticlesPublicPage() {
   const articles = await prisma.article.findMany({
@@ -17,7 +23,7 @@ export default async function ArticlesPublicPage() {
 
       <section className="mx-auto max-w-4xl px-6 py-12">
         {articles.length === 0 ? (
-          <p className="text-center text-gray-400">Aucune actualité pour le moment.</p>
+          <p className="text-center text-gray-500">Aucune actualité pour le moment.</p>
         ) : (
           <div className="space-y-6">
             {articles.map((a) => (
@@ -44,13 +50,13 @@ export default async function ArticlesPublicPage() {
                 )}
 
                 <div className="p-6">
-                  <p className="mb-2 text-xs font-semibold tracking-widest text-[#D4AF37] uppercase">
+                  <p className="mb-2 text-xs font-semibold tracking-widest text-[#8A6D1A] uppercase">
                     Actualité
                   </p>
                   <h2 className="mb-3 font-serif text-lg leading-snug font-bold text-gray-900">
                     {a.title}
                   </h2>
-                  <p className="text-sm text-gray-400">
+                  <p className="text-sm text-gray-500">
                     {formatDate(a.createdAt, {
                       day: "numeric",
                       month: "long",
@@ -63,7 +69,7 @@ export default async function ArticlesPublicPage() {
           </div>
         )}
         <div className="mt-8">
-          <Link href="/" className="text-sm text-gray-400 hover:text-gray-600">
+          <Link href="/" className="text-sm text-gray-500 hover:text-gray-600">
             ← Retour à l’accueil
           </Link>
         </div>

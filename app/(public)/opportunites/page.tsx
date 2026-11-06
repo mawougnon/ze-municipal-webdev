@@ -1,7 +1,13 @@
+import type { Metadata } from "next";
 import { formatDate, formatPrice } from "@/lib/format";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { openOffersWhere } from "@/lib/offers";
+
+export const metadata: Metadata = {
+  title: "Opportunités",
+  description: "Les offres d’emploi et les formations proposées par la Mairie des Jeunes de Zè.",
+};
 
 export default async function OpportunitesPublicPage() {
   const opportunities = await prisma.opportunity.findMany({
@@ -24,7 +30,7 @@ export default async function OpportunitesPublicPage() {
         <div>
           <h2 className="mb-6 text-xl font-bold text-gray-800">Offres d’emploi</h2>
           {jobs.length === 0 ? (
-            <p className="text-gray-400">Aucune offre d’emploi disponible.</p>
+            <p className="text-gray-500">Aucune offre d’emploi disponible.</p>
           ) : (
             <div className="space-y-4">
               {jobs.map((o) => (
@@ -38,7 +44,7 @@ export default async function OpportunitesPublicPage() {
                       <h3 className="font-semibold text-gray-800">{o.title}</h3>
                       <p className="mt-1 line-clamp-2 text-sm text-gray-500">{o.description}</p>
                       {o.deadline && (
-                        <p className="mt-2 text-xs text-gray-400">
+                        <p className="mt-2 text-xs text-gray-500">
                           Date limite : {formatDate(o.deadline)}
                         </p>
                       )}
@@ -57,7 +63,7 @@ export default async function OpportunitesPublicPage() {
         <div>
           <h2 className="mb-6 text-xl font-bold text-gray-800">Formations</h2>
           {trainings.length === 0 ? (
-            <p className="text-gray-400">Aucune formation disponible.</p>
+            <p className="text-gray-500">Aucune formation disponible.</p>
           ) : (
             <div className="space-y-4">
               {trainings.map((o) => (
@@ -71,7 +77,7 @@ export default async function OpportunitesPublicPage() {
                       <h3 className="font-semibold text-gray-800">{o.title}</h3>
                       <p className="mt-1 line-clamp-2 text-sm text-gray-500">{o.description}</p>
                       {o.deadline && (
-                        <p className="mt-2 text-xs text-gray-400">
+                        <p className="mt-2 text-xs text-gray-500">
                           Date limite : {formatDate(o.deadline)}
                         </p>
                       )}
@@ -86,7 +92,7 @@ export default async function OpportunitesPublicPage() {
           )}
         </div>
 
-        <Link href="/" className="inline-block text-sm text-gray-400 hover:text-gray-600">
+        <Link href="/" className="inline-block text-sm text-gray-500 hover:text-gray-600">
           ← Retour à l’accueil
         </Link>
       </section>

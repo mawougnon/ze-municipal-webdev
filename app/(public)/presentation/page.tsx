@@ -1,5 +1,11 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
+
+export const metadata: Metadata = {
+  title: "Présentation",
+  description: "Qui est la Mairie des Jeunes de Zè, sa mission et son équipe.",
+};
 
 // Static presentation page: mission, vision, values, history
 export default function PresentationPage() {
@@ -30,6 +36,7 @@ export default function PresentationPage() {
             src="/sites-touristiques.png"
             alt="Sites touristiques de Zè"
             fill
+            sizes="100vw"
             className="object-cover"
             preload
           />
@@ -69,7 +76,7 @@ export default function PresentationPage() {
       <section className="bg-green-900 px-6 py-16 text-white">
         <div className="mx-auto grid max-w-6xl grid-cols-1 gap-12 md:grid-cols-2">
           <div>
-            <p className="mb-4 text-xs font-semibold tracking-widest text-[#D4AF37] uppercase">
+            <p className="mb-4 text-xs font-semibold tracking-widest text-[#E8C547] uppercase">
               Notre Mission
             </p>
             <h2 className="mb-6 font-serif text-3xl font-bold">Ce que nous faisons</h2>
@@ -81,14 +88,14 @@ export default function PresentationPage() {
                 "Renforcer les capacités des jeunes en matière de leadership et d'engagement citoyen",
               ].map((item) => (
                 <li key={item} className="flex gap-3 text-green-100">
-                  <span className="mt-1 shrink-0 text-[#D4AF37]">◆</span>
+                  <span className="mt-1 shrink-0 text-[#E8C547]">◆</span>
                   <span>{item}</span>
                 </li>
               ))}
             </ul>
           </div>
           <div>
-            <p className="mb-4 text-xs font-semibold tracking-widest text-[#D4AF37] uppercase">
+            <p className="mb-4 text-xs font-semibold tracking-widest text-[#E8C547] uppercase">
               Notre Vision
             </p>
             <h2 className="mb-6 font-serif text-3xl font-bold">Ce que nous voulons devenir</h2>
@@ -106,7 +113,7 @@ export default function PresentationPage() {
       <section className="bg-white px-6 py-16">
         <div className="mx-auto max-w-6xl">
           <div className="mb-12 text-center">
-            <p className="mb-2 text-xs font-semibold tracking-widest text-[#D4AF37] uppercase">
+            <p className="mb-2 text-xs font-semibold tracking-widest text-[#8A6D1A] uppercase">
               Ce en quoi nous croyons
             </p>
             <h2 className="font-serif text-4xl font-bold text-gray-900">Nos Valeurs</h2>
@@ -118,7 +125,7 @@ export default function PresentationPage() {
                 key={v.titre}
                 className="border border-gray-100 p-8 transition hover:border-[#D4AF37] hover:shadow-md"
               >
-                <p className="mb-3 text-xs font-bold tracking-widest text-[#D4AF37] uppercase">◆</p>
+                <p className="mb-3 text-xs font-bold tracking-widest text-[#8A6D1A] uppercase">◆</p>
                 <h3 className="mb-2 font-serif text-lg font-bold text-gray-900">{v.titre}</h3>
                 <p className="text-sm leading-relaxed text-gray-500">{v.desc}</p>
               </div>
@@ -129,7 +136,7 @@ export default function PresentationPage() {
 
       {/* Devise */}
       <section className="bg-[#D4AF37] px-6 py-12 text-center">
-        <p className="mb-3 text-xs font-semibold tracking-widest text-black/60 uppercase">
+        <p className="mb-3 text-xs font-semibold tracking-widest text-black/80 uppercase">
           Notre Devise
         </p>
         <h2 className="font-serif text-4xl font-bold text-black">
@@ -165,7 +172,7 @@ export default function PresentationPage() {
       </section>
 
       <div className="pb-12 text-center">
-        <Link href="/" className="text-sm text-gray-400 hover:text-gray-600">
+        <Link href="/" className="text-sm text-gray-500 hover:text-gray-600">
           ← Retour à l’accueil
         </Link>
       </div>
