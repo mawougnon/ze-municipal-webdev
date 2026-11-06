@@ -1,6 +1,8 @@
 "use client";
 
+import FileUpload from "@/components/FileUpload";
 import PublishButtons, { wantsPublish } from "@/components/PublishButtons";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -13,6 +15,7 @@ interface Props {
     deadline: string; // YYYY-MM-DD, or empty
     isFree: boolean;
     price: string;
+    imageUrl: string;
     published: boolean;
   };
 }
@@ -24,6 +27,7 @@ const FIELD =
 export default function OfferForm({ id, initial }: Props) {
   const router = useRouter();
   const [isFree, setIsFree] = useState(initial.isFree);
+  const [imageUrl, setImageUrl] = useState(initial.imageUrl);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
@@ -57,6 +61,7 @@ export default function OfferForm({ id, initial }: Props) {
       deadline: deadline ? new Date(deadline).toISOString() : null,
       isFree,
       price: isFree ? null : Number(form.get("price")),
+      imageUrl,
       published: wantsPublish(e),
     });
   }
@@ -86,6 +91,31 @@ export default function OfferForm({ id, initial }: Props) {
           defaultValue={initial.title}
           className={FIELD}
         />
+      </div>
+
+      <div>
+        <p className={LABEL}>Affiche (optionnel)</p>
+        <FileUpload bucket="photos" onUpload={setImageUrl} />
+        {imageUrl && (
+          <>
+            <div className="relative mt-3 aspect-[3/2] w-full overflow-hidden rounded-lg bg-gray-100">
+              <Image
+                src={imageUrl}
+                alt="Aperçu de l’affiche"
+                fill
+                sizes="(max-width: 768px) 100vw, 768px"
+                className="object-contain"
+              />
+            </div>
+            <button
+              type="button"
+              onClick={() => setImageUrl("")}
+              className="mt-2 text-sm text-red-700 hover:text-red-900"
+            >
+              Retirer l’affiche
+            </button>
+          </>
+        )}
       </div>
 
       <div>

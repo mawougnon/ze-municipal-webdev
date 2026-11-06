@@ -8,3 +8,5 @@ export function formatDate(date: Date | string, options: Intl.DateTimeFormatOpti
 export function formatPrice(price: number | null) {
   return (price ?? 0).toLocaleString("fr-FR");
 }
+
+export const LONG_DATE = { day: "numeric", month: "long", year: "numeric" } as const;

@@ -23,6 +23,7 @@ export default async function EditOfferPage({ params }: { params: Promise<{ id: 
             deadline: offer.deadline ? offer.deadline.toISOString().slice(0, 10) : "",
             isFree: offer.isFree,
             price: offer.price ? String(offer.price) : "",
+            imageUrl: offer.imageUrl ?? "",
             published: offer.published,
           }}
         />

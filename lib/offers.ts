@@ -1,5 +1,6 @@
 import "server-only";
 import { z } from "zod";
+import { isProjectFile } from "@/lib/storage";
 
 // A deadline is stored as midnight UTC of the chosen day. Benin is UTC+1 all year,
 // so that day ends 23 hours later: an offer stays open for the whole deadline day.
@@ -26,10 +27,14 @@ export const offerSchema = z
     deadline: z.iso.datetime().nullable(),
     isFree: z.boolean(),
     price: z.number().positive("Le prix doit être positif.").nullable(),
+    imageUrl: z
+      .string()
+      .refine((url) => url === "" || isProjectFile(url, "photos"), "Affiche invalide.")
+      .nullish(),
     published: z.boolean().default(false),
   })
   .refine((o) => o.isFree || o.price !== null, {
     message: "Indiquez le prix d'une offre payante.",
     path: ["price"],
   })
-  .transform((o) => ({ ...o, price: o.isFree ? null : o.price }));
+  .transform((o) => ({ ...o, price: o.isFree ? null : o.price, imageUrl: o.imageUrl || null }));

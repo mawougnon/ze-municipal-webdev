@@ -1,9 +1,10 @@
-import { formatDate, formatPrice } from "@/lib/format";
+import { LONG_DATE, formatDate } from "@/lib/format";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import Image from "next/image";
 import { openOffersWhere } from "@/lib/offers";
-import { DOCUMENT_DATE, publishedDocuments } from "@/lib/documents";
+import OfferCard from "@/components/OfferCard";
+import { publishedDocuments } from "@/lib/documents";
 
 export default async function HomePage() {
   const articles = await prisma.article.findMany({
@@ -329,7 +330,7 @@ export default async function HomePage() {
                     {d.title}
                   </h3>
                   <p className="mt-2 line-clamp-2 text-sm text-green-300">{d.description}</p>
-                  <p className="mt-3 text-xs text-green-400">{formatDate(d.date, DOCUMENT_DATE)}</p>
+                  <p className="mt-3 text-xs text-green-400">{formatDate(d.date, LONG_DATE)}</p>
                 </a>
               ))}
             </div>
@@ -491,29 +492,13 @@ export default async function HomePage() {
                 Voir tout →
               </Link>
             </div>
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-              {opportunities.map((o) => (
-                <Link
-                  key={o.id}
-                  href={`/opportunites/${o.id}`}
-                  className="group border border-gray-200 bg-white p-8 transition hover:border-[#D4AF37] hover:shadow-lg"
-                >
-                  <span
-                    className={`px-2 py-1 text-xs font-bold tracking-widest uppercase ${
-                      o.type === "JOB" ? "bg-blue-50 text-blue-700" : "bg-purple-50 text-purple-700"
-                    }`}
-                  >
-                    {o.type === "JOB" ? "Emploi" : "Formation"}
-                  </span>
-                  <h3 className="mt-4 mb-3 font-serif font-bold text-gray-900 transition group-hover:text-green-800">
-                    {o.title}
-                  </h3>
-                  <p className="text-sm font-bold text-[#8A6D1A]">
-                    {o.isFree ? "Gratuit" : `${formatPrice(o.price)} XOF`}
-                  </p>
-                </Link>
+            <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {opportunities.map((offer) => (
+                <li key={offer.id}>
+                  <OfferCard offer={offer} />
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
         </section>
       )}

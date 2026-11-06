@@ -59,6 +59,7 @@ model Opportunity {
   published    Boolean       @default(false)
   isFree       Boolean       @default(true)  // false = requires payment via FedaPay
   price        Float?                         // price in XOF, null if free
+  imageUrl     String?                        // poster, in the photos bucket
   createdAt    DateTime      @default(now())
   applications Application[]
 }

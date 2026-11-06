@@ -16,6 +16,7 @@ export default async function NewOfferPage() {
             deadline: "",
             isFree: true,
             price: "",
+            imageUrl: "",
             published: false,
           }}
         />

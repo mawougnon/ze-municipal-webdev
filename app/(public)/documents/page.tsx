@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { DOCUMENT_DATE, publishedDocuments } from "@/lib/documents";
-import { formatDate } from "@/lib/format";
+import { publishedDocuments } from "@/lib/documents";
+import { LONG_DATE, formatDate } from "@/lib/format";
 
 export const metadata: Metadata = {
   title: "Documents",
@@ -27,7 +27,7 @@ export default async function DocumentsPage() {
               {featured.title}
             </h2>
             <p className="mt-3 whitespace-pre-line text-gray-700">{featured.description}</p>
-            <p className="mt-3 text-sm text-gray-600">{formatDate(featured.date, DOCUMENT_DATE)}</p>
+            <p className="mt-3 text-sm text-gray-600">{formatDate(featured.date, LONG_DATE)}</p>
             <a
               href={featured.fileUrl}
               target="_blank"
@@ -45,7 +45,7 @@ export default async function DocumentsPage() {
               <h2 className="font-semibold break-words text-gray-800">{d.title}</h2>
               <p className="mt-1 text-sm whitespace-pre-line text-gray-600">{d.description}</p>
               <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
-                <span className="text-xs text-gray-600">{formatDate(d.date, DOCUMENT_DATE)}</span>
+                <span className="text-xs text-gray-600">{formatDate(d.date, LONG_DATE)}</span>
                 <a
                   href={d.fileUrl}
                   target="_blank"

@@ -50,8 +50,12 @@ try {
     select: { coverImageUrl: true, photos: { select: { url: true } } },
   });
   const documents = await prisma.document.findMany({ select: { fileUrl: true } });
+  const offers = await prisma.opportunity.findMany({ select: { imageUrl: true } });
   const used = {
-    photos: articles.flatMap((a) => [a.coverImageUrl, ...a.photos.map((p) => p.url)]),
+    photos: [
+      ...articles.flatMap((a) => [a.coverImageUrl, ...a.photos.map((p) => p.url)]),
+      ...offers.map((o) => o.imageUrl),
+    ],
     documents: documents.map((d) => d.fileUrl),
   };
 

@@ -61,16 +61,15 @@ export default async function ArticlePage({ params }: Props) {
 
         {/* Cover image: shown whole, whatever its shape */}
         {article.coverImageUrl && (
-          <div className="relative mb-8 aspect-[3/2] w-full overflow-hidden rounded-xl bg-gray-100">
-            <Image
-              src={article.coverImageUrl}
-              alt={article.title}
-              fill
-              sizes="(max-width: 768px) 100vw, 768px"
-              className="object-contain"
-              preload
-            />
-          </div>
+          <Image
+            src={article.coverImageUrl}
+            alt={article.title}
+            width={1200}
+            height={800}
+            sizes="(max-width: 768px) 100vw, 768px"
+            className="mx-auto mb-8 h-auto max-h-[85vh] w-auto max-w-full rounded-xl"
+            preload
+          />
         )}
 
         {/* Article content with custom styles */}

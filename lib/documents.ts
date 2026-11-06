@@ -3,8 +3,6 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { isProjectFile } from "@/lib/storage";
 
-export const DOCUMENT_DATE = { day: "numeric", month: "long", year: "numeric" } as const;
-
 // What an admin may send when creating or editing a document
 export const documentSchema = z
   .object({

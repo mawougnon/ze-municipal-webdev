@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { requireAdmin } from "@/lib/admin";
-import { DOCUMENT_DATE } from "@/lib/documents";
-import { formatDate } from "@/lib/format";
+import { LONG_DATE, formatDate } from "@/lib/format";
 import { prisma } from "@/lib/prisma";
 
 export default async function AdminDocumentsPage() {
@@ -48,7 +47,7 @@ export default async function AdminDocumentsPage() {
                       À la une
                     </span>
                   )}
-                  <span className="text-gray-500">{formatDate(d.date, DOCUMENT_DATE)}</span>
+                  <span className="text-gray-500">{formatDate(d.date, LONG_DATE)}</span>
                 </div>
               </Link>
             ))}

@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { formatDate, formatPrice } from "@/lib/format";
-import { prisma } from "@/lib/prisma";
 import Link from "next/link";
+import OfferCard from "@/components/OfferCard";
 import { openOffersWhere } from "@/lib/offers";
+import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = {
   title: "Opportunités",
@@ -10,92 +10,47 @@ export const metadata: Metadata = {
 };
 
 export default async function OpportunitesPublicPage() {
-  const opportunities = await prisma.opportunity.findMany({
+  const offers = await prisma.opportunity.findMany({
     where: openOffersWhere(),
     orderBy: { createdAt: "desc" },
   });
 
-  const jobs = opportunities.filter((o) => o.type === "JOB");
-  const trainings = opportunities.filter((o) => o.type === "TRAINING");
+  const sections = [
+    { title: "Formations", offers: offers.filter((o) => o.type === "TRAINING") },
+    { title: "Offres d’emploi", offers: offers.filter((o) => o.type === "JOB") },
+  ].filter((section) => section.offers.length > 0);
 
   return (
     <main className="min-h-screen bg-white">
-      <section className="bg-green-700 px-6 py-12 text-center text-white">
-        <h1 className="text-3xl font-bold">Offres d’emploi & Formations</h1>
+      <section className="bg-green-900 px-4 py-12 text-center text-white md:px-6">
+        <h1 className="font-serif text-3xl font-bold md:text-4xl">Offres d’emploi & Formations</h1>
         <p className="mt-2 text-green-100">Opportunités disponibles pour la jeunesse de Zè</p>
       </section>
 
-      <section className="mx-auto max-w-4xl space-y-12 px-6 py-12">
-        {/* Jobs */}
-        <div>
-          <h2 className="mb-6 text-xl font-bold text-gray-800">Offres d’emploi</h2>
-          {jobs.length === 0 ? (
-            <p className="text-gray-500">Aucune offre d’emploi disponible.</p>
-          ) : (
-            <div className="space-y-4">
-              {jobs.map((o) => (
-                <Link
-                  key={o.id}
-                  href={`/opportunites/${o.id}`}
-                  className="block rounded-xl border border-gray-100 bg-gray-50 p-6 transition hover:shadow-md"
-                >
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h3 className="font-semibold text-gray-800">{o.title}</h3>
-                      <p className="mt-1 line-clamp-2 text-sm text-gray-500">{o.description}</p>
-                      {o.deadline && (
-                        <p className="mt-2 text-xs text-gray-500">
-                          Date limite : {formatDate(o.deadline)}
-                        </p>
-                      )}
-                    </div>
-                    <span className="ml-4 shrink-0 text-sm font-semibold text-green-700">
-                      {o.isFree ? "Gratuit" : `${formatPrice(o.price)} XOF`}
-                    </span>
-                  </div>
-                </Link>
+      <div className="mx-auto max-w-6xl space-y-12 px-4 py-12 md:px-6">
+        {sections.map((section) => (
+          <section key={section.title}>
+            <h2 className="mb-6 font-serif text-2xl font-bold text-gray-900">{section.title}</h2>
+            <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {section.offers.map((offer) => (
+                <li key={offer.id}>
+                  <OfferCard offer={offer} />
+                </li>
               ))}
-            </div>
-          )}
-        </div>
+            </ul>
+          </section>
+        ))}
 
-        {/* Trainings */}
-        <div>
-          <h2 className="mb-6 text-xl font-bold text-gray-800">Formations</h2>
-          {trainings.length === 0 ? (
-            <p className="text-gray-500">Aucune formation disponible.</p>
-          ) : (
-            <div className="space-y-4">
-              {trainings.map((o) => (
-                <Link
-                  key={o.id}
-                  href={`/opportunites/${o.id}`}
-                  className="block rounded-xl border border-gray-100 bg-gray-50 p-6 transition hover:shadow-md"
-                >
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h3 className="font-semibold text-gray-800">{o.title}</h3>
-                      <p className="mt-1 line-clamp-2 text-sm text-gray-500">{o.description}</p>
-                      {o.deadline && (
-                        <p className="mt-2 text-xs text-gray-500">
-                          Date limite : {formatDate(o.deadline)}
-                        </p>
-                      )}
-                    </div>
-                    <span className="ml-4 shrink-0 text-sm font-semibold text-green-700">
-                      {o.isFree ? "Gratuit" : `${formatPrice(o.price)} XOF`}
-                    </span>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          )}
-        </div>
+        {sections.length === 0 && (
+          <p className="py-12 text-center text-gray-600">
+            Aucune offre pour le moment. Revenez bientôt.
+          </p>
+        )}
 
-        <Link href="/" className="inline-block text-sm text-gray-500 hover:text-gray-600">
+        <Link href="/" className="inline-block text-sm text-gray-600 hover:text-gray-900">
           ← Retour à l’accueil
         </Link>
-      </section>
+      </div>
     </main>
   );
 }
