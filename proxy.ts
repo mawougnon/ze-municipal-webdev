@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import { NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 
 const isDev = process.env.NODE_ENV !== "production";
 
@@ -22,24 +22,31 @@ function contentSecurityPolicy(nonce: string) {
   ].join("; ");
 }
 
-export default auth((req) => {
+function respond(req: NextRequest, hidden: boolean) {
   const nonce = btoa(crypto.randomUUID());
   const csp = contentSecurityPolicy(nonce);
   const headers = new Headers(req.headers);
   headers.set("x-nonce", nonce);
   headers.set("Content-Security-Policy", csp);
 
-  // Admin pages for anonymous visitors, and the bare login route, look like a 404.
-  // Each admin page also checks the session itself (lib/admin.ts).
-  const path = req.nextUrl.pathname;
-  const hidden = (path.startsWith("/admin") && !req.auth) || path.startsWith("/login");
-
   const response = hidden
     ? NextResponse.rewrite(new URL("/not-found", req.nextUrl), { request: { headers } })
     : NextResponse.next({ request: { headers } });
   response.headers.set("Content-Security-Policy", csp);
   return response;
-});
+}
+
+// Admin pages for anonymous visitors, and the bare login route, look like a 404.
+// Each admin page also checks the session itself (lib/admin.ts).
+const adminProxy = auth((req) => respond(req, !req.auth));
+
+export default function proxy(req: NextRequest) {
+  const path = req.nextUrl.pathname;
+  // Reading the session sets cookies, so only admin pages do it: visitors of the public
+  // site receive none.
+  if (path.startsWith("/admin")) return adminProxy(req, { params: Promise.resolve({}) });
+  return respond(req, path.startsWith("/login"));
+}
 
 export const config = {
   // Every page, prefetches included; not the API, build assets or public images
