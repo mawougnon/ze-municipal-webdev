@@ -42,9 +42,5 @@ next-env.d.ts
 
 /app/generated/prisma
 
-seed-pta.mjs
-
-seed-users.mjs
-
 # Documents de travail
 *.pdf
