@@ -25,8 +25,8 @@ export default function Navbar() {
           <Link href="/articles" className="transition hover:text-green-700">
             Actualités
           </Link>
-          <Link href="/pta" className="transition hover:text-green-700">
-            PTA
+          <Link href="/documents" className="transition hover:text-green-700">
+            Documents
           </Link>
           <Link href="/presentation" className="transition hover:text-green-700">
             Présentation
@@ -58,8 +58,8 @@ export default function Navbar() {
         <Link href="/articles" className="shrink-0 hover:text-green-700">
           Actualités
         </Link>
-        <Link href="/pta" className="shrink-0 hover:text-green-700">
-          PTA
+        <Link href="/documents" className="shrink-0 hover:text-green-700">
+          Documents
         </Link>
         <Link href="/presentation" className="shrink-0 hover:text-green-700">
           Présentation

@@ -25,6 +25,9 @@ const LABELS: Record<string, { label: string; color: string }> = {
   OFFER_SAVED_ONLINE: { label: "Offre enregistrée, en ligne", color: "text-gray-700" },
   OFFER_SAVED_DRAFT: { label: "Offre enregistrée, brouillon", color: "text-gray-700" },
   OFFER_DELETED: { label: "Offre supprimée", color: "text-gray-700" },
+  DOCUMENT_SAVED_ONLINE: { label: "Document enregistré, en ligne", color: "text-gray-700" },
+  DOCUMENT_SAVED_DRAFT: { label: "Document enregistré, brouillon", color: "text-gray-700" },
+  DOCUMENT_DELETED: { label: "Document supprimé", color: "text-gray-700" },
   APPLICATION_DELETED: { label: "Candidature supprimée", color: "text-gray-700" },
 };
 

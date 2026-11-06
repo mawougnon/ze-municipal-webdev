@@ -26,7 +26,7 @@ export default function Footer() {
           <ul className="space-y-2 text-sm">
             {[
               { label: "Actualités", href: "/articles" },
-              { label: "Plan de Travail Annuel", href: "/pta" },
+              { label: "Documents", href: "/documents" },
               { label: "Présentation", href: "/presentation" },
               { label: "Opportunités", href: "/opportunites" },
               { label: "Contact", href: "/contact" },

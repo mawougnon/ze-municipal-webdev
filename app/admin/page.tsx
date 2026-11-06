@@ -7,17 +7,17 @@ import { ROLE_LABELS } from "@/lib/accounts";
 export default async function AdminPage() {
   const session = await requireAdmin();
 
-  const [articleCount, ptaCount, opportunityCount, applicationCount, accountCount] =
+  const [articleCount, documentCount, opportunityCount, applicationCount, accountCount] =
     await Promise.all([
       prisma.article.count(),
-      prisma.ptaActivity.count(),
+      prisma.document.count(),
       prisma.opportunity.count(),
       prisma.application.count(),
       prisma.user.count(),
     ]);
 
   const publishedArticles = await prisma.article.count({ where: { published: true } });
-  const completedPta = await prisma.ptaActivity.count({ where: { status: "COMPLETED" } });
+  const publishedDocuments = await prisma.document.count({ where: { published: true } });
 
   async function handleSignOut() {
     "use server";
@@ -33,10 +33,10 @@ export default async function AdminPage() {
       stat: `${publishedArticles}/${articleCount} publiés`,
     },
     {
-      label: "Plan de Travail (PTA)",
-      href: "/admin/pta",
+      label: "Documents",
+      href: "/admin/documents",
       icon: "📋",
-      stat: `${completedPta}/${ptaCount} terminés`,
+      stat: `${publishedDocuments}/${documentCount} publiés`,
     },
     {
       label: "Offres & Formations",
@@ -118,8 +118,8 @@ export default async function AdminPage() {
           {[
             { label: "Articles", value: articleCount, color: "text-blue-600", bg: "bg-blue-50" },
             {
-              label: "Activités PTA",
-              value: ptaCount,
+              label: "Documents",
+              value: documentCount,
               color: "text-yellow-600",
               bg: "bg-yellow-50",
             },

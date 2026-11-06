@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import Image from "next/image";
 import { openOffersWhere } from "@/lib/offers";
+import { DOCUMENT_DATE, publishedDocuments } from "@/lib/documents";
 
 export default async function HomePage() {
   const articles = await prisma.article.findMany({
@@ -11,17 +12,7 @@ export default async function HomePage() {
     take: 3,
   });
 
-  // Fetch ALL activities for accurate progress calculation
-  const allPtaActivities = await prisma.ptaActivity.findMany();
-
-  // Only 4 most recent for display
-  const ptaActivities = allPtaActivities
-    .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
-    .slice(0, 4);
-
-  const total = allPtaActivities.length;
-  const completed = allPtaActivities.filter((a) => a.status === "COMPLETED").length;
-  const progress = total > 0 ? Math.round((completed / total) * 100) : 0;
+  const { featured, others } = await publishedDocuments();
 
   const opportunities = await prisma.opportunity.findMany({
     where: openOffersWhere(),
@@ -99,10 +90,10 @@ export default async function HomePage() {
               Nos Actualités
             </Link>
             <Link
-              href="/pta"
+              href="/documents"
               className="rounded-none border-2 border-white px-8 py-3 text-sm font-bold tracking-wide text-white uppercase transition hover:bg-white hover:text-black"
             >
-              Plan de Travail
+              Nos Documents
             </Link>
             <Link
               href="/presentation"
@@ -286,75 +277,61 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* PTA PROGRESS */}
-      <section className="bg-green-900 px-6 py-20 text-white">
-        <div className="mx-auto max-w-6xl">
-          <div className="mb-12 flex flex-col justify-between gap-4 md:flex-row md:items-end">
-            <div>
-              <p className="mb-2 text-xs font-semibold tracking-widest text-[#D4AF37] uppercase">
-                Transparence
-              </p>
-              <h2 className="font-serif text-4xl font-bold">Plan de Travail Annuel</h2>
-              <p className="mt-2 text-green-300">Mandature 2025-2030 · Suivi en temps réel</p>
-            </div>
-            <Link
-              href="/pta"
-              className="text-sm tracking-widest text-[#D4AF37] uppercase hover:underline"
-            >
-              Voir tout le PTA →
-            </Link>
-          </div>
-
-          {/* Progress bar */}
-          <div className="mb-8 rounded-none border border-green-700 bg-green-800/50 p-6">
-            <div className="mb-3 flex justify-between">
-              <span className="font-semibold text-green-100">Progression globale</span>
-              <span className="text-xl font-bold text-[#D4AF37]">{progress}%</span>
-            </div>
-            <div className="h-2 w-full bg-green-950">
-              <div
-                className="h-2 bg-[#D4AF37] transition-all duration-700"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
-            <p className="mt-3 text-sm text-green-400">
-              {completed} activité(s) terminée(s) sur {total}
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            {ptaActivities.map((a) => (
-              <div
-                key={a.id}
-                className="group border border-green-700 p-6 transition hover:border-[#D4AF37]"
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <h3 className="font-serif font-semibold text-white transition group-hover:text-[#D4AF37]">
-                    {a.title}
-                  </h3>
-                  <span
-                    className={`shrink-0 px-2 py-1 text-xs font-bold tracking-wide uppercase ${
-                      a.status === "COMPLETED"
-                        ? "bg-green-500/20 text-green-400"
-                        : a.status === "CANCELLED"
-                          ? "bg-red-500/20 text-red-400"
-                          : "bg-yellow-500/20 text-yellow-400"
-                    }`}
-                  >
-                    {a.status === "COMPLETED"
-                      ? "Terminé"
-                      : a.status === "CANCELLED"
-                        ? "Annulé"
-                        : "En cours"}
-                  </span>
-                </div>
-                <p className="mt-2 line-clamp-2 text-sm text-green-300">{a.description}</p>
-                <p className="mt-3 text-xs text-green-500">Année {a.year}</p>
+      {/* DOCUMENTS */}
+      {(featured || others.length > 0) && (
+        <section className="bg-green-900 px-6 py-20 text-white">
+          <div className="mx-auto max-w-6xl">
+            <div className="mb-12 flex flex-col justify-between gap-4 md:flex-row md:items-end">
+              <div>
+                <p className="mb-2 text-xs font-semibold tracking-widest text-[#D4AF37] uppercase">
+                  Transparence
+                </p>
+                <h2 className="font-serif text-4xl font-bold">Nos documents</h2>
+                <p className="mt-2 text-green-300">Le plan de travail et les bilans de la mairie</p>
               </div>
-            ))}
+              <Link
+                href="/documents"
+                className="text-sm tracking-widest text-[#D4AF37] uppercase hover:underline"
+              >
+                Tous les documents →
+              </Link>
+            </div>
+
+            {featured && (
+              <div className="mb-8 border border-[#D4AF37] bg-green-800/50 p-6">
+                <h3 className="font-serif text-2xl font-bold">{featured.title}</h3>
+                <p className="mt-2 text-green-200">{featured.description}</p>
+                <a
+                  href={featured.fileUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-5 inline-block bg-[#D4AF37] px-6 py-3 text-sm font-bold tracking-wide text-black uppercase transition hover:bg-[#b8962e]"
+                >
+                  Lire le document (PDF)
+                </a>
+              </div>
+            )}
+
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+              {others.slice(0, 3).map((d) => (
+                <a
+                  key={d.id}
+                  href={d.fileUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group border border-green-700 p-6 transition hover:border-[#D4AF37]"
+                >
+                  <h3 className="font-serif font-semibold transition group-hover:text-[#D4AF37]">
+                    {d.title}
+                  </h3>
+                  <p className="mt-2 line-clamp-2 text-sm text-green-300">{d.description}</p>
+                  <p className="mt-3 text-xs text-green-400">{formatDate(d.date, DOCUMENT_DATE)}</p>
+                </a>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* COMMUNE IDENTITY */}
       <section className="bg-[#FAFAF7] px-6 py-20">

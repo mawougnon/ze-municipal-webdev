@@ -78,21 +78,20 @@ model Application {
   @@index([createdAt])
 }
 // Annual work plan activities (PTA) with real-time tracking
-model PtaActivity {
-  id          String   @id @default(cuid())
-  year        String
-  title       String
-  description String
-  status      String   @default("IN_PROGRESS") // IN_PROGRESS, COMPLETED, CANCELLED
-  updatedAt   DateTime @updatedAt
-}
 
 // Single official PTA PDF document for the entire mandate
-model PtaDocument {
-  id        String   @id @default(cuid())
-  pdfUrl    String
-  year      String   // e.g. "2025-2030"
-  updatedAt DateTime @updatedAt
+model Document {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  fileUrl     String
+  date        DateTime // date of the document itself, at 00:00 UTC
+  featured    Boolean  @default(false) // shown first, for the PTA
+  published   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([published, date])
 }
 
 // Security audit log: tracks login attempts and admin actions

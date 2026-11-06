@@ -11,6 +11,10 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // Links already shared to the former page keep working
+  async redirects() {
+    return [{ source: "/pta", destination: "/documents", permanent: true }];
+  },
   async headers() {
     return [
       // Pages get a strict CSP with a nonce from proxy.ts. API answers are JSON and
