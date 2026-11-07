@@ -11,7 +11,6 @@ import { cache } from "react";
 
 type Props = { params: Promise<{ id: string }> };
 
-// The title of the page and the page itself share one query
 const getArticle = cache((id: string) =>
   prisma.article.findUnique({
     where: { id, published: true },
@@ -45,7 +44,6 @@ export default async function ArticlePage({ params }: Props) {
   return (
     <main className="min-h-screen bg-white">
       <section className="mx-auto max-w-3xl px-4 py-8 md:px-6 md:py-12">
-        {/* Date */}
         <p className="mb-4 text-sm text-gray-500">
           {formatDate(article.createdAt, {
             day: "numeric",
@@ -54,12 +52,10 @@ export default async function ArticlePage({ params }: Props) {
           })}
         </p>
 
-        {/* Title */}
         <h1 className="mb-6 font-serif text-3xl leading-tight font-bold text-gray-900">
           {article.title}
         </h1>
 
-        {/* Cover image: shown whole, whatever its shape */}
         {article.coverImageUrl && (
           <Image
             src={article.coverImageUrl}
@@ -72,7 +68,6 @@ export default async function ArticlePage({ params }: Props) {
           />
         )}
 
-        {/* Article content with custom styles */}
         <div
           className="article-content"
           dangerouslySetInnerHTML={{ __html: cleanArticleHtml(article.content) }}

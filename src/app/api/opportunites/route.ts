@@ -1,7 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
 import { NextResponse } from "next/server";
-import { revalidatePath } from "next/cache";
 import { offerSchema } from "@/lib/offers";
 import { logAdminAction } from "@/lib/audit";
 
@@ -19,9 +18,6 @@ export async function POST(req: Request) {
     await logAdminAction(tx, session, req, action, created.title);
     return created;
   });
-
-  revalidatePath("/opportunites");
-  revalidatePath("/");
 
   return NextResponse.json(opportunity, { status: 201 });
 }

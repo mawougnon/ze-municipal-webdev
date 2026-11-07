@@ -1,6 +1,5 @@
-// Creates the first account, or restores access when nobody can do it from the site.
+// Creates the first account, or restores access.
 // Usage: npm run db:create-admin -- person@example.com "Full Name" [ADMIN|SUPERADMIN]
-// Targets the database in DATABASE_URL.
 import { PrismaClient } from "@prisma/client";
 
 const [rawEmail, name, role = "SUPERADMIN"] = process.argv.slice(2);

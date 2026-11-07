@@ -1,10 +1,6 @@
-// One-off, after the private_application_files migration: moves the documents of existing
-// applications from the public bucket to the private one, under a random name that keeps
-// nothing of the applicant's name. Safe to run again.
-// Without --delete-unused it only reports. With it, it also deletes every file of the public
-// buckets that no page uses (documents left behind by old applications).
+// Moves documents of existing applications to the private bucket under random names.
+// --delete-unused also deletes files of the public buckets that no page references.
 // Usage: node scripts/move-application-files.mjs [--delete-unused]
-// Targets the project in DATABASE_URL, NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY.
 import { randomUUID } from "node:crypto";
 import { PrismaClient } from "@prisma/client";
 import { createClient } from "@supabase/supabase-js";
@@ -66,7 +62,7 @@ try {
         .filter((u) => u?.startsWith(prefix))
         .map((u) => decodeURIComponent(u.slice(prefix.length))),
     );
-    // A document that could not be moved stays where it is, whatever the option says
+    // Never delete a document that could not be moved
     if (bucket === "documents") notMoved.forEach((name) => kept.add(name));
     const unused = (await listAll(bucket)).filter((name) => !kept.has(name));
     console.log(`${bucket}: ${kept.size} used, ${unused.length} unused.`);

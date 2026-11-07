@@ -1,9 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Do not announce the framework in every response
   poweredByHeader: false,
-  // next dev must not add files to the project
   agentRules: false,
   images: {
     remotePatterns: [
@@ -13,14 +11,12 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // Links already shared to the former page keep working
   async redirects() {
     return [{ source: "/pta", destination: "/documents", permanent: true }];
   },
   async headers() {
     return [
-      // Pages get a strict CSP with a nonce from proxy.ts. API answers are JSON and
-      // never need to load or run anything.
+      // Pages get their CSP from proxy.ts
       {
         source: "/api/:path*",
         headers: [
@@ -30,18 +26,13 @@ const nextConfig: NextConfig = {
       {
         source: "/(.*)",
         headers: [
-          // Prevents clickjacking attacks
           { key: "X-Frame-Options", value: "DENY" },
-          // Prevents MIME type sniffing
           { key: "X-Content-Type-Options", value: "nosniff" },
-          // Forces HTTPS
           {
             key: "Strict-Transport-Security",
             value: "max-age=63072000; includeSubDomains; preload",
           },
-          // Controls referrer information
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-          // Permissions policy
           {
             key: "Permissions-Policy",
             value: "camera=(), microphone=(), geolocation=()",

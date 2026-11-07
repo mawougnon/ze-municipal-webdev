@@ -3,7 +3,7 @@ import type { Prisma } from "@prisma/client";
 import type { Session } from "next-auth";
 import { clientIp } from "@/lib/request";
 
-// Called inside the transaction of the change itself: no change without its trace
+// Call inside the transaction of the change
 export function logAdminAction(
   tx: Prisma.TransactionClient,
   session: Session,

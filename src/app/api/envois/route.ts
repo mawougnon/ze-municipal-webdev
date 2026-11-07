@@ -9,8 +9,7 @@ const uploadSchema = z.object({
   fileName: z.string().min(1).max(200),
 });
 
-// POST: a one-time link for an admin to send a public file: these files are too big to go
-// through a server function, and storage itself checks their type and size.
+// Files go straight to storage: they can exceed the body limit of a server function
 export async function POST(req: Request) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Non autorisé." }, { status: 401 });

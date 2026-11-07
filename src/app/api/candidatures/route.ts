@@ -3,16 +3,13 @@ import { NextResponse } from "next/server";
 import { isOpen } from "@/lib/offers";
 import { candidatureSchema } from "@/lib/candidatures";
 
-// Limits counted in the database (no external service)
 const MAX_PER_PHONE_PER_HOUR = 3;
 const MAX_TOTAL_PER_HOUR = 100;
 
 class UnknownFileError extends Error {}
 
-// POST: Submit a new application (Rate-limited)
 export async function POST(req: Request) {
   try {
-    // A. Validate Data
     const body = await req.json();
     const result = candidatureSchema.safeParse(body);
 
@@ -23,7 +20,6 @@ export async function POST(req: Request) {
       );
     }
 
-    // B. The offer must exist, be published and still be open
     const opportunity = await prisma.opportunity.findUnique({
       where: { id: result.data.opportunityId },
       select: { published: true, deadline: true },
@@ -38,7 +34,6 @@ export async function POST(req: Request) {
       );
     }
 
-    // C. Rate limit, by phone number and overall
     const hourAgo = new Date(Date.now() - 60 * 60 * 1000);
     const [byPhone, total] = await Promise.all([
       prisma.application.count({
@@ -54,8 +49,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // D. Save the application and attach its documents. A document already attached, or
-    // never issued, cancels everything.
+    // A file that was never issued or is already attached cancels the whole application
     const { files } = result.data;
     const attached = await prisma
       .$transaction(async (tx) => {

@@ -7,8 +7,7 @@ import { prisma } from "@/lib/prisma";
 
 type Context = { params: Promise<{ id: string }> };
 
-// Nobody can demote or delete their own account. The person acting stays a principal
-// administrator, so the site can never be left without one.
+// Nobody can demote or delete their own account, so a SUPERADMIN always remains
 async function findOtherAccount(id: string, session: Session) {
   const account = await prisma.user.findUnique({ where: { id }, select: { email: true } });
   if (!account) {

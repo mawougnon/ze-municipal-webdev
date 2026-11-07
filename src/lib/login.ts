@@ -5,7 +5,6 @@ import { Resend } from "resend";
 import { prisma } from "@/lib/prisma";
 
 const CODE_TTL_MS = 10 * 60 * 1000;
-// One code per account every 2 minutes
 const CODE_INTERVAL_MS = 2 * 60 * 1000;
 export const MAX_ATTEMPTS = 5;
 
@@ -13,18 +12,12 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const normalizeEmail = (email: string) => email.trim().toLowerCase();
 
-/**
- * Sends a login code if the address belongs to an account. /api/otp gives the same answer
- * whatever happens here and runs this after responding, so nothing leaks through it.
- */
 export async function requestLoginCode(rawEmail: string, ip: string | null) {
   const email = normalizeEmail(rawEmail);
-  // crypto.randomInt, not Math.random(): the code must not be predictable
   const code = randomInt(100000, 1000000).toString();
   const now = Date.now();
 
-  // One atomic statement: no account, or a code sent less than 2 minutes ago, updates nothing.
-  // otpExpires is set CODE_TTL_MS after issue, so the issue time is derived from it.
+  // Atomic. Updates nothing without an account, or within CODE_INTERVAL_MS of the last code.
   const issued = await prisma.user.updateMany({
     where: {
       email,
@@ -34,7 +27,6 @@ export async function requestLoginCode(rawEmail: string, ip: string | null) {
       ],
     },
     data: {
-      // Only a hash is stored: reading the database gives no usable code
       otpHash: await bcrypt.hash(code, 10),
       otpExpires: new Date(now + CODE_TTL_MS),
       otpAttempts: 0,
@@ -42,7 +34,6 @@ export async function requestLoginCode(rawEmail: string, ip: string | null) {
   });
   if (issued.count === 0) return;
 
-  // The Resend SDK returns errors instead of throwing them
   const { error } = await resend.emails.send({
     from: "Mairie de Zè <onboarding@resend.dev>",
     to: email,
@@ -68,10 +59,6 @@ export async function requestLoginCode(rawEmail: string, ip: string | null) {
   });
 }
 
-/**
- * Returns the account if the code is right. The comparison runs in constant time
- * (bcrypt.compare) and a code allows MAX_ATTEMPTS guesses in total.
- */
 export async function verifyLoginCode(rawEmail: string, code: string, ip: string | null) {
   const email = normalizeEmail(rawEmail);
   const user = await prisma.user.findUnique({ where: { email } });
@@ -80,14 +67,13 @@ export async function verifyLoginCode(rawEmail: string, code: string, ip: string
   const log = (action: string) =>
     prisma.auditLog.create({ data: { action, userEmail: email, ipAddress: ip } });
 
-  // Reserve the attempt before comparing, in one atomic statement: guesses sent in parallel
-  // cannot all read "no attempt yet" and slip past the limit.
+  // Atomic, so parallel guesses cannot get past the limit
   const reserved = await prisma.user.updateMany({
     where: { email, otpAttempts: { lt: MAX_ATTEMPTS } },
     data: { otpAttempts: { increment: 1 } },
   });
   if (reserved.count === 0) {
-    // The code is destroyed; otpExpires is kept because the resend delay is derived from it
+    // otpExpires stays: the resend delay is derived from it
     await prisma.user.update({ where: { email }, data: { otpHash: null } });
     await log("LOGIN_OTP_LOCKED");
     return null;
@@ -98,7 +84,6 @@ export async function verifyLoginCode(rawEmail: string, code: string, ip: string
     return null;
   }
 
-  // A code works once
   await prisma.user.update({
     where: { email },
     data: { otpHash: null, otpExpires: null, otpAttempts: 0 },

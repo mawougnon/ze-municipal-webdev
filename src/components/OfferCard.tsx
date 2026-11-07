@@ -3,7 +3,6 @@ import type { Opportunity } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 
-// The card of an offer: same shape with or without a poster, so that a grid stays aligned
 export default function OfferCard({ offer }: { offer: Opportunity }) {
   const type = offer.type === "JOB" ? "Emploi" : "Formation";
 

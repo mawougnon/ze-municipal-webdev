@@ -1,7 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
 import { NextResponse } from "next/server";
-import { revalidatePath } from "next/cache";
 import { offerSchema } from "@/lib/offers";
 import { logAdminAction } from "@/lib/audit";
 import { removePublicFile } from "@/lib/supabase-admin";
@@ -27,9 +26,6 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
       await removePublicFile("photos", previous.imageUrl);
     }
 
-    revalidatePath("/opportunites");
-    revalidatePath("/");
-
     return NextResponse.json(opportunity);
   } catch {
     return NextResponse.json({ error: "Introuvable." }, { status: 404 });
@@ -49,10 +45,6 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
       return offer;
     });
     await removePublicFile("photos", deleted.imageUrl);
-
-    // 3. Mise à jour du cache après suppression
-    revalidatePath("/opportunites");
-    revalidatePath("/");
 
     return NextResponse.json({ success: true });
   } catch {

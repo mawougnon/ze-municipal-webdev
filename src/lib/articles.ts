@@ -3,7 +3,6 @@ import { z } from "zod";
 import sanitizeHtml from "sanitize-html";
 import { isProjectFile, MAX_GALLERY_PHOTOS } from "@/lib/storage";
 
-// What an admin may send when creating or editing an article
 export const articleSchema = z.object({
   title: z.string().trim().min(3, "Titre trop court.").max(300, "Titre trop long."),
   content: z.string().min(1, "Le contenu est obligatoire.").max(100_000, "Contenu trop long."),
@@ -18,8 +17,7 @@ export const articleSchema = z.object({
   published: z.boolean().default(false),
 });
 
-// Article bodies come from the TipTap editor. Only the tags it can produce are kept, so
-// scripts, event handlers, styles and javascript: links are removed before display.
+// Only the tags the TipTap editor can produce
 export function cleanArticleHtml(html: string) {
   return sanitizeHtml(html, {
     allowedTags: [

@@ -3,7 +3,7 @@ import { openOffersWhere } from "@/lib/offers";
 import { prisma } from "@/lib/prisma";
 import { SITE_URL } from "@/lib/site";
 
-// Read on each request: the build must not need the database
+// The build must not need the database
 export const dynamic = "force-dynamic";
 
 const PAGES = [

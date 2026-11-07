@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider  = "postgresql"
   url       = env("DATABASE_URL")
   // Migrations need a direct (session mode) connection, the app uses the pooled one
   directUrl = env("DIRECT_URL")
@@ -11,14 +11,14 @@ datasource db {
 
 // Platform users (Admin, Secretary, Super Admin)
 model User {
-  id            String   @id @default(cuid())
-  name          String?
-  email         String   @unique
-  otpHash       String?   // hache avec bcrypt, jamais le code en clair
-  otpExpires    DateTime?
-  otpAttempts   Int      @default(0) // garde-fou anti-force-brute
-  role          Role     @default(ADMIN)
-  createdAt     DateTime @default(now())
+  id          String    @id @default(cuid())
+  name        String?
+  email       String    @unique
+  otpHash     String?
+  otpExpires  DateTime?
+  otpAttempts Int       @default(0)
+  role        Role      @default(ADMIN)
+  createdAt   DateTime  @default(now())
 }
 
 enum Role {
@@ -52,34 +52,35 @@ model ArticlePhoto {
 // Job offers and training opportunities
 model Opportunity {
   id           String        @id @default(cuid())
-  type         String        // "JOB" or "TRAINING"
+  type         String // "JOB" or "TRAINING"
   title        String
   description  String
   deadline     DateTime?
   published    Boolean       @default(false)
-  isFree       Boolean       @default(true)  // false = requires payment via FedaPay
-  price        Float?                         // price in XOF, null if free
-  imageUrl     String?                        // poster, in the photos bucket
+  isFree       Boolean       @default(true)
+  price        Float? // XOF
+  imageUrl     String?
   createdAt    DateTime      @default(now())
   applications Application[]
 }
 
 // Applications submitted for an opportunity
 model Application {
-  id              String      @id @default(cuid())
-  opportunityId   String
-  opportunity     Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
-  fullName        String
-  email           String?
-  phone           String      // WhatsApp-compatible number preferred
-  message         String?
-  files           ApplicationFile[]
-  consentAt       DateTime?   // accepted that the data is stored outside Benin
-  createdAt       DateTime    @default(now())
+  id            String            @id @default(cuid())
+  opportunityId String
+  opportunity   Opportunity       @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  fullName      String
+  email         String?
+  phone         String // WhatsApp-compatible number preferred
+  message       String?
+  files         ApplicationFile[]
+  consentAt     DateTime?
+  createdAt     DateTime          @default(now())
 
   @@index([opportunityId])
   @@index([createdAt])
 }
+
 // Annual work plan activities (PTA) with real-time tracking
 
 // Single official PTA PDF document for the entire mandate
@@ -88,8 +89,8 @@ model Document {
   title       String
   description String
   fileUrl     String
-  date        DateTime // date of the document itself, at 00:00 UTC
-  featured    Boolean  @default(false) // shown first, for the PTA
+  date        DateTime
+  featured    Boolean  @default(false)
   published   Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -100,8 +101,8 @@ model Document {
 // Security audit log: tracks login attempts and admin actions
 model AuditLog {
   id        String   @id @default(cuid())
-  action    String   // e.g. "LOGIN_OTP_SUCCESS", "ARTICLE_DELETED"
-  target    String?  // what the action applied to
+  action    String
+  target    String?
   userEmail String
   ipAddress String?
   createdAt DateTime @default(now())
@@ -109,8 +110,6 @@ model AuditLog {
   @@index([createdAt])
 }
 
-// A document sent with an application, in the private bucket. Without application: the form
-// was not sent yet, or the application is gone. The daily purge deletes those after a day.
 model ApplicationFile {
   path          String       @id
   applicationId String?

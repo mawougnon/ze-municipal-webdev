@@ -1,6 +1,5 @@
-// Read-only check of the rules set by the lock_down_public_schema migration.
-// Exits with an error if a table in the public schema is reachable through Supabase's API.
-// Usage: npm run db:check-security (uses DATABASE_URL)
+// Read-only. Fails if a table or a file can be reached through the Supabase API.
+// Usage: npm run db:check-security
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -25,7 +24,7 @@ try {
   for (const g of grants)
     problems.push(`table "${g.table_name}": ${g.grantee} can ${g.privileges}`);
 
-  // Skipped on plain PostgreSQL, which has no storage schema
+  // Plain PostgreSQL has no storage schema
   const [{ storage }] =
     await prisma.$queryRaw`SELECT to_regclass('storage.buckets')::text AS storage`;
   if (storage) {

@@ -1,15 +1,10 @@
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
 import { NextResponse } from "next/server";
-import { revalidatePath } from "next/cache";
 import { articleSchema } from "@/lib/articles";
 import { logAdminAction } from "@/lib/audit";
 import { removePublicFile } from "@/lib/supabase-admin";
 
-/**
- * PUT /api/articles/:id
- * Update an existing article
- */
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
 
@@ -49,20 +44,12 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
       before.filter((url) => !kept.has(url)).map((url) => removePublicFile("photos", url)),
     );
 
-    revalidatePath("/articles");
-    revalidatePath(`/articles/${id}`);
-    revalidatePath("/");
-
     return NextResponse.json(article);
   } catch {
     return NextResponse.json({ error: "Échec de la mise à jour de l'article." }, { status: 500 });
   }
 }
 
-/**
- * DELETE /api/articles/:id
- * Remove an article from the database
- */
 export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
 
@@ -81,10 +68,7 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
     const files = [deleted.coverImageUrl, ...deleted.photos.map((p) => p.url)];
     await Promise.all(files.map((url) => removePublicFile("photos", url)));
 
-    revalidatePath("/articles");
-    revalidatePath("/");
-
-    return NextResponse.json({ success: true, message: "Article deleted" });
+    return NextResponse.json({ success: true });
   } catch {
     return NextResponse.json({ error: "Article introuvable ou déjà supprimé." }, { status: 404 });
   }

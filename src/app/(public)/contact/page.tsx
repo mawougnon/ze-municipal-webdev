@@ -17,7 +17,6 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <main className="min-h-screen bg-[#FAFAF7]">
-      {/* Hero */}
       <section className="bg-green-900 px-6 py-16 text-center text-white">
         <p className="mb-3 text-xs font-semibold tracking-widest text-[#E8C547] uppercase">
           Nous contacter
@@ -26,7 +25,6 @@ export default function ContactPage() {
       </section>
 
       <section className="mx-auto grid max-w-4xl grid-cols-1 gap-12 px-6 py-16 md:grid-cols-2">
-        {/* Contact info */}
         <div>
           <h2 className="mb-8 font-serif text-2xl font-bold text-gray-900">Coordonnées</h2>
 
@@ -63,11 +61,9 @@ export default function ContactPage() {
             </div>
           </div>
 
-          {/* Social links */}
           <div className="mt-10">
             <h3 className="mb-4 font-semibold text-gray-800">Suivez-nous</h3>
             <div className="flex flex-wrap gap-3">
-              {/* WhatsApp Direct */}
               <a
                 href="https://wa.me/2290198704584"
                 target="_blank"
@@ -77,7 +73,6 @@ export default function ContactPage() {
                 <FaWhatsapp className="text-base" /> WhatsApp
               </a>
 
-              {/* WhatsApp Channel */}
               <a
                 href="https://whatsapp.com/channel/0029Vb7WVZXIiRovF2vgsk0t"
                 target="_blank"
@@ -87,7 +82,6 @@ export default function ContactPage() {
                 <FaBullhorn className="text-base" /> Canal
               </a>
 
-              {/* WhatsApp Group */}
               <a
                 href="https://chat.whatsapp.com/KvlauYJX31kHHfBZXvqllc"
                 target="_blank"
@@ -97,7 +91,6 @@ export default function ContactPage() {
                 <FaUsers className="text-base" /> Groupe
               </a>
 
-              {/* Facebook */}
               <a
                 href="https://www.facebook.com/profile.php?id=61587212746091"
                 target="_blank"
@@ -110,7 +103,6 @@ export default function ContactPage() {
           </div>
         </div>
 
-        {/* Write to us: opens the visitor's own mail app or WhatsApp, nothing is lost on the way */}
         <div className="flex flex-col justify-center rounded-xl border border-gray-100 bg-white p-8 shadow-sm">
           <h2 className="mb-3 font-serif text-xl font-bold text-gray-900">Nous écrire</h2>
           <p className="mb-6 text-sm text-gray-600">

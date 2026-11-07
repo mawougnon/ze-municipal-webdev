@@ -87,7 +87,7 @@ test("writing without a session is refused", async ({ request }) => {
   expect((await request.post("/api/articles", { data: {} })).status()).toBe(401);
   expect((await request.post("/api/documents", { data: {} })).status()).toBe(401);
   expect((await request.post("/api/comptes", { data: {} })).status()).toBe(403);
-  expect((await request.post("/api/uploads", { data: {} })).status()).toBe(401);
+  expect((await request.post("/api/envois", { data: {} })).status()).toBe(401);
   expect((await request.delete("/api/candidatures/none")).status()).toBe(401);
   expect((await request.get("/api/cron/nettoyage")).status()).toBe(401);
 });

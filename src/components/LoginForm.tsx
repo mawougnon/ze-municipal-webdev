@@ -14,7 +14,6 @@ export default function LoginForm() {
   const [error, setError] = useState("");
   const router = useRouter();
 
-  // Step 1: ask for a code. The answer is the same whether or not the address has an account.
   async function handleSendOtp(e: React.FormEvent) {
     e.preventDefault();
     setError("");
@@ -41,7 +40,6 @@ export default function LoginForm() {
     }
   }
 
-  // Step 2: check the code
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     setError("");
@@ -53,7 +51,6 @@ export default function LoginForm() {
       setError("Code incorrect ou expiré.");
       setLoading(false);
     } else {
-      // replace: the back button must not return to the login form
       router.replace("/admin");
       router.refresh();
     }

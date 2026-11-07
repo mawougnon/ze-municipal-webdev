@@ -2,12 +2,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { FaWhatsapp, FaFacebook, FaEnvelope, FaUsers } from "react-icons/fa";
 
-// Footer: shown on all public pages
 export default function Footer() {
   return (
     <footer className="bg-green-800 px-6 py-10 text-green-100">
       <div className="mx-auto grid max-w-6xl grid-cols-1 gap-8 md:grid-cols-3">
-        {/* Identity */}
         <div>
           <Image
             src="/logo-association-mj-ze.jpg"
@@ -20,7 +18,6 @@ export default function Footer() {
           <p className="mt-1 text-sm text-green-300">Zè, Département de l’Atlantique, Bénin</p>
         </div>
 
-        {/* Quick links */}
         <div>
           <h2 className="mb-3 font-semibold text-white">Navigation</h2>
           <ul className="space-y-2 text-sm">
@@ -40,7 +37,6 @@ export default function Footer() {
           </ul>
         </div>
 
-        {/* AMJB logo */}
         <div className="flex flex-col items-start">
           <h2 className="mb-3 font-semibold text-white">Membre de</h2>
           <Image
@@ -54,7 +50,6 @@ export default function Footer() {
       </div>
 
       <div className="mb-6 flex flex-wrap justify-center gap-6">
-        {/* WhatsApp Personal/Business Direct Link */}
         <a
           href="https://wa.me/2290198704584"
           target="_blank"
@@ -64,7 +59,6 @@ export default function Footer() {
           <FaWhatsapp className="text-lg" /> Contact Direct
         </a>
 
-        {/* WhatsApp Channel */}
         <a
           href="https://whatsapp.com/channel/0029Vb7WVZXIiRovF2vgsk0t"
           target="_blank"
@@ -74,7 +68,6 @@ export default function Footer() {
           <FaWhatsapp className="text-lg" /> Canal
         </a>
 
-        {/* WhatsApp Group (Le lien de chat.whatsapp.com) */}
         <a
           href="https://chat.whatsapp.com/KvlauYJX31kHHfBZXvqllc"
           target="_blank"
@@ -84,7 +77,6 @@ export default function Footer() {
           <FaUsers className="text-lg" /> Groupe
         </a>
 
-        {/* Facebook Page */}
         <a
           href="https://www.facebook.com/profile.php?id=61587212746091"
           target="_blank"
@@ -94,7 +86,6 @@ export default function Footer() {
           <FaFacebook className="text-lg" /> Facebook
         </a>
 
-        {/* Email */}
         <a
           href="mailto:mairiedesjeunesdeze2025@gmail.com"
           className="flex items-center gap-2 text-sm text-green-300 transition hover:text-white"

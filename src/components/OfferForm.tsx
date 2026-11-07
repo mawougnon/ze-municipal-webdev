@@ -185,7 +185,6 @@ export default function OfferForm({ id, initial }: Props) {
             type="button"
             disabled={saving}
             onClick={() => {
-              // Applications are deleted with their offer: say so before it happens
               if (
                 confirm(
                   "Supprimer cette offre définitivement ? Toutes ses candidatures seront aussi supprimées.",

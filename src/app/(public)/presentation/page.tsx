@@ -7,7 +7,6 @@ export const metadata: Metadata = {
   description: "Qui est la Mairie des Jeunes de Zè, sa mission et son équipe.",
 };
 
-// Static presentation page: mission, vision, values, history
 export default function PresentationPage() {
   const valeurs = [
     {
@@ -29,7 +28,6 @@ export default function PresentationPage() {
 
   return (
     <main className="min-h-screen bg-[#FAFAF7]">
-      {/* Hero */}
       <section className="relative flex h-64 items-center justify-center overflow-hidden bg-green-900">
         <div className="absolute inset-0 opacity-20">
           <Image
@@ -49,7 +47,6 @@ export default function PresentationPage() {
         </div>
       </section>
 
-      {/* Welcome text */}
       <section className="mx-auto max-w-4xl px-6 py-16">
         <div className="mb-16 border-l-4 border-[#D4AF37] pl-8">
           <p className="text-lg leading-relaxed text-gray-700 italic">
@@ -72,7 +69,6 @@ export default function PresentationPage() {
         </p>
       </section>
 
-      {/* Mission & Vision */}
       <section className="bg-green-900 px-6 py-16 text-white">
         <div className="mx-auto grid max-w-6xl grid-cols-1 gap-12 md:grid-cols-2">
           <div>
@@ -109,7 +105,6 @@ export default function PresentationPage() {
         </div>
       </section>
 
-      {/* Valeurs */}
       <section className="bg-white px-6 py-16">
         <div className="mx-auto max-w-6xl">
           <div className="mb-12 text-center">
@@ -134,7 +129,6 @@ export default function PresentationPage() {
         </div>
       </section>
 
-      {/* Devise */}
       <section className="bg-[#D4AF37] px-6 py-12 text-center">
         <p className="mb-3 text-xs font-semibold tracking-widest text-black/80 uppercase">
           Notre Devise
@@ -144,7 +138,6 @@ export default function PresentationPage() {
         </h2>
       </section>
 
-      {/* Logos */}
       <section className="bg-[#FAFAF7] px-6 py-12">
         <div className="mx-auto flex max-w-4xl flex-wrap items-center justify-center gap-12">
           <Image

@@ -36,7 +36,6 @@ export default async function CandidaturesPage({ searchParams }: Props) {
           </span>
         </div>
 
-        {/* Filters */}
         <div className="mb-6 flex flex-wrap gap-4 rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
           <div>
             <label className="mb-1 block text-xs font-medium text-gray-500">Type d’offre</label>
@@ -93,7 +92,6 @@ export default async function CandidaturesPage({ searchParams }: Props) {
           </div>
         </div>
 
-        {/* Applications list */}
         {applications.length === 0 ? (
           <div className="rounded-xl bg-white p-8 text-center text-gray-500">
             Aucune candidature pour le moment.

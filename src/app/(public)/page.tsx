@@ -22,7 +22,7 @@ export default async function HomePage() {
   });
   return (
     <main className="min-h-screen bg-[#FAFAF7]">
-      {/* HERO: full viewport, site historique background */}
+      {/* HERO */}
       <section className="relative flex h-screen flex-col items-center justify-center overflow-hidden">
         <Image
           src="/population-ze.png"
@@ -32,14 +32,9 @@ export default async function HomePage() {
           className="scale-105 object-cover"
           preload
         />
-        {/* Gradient overlay: dark bottom, slightly lighter top */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/55 to-black/80" />
 
         <div className="relative z-10 mx-auto max-w-4xl px-6 text-center text-white">
-          {/* Logos row */}
-
-          {/* width and height keep each file's real ratio (square, then 720x377), so the
-              logos never stretch, and are large enough to stay sharp at their display size */}
           <div className="mb-6 flex items-center justify-center gap-3 md:gap-4">
             <Image
               src="/logo-association-mj-benin.jpg"
@@ -69,7 +64,6 @@ export default async function HomePage() {
             />
           </div>
 
-          {/* Eyebrow */}
           <p className="mb-4 text-xs font-semibold tracking-[0.3em] text-[#D4AF37] uppercase">
             Mandature 2025-2030
           </p>
@@ -106,14 +100,12 @@ export default async function HomePage() {
           </div>
         </div>
 
-        {/* Scroll indicator */}
         <div className="absolute bottom-8 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2 text-xs text-white/60">
           <span className="tracking-widest uppercase">Découvrir</span>
           <div className="h-8 w-px animate-pulse bg-white/40" />
         </div>
       </section>
 
-      {/* DEVISE BAND */}
       <section className="bg-green-800 px-6 py-5">
         <div className="mx-auto flex max-w-6xl flex-wrap justify-center gap-8 text-sm font-medium tracking-widest text-white uppercase">
           {["Initiative", "Engagement", "Développement"].map((word, i) => (
@@ -125,7 +117,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* BUREAU: Bigger size for the mayor */}
+      {/* BUREAU */}
       <section className="bg-[#FAFAF7] px-6 py-20">
         <div className="mx-auto max-w-6xl">
           <div className="mb-14 text-center">
@@ -136,9 +128,7 @@ export default async function HomePage() {
             <div className="mx-auto mt-4 h-1 w-16 bg-[#D4AF37]" />
           </div>
 
-          {/* Layout : deputy1 | Maire (bigger) | deputy2 */}
           <div className="flex flex-col items-center justify-center gap-6 md:flex-row md:items-end md:gap-8">
-            {/* 1er Adjoint */}
             <div className="group order-2 text-center md:order-1">
               <div className="relative mx-auto mb-4 h-44 w-36 overflow-hidden md:h-56 md:w-48">
                 <Image
@@ -158,7 +148,6 @@ export default async function HomePage() {
               </h3>
             </div>
 
-            {/* Mayor: center */}
             <div className="group order-1 text-center md:order-2">
               <div className="relative mx-auto mb-4 h-60 w-48 overflow-hidden border-4 border-[#D4AF37] shadow-2xl md:h-72 md:w-64">
                 <Image
@@ -203,18 +192,16 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* AMJB PRESIDENT & THE GODFATHER */}
+      {/* TUTELLE */}
       <section className="bg-green-900 px-6 py-12 text-white">
         <div className="mx-auto max-w-6xl">
           {" "}
-          {/* Augmenté à 6xl pour plus d'espace */}
           <div className="mb-10 text-center">
             <p className="mb-2 text-xs font-semibold tracking-widest text-[#E8C547] uppercase">
               Autorités de Tutelle & Parrainage
             </p>
           </div>
           <div className="flex flex-col items-start justify-center gap-8 md:flex-row md:gap-4">
-            {/* PRESIDENT */}
             <div className="w-full flex-1 text-center">
               <div className="relative mx-auto mb-4 h-28 w-28 overflow-hidden rounded-full border-2 border-[#D4AF37] shadow-xl md:h-36 md:w-36">
                 <Image
@@ -237,7 +224,6 @@ export default async function HomePage() {
               <div className="h-24 w-px bg-white/20" />
             </div>
 
-            {/* GODFATHER */}
             <div className="w-full flex-1 text-center">
               <div className="relative mx-auto mb-4 h-28 w-28 overflow-hidden rounded-full border-2 border-[#D4AF37] shadow-xl md:h-36 md:w-36">
                 <Image
@@ -260,7 +246,6 @@ export default async function HomePage() {
               <div className="h-24 w-px bg-white/20" />
             </div>
 
-            {/* PREFECT */}
             <div className="w-full flex-1 text-center">
               <div className="relative mx-auto mb-4 h-28 w-28 overflow-hidden rounded-full border-2 border-[#D4AF37] shadow-xl md:h-36 md:w-36">
                 <Image
@@ -369,7 +354,6 @@ export default async function HomePage() {
             </Link>
           </div>
 
-          {/* Grid 6 photos: 2 colums, 3 rows */}
           <div className="grid grid-cols-2 gap-3">
             <div className="relative h-44 overflow-hidden">
               <Image

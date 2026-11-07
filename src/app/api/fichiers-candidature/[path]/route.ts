@@ -4,8 +4,6 @@ import { logAdminAction } from "@/lib/audit";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
-// GET: opens a document of an application, for an admin. The link given by storage only
-// works for a minute, so it cannot circulate, and each reading is recorded.
 export async function GET(req: Request, { params }: { params: Promise<{ path: string }> }) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Non autorisé." }, { status: 401 });

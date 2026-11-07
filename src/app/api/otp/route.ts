@@ -5,7 +5,6 @@ import { clientIp } from "@/lib/request";
 
 const bodySchema = z.object({ email: z.email() });
 
-// The same answer whether or not the address has an account
 const ANSWER = {
   message: "Si cette adresse correspond à un compte, un code vient d’y être envoyé.",
 };
@@ -18,8 +17,7 @@ export async function POST(req: Request) {
 
   const ip = clientIp(req.headers);
 
-  // The work runs after the response is sent, so the response time cannot reveal
-  // whether the account exists either. Failures are logged for the Vercel logs.
+  // After the response, so its timing does not reveal whether the account exists
   after(async () => {
     try {
       await requestLoginCode(body.data.email, ip);

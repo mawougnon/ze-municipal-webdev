@@ -9,7 +9,6 @@ export default async function SecretEntry({ params }: { params: Promise<{ token:
 
   const validToken = process.env.ADMIN_SECRET_TOKEN;
 
-  // A wrong token looks like any page that does not exist
   if (!validToken || token !== validToken) {
     notFound();
   }

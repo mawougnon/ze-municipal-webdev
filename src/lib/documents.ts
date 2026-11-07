@@ -3,7 +3,6 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { isProjectFile } from "@/lib/storage";
 
-// What an admin may send when creating or editing a document
 export const documentSchema = z
   .object({
     title: z.string().trim().min(3, "Titre trop court.").max(200, "Titre trop long."),

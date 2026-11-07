@@ -4,14 +4,14 @@ import { formatDate } from "@/lib/format";
 import { prisma } from "@/lib/prisma";
 
 const PAGE_SIZE = 50;
-const LAST_PAGE = 100_000; // keeps the offset within what the database accepts
+const LAST_PAGE = 100_000;
 
 const LABELS: Record<string, { label: string; color: string }> = {
   LOGIN_OTP_SENT: { label: "Code envoyé", color: "text-gray-500" },
   LOGIN_OTP_SUCCESS: { label: "Connexion", color: "text-green-700" },
   LOGIN_OTP_FAILED: { label: "Code incorrect", color: "text-red-600" },
   LOGIN_OTP_LOCKED: { label: "Code bloqué après 5 essais", color: "text-red-700" },
-  // Rows written before the login by email code
+  // Older rows
   LOGIN_PASSWORD_SUCCESS: { label: "Connexion (ancien mot de passe)", color: "text-green-700" },
   LOGIN_PASSWORD_FAILED: { label: "Mot de passe incorrect", color: "text-red-600" },
 
@@ -43,7 +43,6 @@ export default async function JournalPage({
   const { page } = await searchParams;
   const current = Math.min(Math.max(Math.floor(Number(page)) || 1, 1), LAST_PAGE);
 
-  // One row more than displayed tells whether a next page exists
   const rows = await prisma.auditLog.findMany({
     orderBy: { createdAt: "desc" },
     skip: (current - 1) * PAGE_SIZE,

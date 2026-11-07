@@ -5,7 +5,6 @@ import { useRef, useState } from "react";
 
 const CONTROL = "rounded-lg bg-white px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-200";
 
-// The browser's own <dialog> keeps the focus inside, closes with Escape and gives the focus back
 export default function ArticleGallery({ photos, title }: { photos: string[]; title: string }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const [current, setCurrent] = useState(0);

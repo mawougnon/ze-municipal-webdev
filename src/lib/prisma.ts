@@ -1,7 +1,6 @@
 import "server-only";
 import { PrismaClient } from "@prisma/client";
 
-// Prevents multiple Prisma instances during development (hot reload)
 const globalForPrisma = global as unknown as { prisma: PrismaClient };
 
 export const prisma = globalForPrisma.prisma || new PrismaClient();

@@ -14,9 +14,8 @@ interface Props {
 const MAX_BYTES = 5 * 1024 * 1024;
 const MAX_SIDE = 1920;
 
-// Phone photos are often over 5 MB and the bucket only takes JPEG and PNG.
-// Big images and other formats are redrawn as JPEG with the browser's own decoder;
-// a format the browser cannot read (HEIC outside Safari) makes createImageBitmap throw.
+// Phone photos often exceed the limits of the bucket (5 MB, JPEG or PNG).
+// createImageBitmap throws on a format the browser cannot read, such as HEIC outside Safari.
 async function prepareImage(file: File): Promise<File> {
   const bitmap = await createImageBitmap(file);
   const scale = Math.min(1, MAX_SIDE / Math.max(bitmap.width, bitmap.height));
@@ -45,7 +44,6 @@ export default function FileUpload({
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
 
-  // Returns what went wrong, if anything
   async function send(picked: File) {
     let file = picked;
     if (bucket === "photos") {
@@ -57,8 +55,7 @@ export default function FileUpload({
     }
     if (file.size > MAX_BYTES) return "Le fichier dépasse 5 Mo.";
 
-    // The server decides who may upload and gives a one-time link
-    const res = await fetch("/api/uploads", {
+    const res = await fetch("/api/envois", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ bucket, fileName: file.name }),
@@ -90,7 +87,6 @@ export default function FileUpload({
     }
     setError(problems.join(" "));
     setUploading(false);
-    // The field is ready for the next photos
     if (multiple) input.value = "";
   }
 

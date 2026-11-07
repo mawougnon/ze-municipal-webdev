@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { issueUpload } from "@/lib/application-files";
 import { clientIp } from "@/lib/request";
 
-// POST: a one-time link to send one document with an application
 export async function POST(req: Request) {
   try {
     const upload = await issueUpload(clientIp(req.headers));

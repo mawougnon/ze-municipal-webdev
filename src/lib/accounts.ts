@@ -13,7 +13,7 @@ export const accountSchema = z.object({
     .trim()
     .min(2, "Indiquez le nom.")
     .max(100, "Nom trop long."),
-  // Same normalisation as the login, or the person could never receive a code
+  // Must match normalizeEmail in lib/login.ts
   email: z
     .string({ error: "Adresse email invalide." })
     .trim()

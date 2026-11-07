@@ -1,4 +1,3 @@
-// Layout of the legal pages: plain text, easy to read on a phone
 export default function LegalLayout({ children }: { children: React.ReactNode }) {
   return (
     <main className="min-h-screen bg-white">

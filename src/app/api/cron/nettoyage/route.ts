@@ -1,7 +1,7 @@
 import { purgeExpiredData } from "@/lib/application-files";
 import { NextResponse } from "next/server";
 
-// Called once a day by Vercel (vercel.json), which sends CRON_SECRET in this header
+// Vercel sends CRON_SECRET in this header (see vercel.json)
 export async function GET(req: Request) {
   const secret = process.env.CRON_SECRET;
   if (!secret || req.headers.get("authorization") !== `Bearer ${secret}`) {

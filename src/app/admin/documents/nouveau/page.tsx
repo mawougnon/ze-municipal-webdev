@@ -4,7 +4,7 @@ import { requireAdmin } from "@/lib/admin";
 export default async function NewDocumentPage() {
   await requireAdmin();
 
-  // This locale writes dates as YYYY-MM-DD, the format of a date field
+  // sv-SE formats dates as YYYY-MM-DD
   const today = new Date().toLocaleDateString("sv-SE", { timeZone: "Africa/Porto-Novo" });
 
   return (

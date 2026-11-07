@@ -9,7 +9,6 @@ const db = vi.hoisted(() => ({
 }));
 vi.mock("@/auth", () => ({ auth }));
 vi.mock("@/lib/prisma", () => ({ prisma: db }));
-vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
 vi.mock("@/lib/supabase-admin", () => ({ removePublicFile }));
 
 const { DELETE, PUT } = await import("./route");

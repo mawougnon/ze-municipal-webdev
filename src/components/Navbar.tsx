@@ -5,7 +5,6 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-gray-100 bg-white shadow-sm">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 md:px-6">
-        {/* Logo gauche */}
         <Link href="/" className="flex items-center">
           <Image
             src="/logo-benin.png"
@@ -17,7 +16,6 @@ export default function Navbar() {
           />
         </Link>
 
-        {/* Navigation desktop */}
         <nav className="hidden items-center gap-6 text-sm font-medium text-gray-600 md:flex">
           <Link href="/" className="transition hover:text-green-700">
             Accueil
@@ -39,7 +37,6 @@ export default function Navbar() {
           </Link>
         </nav>
 
-        {/* Logo droite */}
         <Image
           src="/logo-commune-ze.jpg"
           alt="Commune de Zè"
@@ -50,7 +47,6 @@ export default function Navbar() {
         />
       </div>
 
-      {/* Navigation mobile: barre scrollable */}
       <div className="scrollbar-hide flex gap-5 overflow-x-auto border-t border-gray-100 px-4 py-2 text-xs font-medium whitespace-nowrap text-gray-500 md:hidden">
         <Link href="/" className="shrink-0 hover:text-green-700">
           Accueil

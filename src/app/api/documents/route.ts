@@ -14,7 +14,7 @@ export async function POST(req: Request) {
 
   const { data } = result;
   const document = await prisma.$transaction(async (tx) => {
-    // One document at a time is featured. A draft does not take the place of the online one.
+    // One featured document at a time, and a draft does not replace the online one
     if (data.featured && data.published) {
       await tx.document.updateMany({ where: { featured: true }, data: { featured: false } });
     }

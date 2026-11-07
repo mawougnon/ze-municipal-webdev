@@ -10,7 +10,6 @@ import { cache } from "react";
 
 type Props = { params: Promise<{ id: string }> };
 
-// The title of the page and the page itself share one query
 const getOpportunity = cache((id: string) =>
   prisma.opportunity.findUnique({ where: { id, published: true } }),
 );
@@ -35,7 +34,6 @@ export default async function OpportuniteDetailPage({ params }: Props) {
 
   if (!opportunity) notFound();
 
-  // A shared link can outlive the deadline: no form once the offer is closed
   const open = isOpen(opportunity.deadline);
   const paragraphs = opportunity.description.split("\n").filter((line) => line.trim());
 
@@ -56,7 +54,6 @@ export default async function OpportuniteDetailPage({ params }: Props) {
       </section>
 
       <div className="mx-auto grid max-w-6xl grid-cols-1 gap-8 px-4 py-8 md:px-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-12 lg:py-12">
-        {/* First on a phone, on the right and always in view on a computer */}
         <aside className="lg:order-2">
           <div className="rounded-xl border border-gray-200 bg-[#FAFAF7] p-6 lg:sticky lg:top-24">
             <dl className="space-y-4">

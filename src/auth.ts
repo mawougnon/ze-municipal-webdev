@@ -6,7 +6,6 @@ import { clientIp } from "@/lib/request";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
-    // One way in: a code sent by email. There is no password, so none can be stolen or guessed.
     Credentials({
       name: "Mairie de Zè",
       credentials: {
@@ -21,11 +20,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
 
-  // Session expires after 10 hours of inactivity
   session: {
     strategy: "jwt",
-    maxAge: 10 * 60 * 60, // 10 hours in seconds
-    updateAge: 60 * 60, // refresh token every hour to track activity
+    maxAge: 10 * 60 * 60,
+    updateAge: 60 * 60,
   },
 
   callbacks: {
@@ -34,8 +32,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.role = user.role;
         return token;
       }
-      // Read the account again on every request: a removed admin loses access at once
-      // instead of keeping a valid token for up to 10 hours, and a role change applies.
+      // Read the account on every request so that removals and role changes apply at once
       const current = token.email
         ? await prisma.user.findUnique({ where: { email: token.email }, select: { role: true } })
         : null;

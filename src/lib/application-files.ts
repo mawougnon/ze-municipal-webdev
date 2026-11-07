@@ -7,14 +7,13 @@ const BUCKET = "applications";
 const HOUR_MS = 60 * 60 * 1000;
 const DAY_MS = 24 * HOUR_MS;
 
-// An upload needs no account, so these limits are what stops a visitor from filling the storage
+// Uploads need no account
 const MAX_UPLOADS_PER_IP_PER_HOUR = 15;
 const MAX_UPLOADS_PER_HOUR = 50;
 
-const APPLICATION_RETENTION_MS = 183 * DAY_MS; // 6 months
+const APPLICATION_RETENTION_MS = 183 * DAY_MS;
 const LOG_RETENTION_MS = 365 * DAY_MS;
 
-// Returns a one-time link to send one PDF to the private bucket, or null over the limits.
 export async function issueUpload(ipAddress: string | null) {
   const since = new Date(Date.now() - HOUR_MS);
   const [byIp, total] = await Promise.all([
@@ -25,7 +24,6 @@ export async function issueUpload(ipAddress: string | null) {
   ]);
   if (byIp >= MAX_UPLOADS_PER_IP_PER_HOUR || total >= MAX_UPLOADS_PER_HOUR) return null;
 
-  // A random name: the file cannot be guessed and keeps nothing of the applicant's file name
   const path = `${randomUUID()}.pdf`;
   await prisma.applicationFile.create({ data: { path, ipAddress } });
 
@@ -40,7 +38,7 @@ export async function signedReadUrl(path: string) {
   return data.signedUrl;
 }
 
-// The rows go only once the files are gone: after a failure the next purge tries again
+// Rows go last, so the next purge retries after a failure
 export async function removeFiles(paths: string[]) {
   if (paths.length === 0) return;
   const { error } = await supabaseAdmin.storage.from(BUCKET).remove(paths);
@@ -48,14 +46,12 @@ export async function removeFiles(paths: string[]) {
   await prisma.applicationFile.deleteMany({ where: { path: { in: paths } } });
 }
 
-// Run once a day. What the privacy policy promises does not depend on someone opening a page.
 export async function purgeExpiredData(now = Date.now()) {
   const { count: applications } = await prisma.application.deleteMany({
     where: { createdAt: { lt: new Date(now - APPLICATION_RETENTION_MS) } },
   });
 
-  // Without an application: its application was deleted (with its offer, or by the purge
-  // above), or the applicant uploaded and never sent the form. A day leaves them the time.
+  // Includes files of deleted applications. New uploads get a day for the form to be sent.
   const orphans = await prisma.applicationFile.findMany({
     where: { applicationId: null, createdAt: { lt: new Date(now - DAY_MS) } },
     select: { path: true },

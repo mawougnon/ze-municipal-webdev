@@ -1,12 +1,9 @@
 import { z } from "zod";
 import { BENIN_PHONE, normalizeBeninPhone } from "@/lib/phone";
 
-// One schema for the form in the browser and for the API on the server,
-// so the two can never accept different data.
 export const candidatureSchema = z.object({
   opportunityId: z.string().min(1),
-  // Names in Fon or Yoruba use letters such as ɛ, ɔ, ɖ and tone marks: accept any letter
-  // and combining mark, collapse spaces, and store one Unicode form (NFC).
+  // Names in Fon or Yoruba use letters such as ɛ, ɔ, ɖ and tone marks
   fullName: z
     .string()
     .transform((val) => val.normalize("NFC").trim().replace(/\s+/g, " "))
@@ -33,14 +30,12 @@ export const candidatureSchema = z.object({
     .optional()
     .or(z.null()),
   consent: z.literal(true, { error: "Votre accord est nécessaire pour envoyer la candidature." }),
-  // Names issued by the server: an applicant cannot point to anything else
   files: z
     .array(z.string().regex(/^[0-9a-f-]{36}\.pdf$/, "Document invalide."))
     .max(5, "5 documents au maximum.")
     .default([]),
 });
 
-// The fields the applicant types in the form
 export const applicantSchema = candidatureSchema.pick({
   fullName: true,
   phone: true,

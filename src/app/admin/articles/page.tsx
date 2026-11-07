@@ -3,7 +3,6 @@ import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 
-// Fetch articles directly on the server: no useEffect needed
 export default async function ArticlesPage() {
   await requireAdmin();
 
@@ -15,7 +14,6 @@ export default async function ArticlesPage() {
   return (
     <main className="min-h-screen bg-gray-50 p-8">
       <div className="mx-auto max-w-4xl">
-        {/* Header */}
         <div className="mb-8 flex items-center justify-between">
           <h1 className="text-2xl font-bold text-gray-800">Articles</h1>
           <Link
@@ -26,7 +24,6 @@ export default async function ArticlesPage() {
           </Link>
         </div>
 
-        {/* Articles list */}
         {articles.length === 0 ? (
           <div className="rounded-xl bg-white p-8 text-center text-gray-500">
             Aucun article pour le moment.
@@ -42,7 +39,6 @@ export default async function ArticlesPage() {
                   <h2 className="font-semibold text-gray-800">{article.title}</h2>
                   <div className="mt-1 flex items-center gap-3">
                     <span className="text-sm text-gray-500">{formatDate(article.createdAt)}</span>
-                    {/* Publication status badge */}
                     <span
                       className={`rounded-full px-2 py-0.5 text-xs ${
                         article.published
@@ -66,7 +62,6 @@ export default async function ArticlesPage() {
           </div>
         )}
 
-        {/* Back to dashboard */}
         <div className="mt-6">
           <Link href="/admin" className="text-sm text-gray-500 hover:text-gray-600">
             ← Retour au tableau de bord

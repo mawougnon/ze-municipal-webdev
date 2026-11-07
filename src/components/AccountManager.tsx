@@ -32,7 +32,6 @@ export default function AccountManager({
   const [error, setError] = useState("");
   const [sending, setSending] = useState(false);
   const [refreshing, startRefresh] = useTransition();
-  // The list shows the old values until the page has been read again
   const saving = sending || refreshing;
 
   async function send(url: string, method: string, body?: object) {
