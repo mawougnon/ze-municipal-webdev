@@ -1,0 +1,38 @@
+import "server-only";
+import type { Prisma } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
+import { isProjectFile } from "@/lib/storage";
+import { z } from "@/lib/zod";
+
+export const documentSchema = z
+  .object({
+    title: z.string().trim().min(3, "Titre trop court.").max(200, "Titre trop long."),
+    description: z
+      .string()
+      .trim()
+      .min(1, "La description est obligatoire.")
+      .max(2000, "Description trop longue."),
+    fileUrl: z.string().refine((url) => isProjectFile(url, "documents"), "Joignez le fichier PDF."),
+    date: z.iso.date("Date invalide."),
+    featured: z.boolean().default(false),
+    published: z.boolean().default(false),
+  })
+  .transform((document) => ({ ...document, date: new Date(`${document.date}T00:00:00.000Z`) }));
+
+export async function publishedDocuments() {
+  const documents = await prisma.document.findMany({
+    where: { published: true },
+    orderBy: [{ date: "desc" }, { createdAt: "desc" }],
+  });
+  const featured = documents.find((document) => document.featured);
+  return { featured, others: documents.filter((document) => document !== featured) };
+}
+
+// One featured document at a time, and a draft does not replace the online one
+export function releaseFeaturedPlace(
+  tx: Prisma.TransactionClient,
+  document: { featured: boolean; published: boolean },
+) {
+  if (!document.featured || !document.published) return;
+  return tx.document.updateMany({ where: { featured: true }, data: { featured: false } });
+}

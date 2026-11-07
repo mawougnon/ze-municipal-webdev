@@ -1,13 +1,26 @@
 {
-  "name": "ze_municipal_webdev",
-  "version": "0.1.0",
+  "name": "ze-municipal-platform",
+  "version": "1.1.0",
   "private": true,
+  "description": "Website and admin area of the Zè Youth City Hall (AMJB), Benin",
+  "license": "MIT",
+  "engines": {
+    "node": "24.x"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "postinstall": "prisma generate"
+    "lint": "eslint --max-warnings 0",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "db:migrate": "prisma migrate deploy",
+    "postinstall": "prisma generate",
+    "db:check-security": "node scripts/check-database-security.mjs",
+    "db:create-admin": "node scripts/create-admin.mjs"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
@@ -16,34 +29,34 @@
     "@tiptap/react": "^3.32.2",
     "@tiptap/starter-kit": "^3.32.2",
     "bcrypt": "^6.0.0",
-    "class-variance-authority": "^0.7.1",
-    "clsx": "^2.1.1",
-    "lucide-react": "^1.14.0",
     "next": "^16.4.3",
     "next-auth": "^5.0.0-beta.32",
     "nextjs-toploader": "^3.9.17",
-    "prisma": "^5.22.0",
-    "radix-ui": "^1.4.3",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "react-icons": "^5.6.0",
     "resend": "^6.37.0",
     "sanitize-html": "^2.18.1",
-    "tailwind-merge": "^3.5.0",
-    "tw-animate-css": "^1.4.0",
+    "server-only": "^0.0.1",
     "zod": "^4.6.7"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "@playwright/test": "^1.65.0",
     "@tailwindcss/postcss": "^4",
     "@types/bcrypt": "^6.0.0",
-    "@types/node": "^20",
+    "@types/node": "^24.19.2",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/sanitize-html": "^2.16.2",
     "eslint": "^9",
     "eslint-config-next": "^16.4.3",
-    "shadcn": "^4.6.0",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.9.10",
+    "prettier-plugin-tailwindcss": "^0.8.1",
+    "prisma": "^5.22.0",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.1.12"
   }
 }

@@ -1,247 +1,102 @@
-# Zè Youth City Hall — Official Platform
+# Zè Youth City Hall platform
 
-> Institutional web platform built for the local branch of the **Association Mairie des Jeunes du Bénin (AMJB)**
-> Mandate 2025–2030 · Zè, Atlantique Department, Benin
+Website and admin area of the Mairie des Jeunes de Zè, a branch of the Association Mairie des Jeunes du Bénin (AMJB), mandate 2025-2030. I built it as a volunteer and it runs in production.
 
-[![Live — temporary link](https://img.shields.io/badge/Live-Temporary%20link%20(domain%20name%20will%20be%20bought%20soon)-orange?style=flat-square)](https://ze-municipal-webdev-plqu.vercel.app)
-[![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js)](https://nextjs.org)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org)
-[![License](https://img.shields.io/badge/License-n°2021%2F029%2FPDO%2FSG%2FSAG%2FSA-lightgrey?style=flat-square)](/)
+Live: https://ze-municipal-webdev-plqu.vercel.app (temporary domain)
 
----
+The interface is in French because its users are in Benin. The code and this documentation are in English.
 
-## Overview
+## What it does
 
-Fullstack institutional platform covering:
+- Publishes news articles, each with a cover and up to 9 more photos.
+- Publishes official documents, with the annual work plan in the featured place.
+- Lists job and training offers and takes applications online, with PDF documents attached.
+- Gives the team an admin area. An `ADMIN` handles content and applications. A `SUPERADMIN` also manages accounts and reads the activity log.
 
-- **News** — article publishing with photos
-- **Annual Work Plan (AWP)** — real-time activity tracking with PDF export
-- **Opportunities** — job and training listings with online applications
-- **Admin space** — secured dashboard with two-factor authentication (OTP)
+## Stack
 
----
+Next.js 16 (App Router), TypeScript, PostgreSQL and Storage on Supabase, Prisma 5, Auth.js v5, Resend, Zod, Tailwind CSS 4. Hosted on Vercel, with data in Ireland. Vitest for unit tests, Playwright and axe for browser tests.
 
-## Tech Stack
+## Security
 
-| Layer | Technology | Purpose |
-|---|---|---|
-| Framework | Next.js 16 (App Router) | SSR, Server Actions, routing |
-| Language | TypeScript | Type-safety, compile-time checks |
-| Database | PostgreSQL (Supabase) | Reliable cloud hosting |
-| ORM | Prisma 5 | SQL injection protection, migrations |
-| Auth | Auth.js v5 | JWT sessions, CSRF protection |
-| Storage | Supabase Storage | Photos, PDFs, CVs |
-| Emails | Resend | Transactional OTP delivery |
-| Rate Limiting | Upstash Redis | Brute-force protection |
-| Validation | Zod | Client and server-side schemas |
-| Text Editor | Tiptap | Rich text for articles |
-| Deployment | Vercel | CI/CD, global Edge Network |
-| Styling | Tailwind CSS | Utility-first, responsive design |
+- Sign in by email code only, with no password. Codes are random, hashed with bcrypt, valid for 10 minutes and limited to 5 attempts, counted atomically.
+- A code request gets the same answer whether or not the address has an account.
+- Sessions are checked against the database on every request, so a removed account loses access at once.
+- Every API route and admin page checks the session on the server. `src/proxy.ts` only hides the admin pages.
+- Admin changes go to an activity log in the same transaction as the change.
+- Applicants' documents stay in a private bucket under random names. Uploads use one-time links, with limits per IP address and per hour. Admins read them through links valid for one minute, and each reading is logged.
+- A daily job deletes applications after 6 months, log lines after a year, and files without an application.
+- Row Level Security is on for every table, with no policy, and the Supabase API roles have no rights. Storage has no policy either. These rules live in migrations and `npm run db:check-security` verifies them.
+- Pages use a Content Security Policy with a nonce per request. Article HTML goes through an allowlist. Public pages set no cookie.
 
----
+## Known limits
 
-## Security Architecture
+- An email code is one factor. Passkeys would be stronger.
+- The secret login address hides the page. It protects nothing by itself.
+- The Content Security Policy allows inline styles. It does not allow inline scripts.
+- Uploaded PDFs are checked by type and size, not scanned for malware. Admins should open them with care.
+- Upload limits are per IP address and overall. Someone rotating addresses can reach the overall limit and block uploads for an hour.
+- Backups depend on the Supabase plan, and the free plan has none.
+- The browser tests run by hand, not in CI, because they need a running server.
 
-This project applies a **Secure by Design** approach at every layer.
+## Project layout
 
-### Authentication (Auth.js v5 + OTP)
-
-- Randomly generated 6-digit OTP, sent by email, valid for 10 minutes, immediately invalidated after use
-- Constant-time comparison to prevent timing attacks
-- JWT sessions with automatic expiry after 10 hours of inactivity
-- Audit logs: every login attempt recorded with timestamp and email
-
-### Route Protection
-
-- Admin entry point is accessible only via a secret URL (token) — not linked anywhere on the public site
-- Direct access to `/admin/*` or `/login` returns a 404
-
-### Data Validation (Zod)
-
-- Double validation: client-side (React) **and** server-side (API Route)
-- Beninese phone number format: `/^01[0-9]{8}$/`
-- Rejection of names containing digits or special characters
-- Message length limit (max 1,000 characters)
-
-### Protection Against Common Attacks
-
-| Attack Vector | Mitigation |
-|---|---|
-| SQL Injection | Prisma ORM with parameterized queries — no raw SQL |
-| XSS | Automatic escaping by React + Zod validation |
-| CSRF | Auth.js handles CSRF tokens natively |
-| OTP Brute Force | Rate limiting via Upstash Redis (5 attempts / 15 min) |
-| Application Spam | Rate limiting (10 submissions / hour per IP) |
-| Clickjacking | `X-Frame-Options: DENY` header |
-| MIME Sniffing | `X-Content-Type-Options: nosniff` header |
-| Email Enumeration | Constant delay (300ms) regardless of account existence |
-| Secrets Exposure | Environment variables, `.env` excluded from versioning |
-
-### HTTP Security Headers
-
-Configured in `next.config.ts`:
-
-```
-X-Frame-Options: DENY
-X-Content-Type-Options: nosniff
-Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
-Referrer-Policy: strict-origin-when-cross-origin
-X-XSS-Protection: 1; mode=block
-Content-Security-Policy: default-src 'self'; ...
-Permissions-Policy: camera=(), microphone=(), geolocation=()
+```text
+src/app         pages and API routes
+src/components  interface
+src/lib         rules, validation and access to data
+prisma          database schema and migrations
+scripts         administration commands
+e2e             browser tests
 ```
 
----
+Unit tests sit beside the code they check.
 
-## Data Model
+## Run it locally
 
-```
-User           # Admin accounts (ADMIN / SUPERADMIN)
-Article        # News published on the public site
-ArticlePhoto   # Photos linked to articles (cascade delete)
-Opportunity    # Job listings and training offers
-Application    # Applications submitted by visitors
-PtaActivity    # Annual Work Plan activities
-PtaDocument    # Official AWP PDF document
-AuditLog       # Authentication security log
-```
-
----
-
-## Project Structure
-
-```
-ze_municipal_webdev/
-├── app/
-│   ├── (public)/          # Public pages (home, articles, AWP, opportunities)
-│   ├── admin/             # Admin dashboard (protected routes)
-│   ├── api/               # REST API Routes
-│   │   ├── articles/
-│   │   ├── candidatures/
-│   │   ├── opportunites/
-│   │   ├── otp/           # Secure OTP endpoint
-│   │   ├── pta/
-│   │   └── pta-document/
-│   ├── login/             # Login page
-│   └── portail/[token]/   # Admin entry point (token-gated, env-based)
-├── components/            # Reusable UI components
-├── lib/                   # Prisma and Supabase clients
-├── prisma/                # Database schema
-├── proxy.ts               # Route protection (Next.js 16)
-└── auth.ts                # Auth.js configuration
-```
-
----
-
-## Local Setup
-
-**Prerequisites:** Node.js 18+, Supabase account, Resend account, Upstash account
+You need Node.js 24, a Supabase project and a Resend account.
 
 ```bash
-# 1. Clone the repo
-git clone https://github.com/MAWOUGNON/ze-municipal-webdev.git
-cd ze-municipal-webdev
-
-# 2. Install dependencies
+git clone https://github.com/MAWOUGNON/ze-municipal-platform.git
+cd ze-municipal-platform
 npm install
-
-# 3. Set up environment variables
 cp .env.example .env
-# Fill in the values in .env
+```
 
-# 4. Sync the database
-npx prisma db push
+Fill in `.env`, then:
 
-# 5. Generate the Prisma client
-npx prisma generate
-
-# 6. Start the development server
+```bash
+npm run db:migrate
+npm run db:create-admin -- you@example.com "Your Name"
 npm run dev
 ```
 
-### Required Environment Variables
+The login page is at `/portail/<ADMIN_SECRET_TOKEN>`.
 
-See `.env.example` for the full list. Critical variables:
+## Tests
 
-```env
-DATABASE_URL                 # Supabase PostgreSQL connection URL
-AUTH_SECRET                  # Auth.js secret (generate: openssl rand -base64 32)
-RESEND_API_KEY               # Resend API key for OTP delivery
-NEXT_PUBLIC_SUPABASE_URL     # Supabase project URL
-NEXT_PUBLIC_SUPABASE_ANON_KEY
-UPSTASH_REDIS_REST_URL
-UPSTASH_REDIS_REST_TOKEN
-NEXT_PUBLIC_SITE_URL
-ADMIN_SECRET_TOKEN           # Secret admin entry token (never commit this)
+```bash
+npm run lint
+npm run typecheck
+npm test
 ```
 
-> All credentials are managed via environment variables and never committed to source control.
+Browser tests run against a server that is already started. The public ones only read, so they can target any deployment:
 
----
-
-## Features
-
-### Public Site
-
-- **Home** — introduction, executive board, latest news, real-time AWP, opportunities
-- **News** — article list and detail pages with cover photos
-- **Annual Work Plan** — activity tracking with progress bar + official PDF download
-- **About** — mission, vision, values, and association motto
-- **Opportunities** — listings with validated application form
-- **Contact** — contact details and message form
-- Fully responsive (mobile + desktop)
-
-### Admin Space
-
-- **Dashboard** — real-time statistics + recent login log
-- **Articles** — create, edit, publish/unpublish, delete
-- **AWP** — activity management + official PDF upload
-- **Opportunities** — listing management
-- **Applications** — browsing with filters
-- **Uploads** — photos and documents via Supabase Storage
-
----
-
-## Authentication Flow
-
-```
-1. Admin enters their email
-2. Server checks account existence (constant delay — anti-enumeration)
-3. 6-digit OTP generated, stored (hashed), expires in 10 minutes
-4. OTP sent by email via Resend
-5. Admin enters the code
-6. Server verifies (constant-time), checks expiry, invalidates OTP
-7. JWT session created (10h inactivity expiry)
-8. All /admin/* routes protected by proxy.ts
+```bash
+E2E_BASE_URL=https://example.com npm run test:e2e
 ```
 
----
+The admin test writes to the database and to storage. It only runs with `E2E_ALLOW_WRITES=staging`, using the variables of the preproduction environment:
 
-## Audit & Traceability
-
-Every login is recorded in the `AuditLog` table:
-
-```typescript
-{
-  action: "LOGIN_OTP_SUCCESS" | "LOGIN_FAILED",
-  userEmail: string,
-  ipAddress?: string,
-  createdAt: DateTime
-}
+```bash
+E2E_ALLOW_WRITES=staging node --env-file=.env.staging node_modules/@playwright/test/cli.js test
 ```
-
-The admin dashboard displays the 5 most recent logins in real time.
-
----
 
 ## Deployment
 
-Continuously deployed on **Vercel**:
+Vercel deploys `master`. Migrations are applied by hand with `npm run db:migrate`, which uses `DIRECT_URL`. `.env.example` lists every variable, and the daily purge in `vercel.json` needs `CRON_SECRET`.
 
-- Every push to `master` triggers an automatic deployment
-- Environment variables managed via the Vercel dashboard
-- SSL/TLS certificate handled automatically
+## License
 
----
-
-*Developed for the Association Mairie des Jeunes du Bénin — License n°2021/029/PDO/SG/SAG/SA*
+The code is under the [MIT license](LICENSE). The photos and logos in `public/` belong to their owners and are not covered by it.
