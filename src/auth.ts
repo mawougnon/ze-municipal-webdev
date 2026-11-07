@@ -4,7 +4,7 @@ import { verifyLoginCode } from "@/lib/login";
 import { prisma } from "@/lib/prisma";
 import { clientIp } from "@/lib/request";
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
+export const { handlers, signOut, auth } = NextAuth({
   providers: [
     Credentials({
       name: "Mairie de Zè",

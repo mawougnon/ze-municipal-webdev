@@ -10,7 +10,7 @@ export const MAX_ATTEMPTS = 5;
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-export function normalizeEmail(email: string) {
+function normalizeEmail(email: string) {
   return email.trim().toLowerCase();
 }
 
