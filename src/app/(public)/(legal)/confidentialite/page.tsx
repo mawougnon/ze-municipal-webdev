@@ -23,7 +23,6 @@ export default function PrivacyPage() {
       <h2>Si vous consultez le site</h2>
       <p>
         Le site n’utilise ni publicité, ni outil de mesure d’audience, ni cookie pour les visiteurs.
-        Seuls les administrateurs connectés reçoivent un cookie, indispensable à leur session.
       </p>
 
       <h2>Si vous envoyez une candidature</h2>
@@ -46,10 +45,9 @@ export default function PrivacyPage() {
 
       <h2>Qui peut les voir</h2>
       <p>
-        Seuls les administrateurs de la Mairie des Jeunes de Zè y ont accès, et chaque ouverture
-        d’un document est enregistrée. Vos données ne sont ni vendues ni cédées. Elles sont stockées
-        par nos prestataires techniques, cités dans les mentions légales, qui n’agissent que pour
-        faire fonctionner le site.
+        Seuls les administrateurs de la Mairie des Jeunes de Zè y ont accès. Vos données ne sont ni
+        vendues ni cédées. Elles sont stockées par nos prestataires techniques, cités dans les
+        mentions légales, qui n’agissent que pour faire fonctionner le site.
       </p>
 
       <h2>Où elles sont conservées</h2>
@@ -63,10 +61,6 @@ export default function PrivacyPage() {
       <ul>
         <li>Candidature et documents : supprimés au plus tard 6 mois après l’envoi.</li>
         <li>Documents envoyés sans que le formulaire soit validé : supprimés après un jour.</li>
-        <li>
-          Journal d’activité (connexions et actions des administrateurs, avec leur adresse IP) :
-          supprimé après un an.
-        </li>
       </ul>
       <p>Ces suppressions sont automatiques.</p>
 
