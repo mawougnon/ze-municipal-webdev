@@ -35,13 +35,16 @@ export default async function OpportunitiesPage() {
       />
 
       <div className="mx-auto max-w-6xl space-y-12 px-4 py-12 md:px-6">
-        {sections.map((section) => (
+        {sections.map((section, sectionIndex) => (
           <section key={section.title}>
             <h2 className="mb-6 font-serif text-2xl font-bold text-gray-900">{section.title}</h2>
             <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {section.opportunities.map((opportunity) => (
+              {section.opportunities.map((opportunity, index) => (
                 <li key={opportunity.id}>
-                  <OpportunityCard opportunity={opportunity} />
+                  <OpportunityCard
+                    opportunity={opportunity}
+                    preload={sectionIndex === 0 && index === 0}
+                  />
                 </li>
               ))}
             </ul>

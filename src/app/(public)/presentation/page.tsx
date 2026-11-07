@@ -40,6 +40,7 @@ export default function PresentationPage() {
             sizes="100vw"
             className="object-cover"
             preload
+            fetchPriority="high"
           />
         </div>
         <div className="relative z-10 px-6 text-center text-white">

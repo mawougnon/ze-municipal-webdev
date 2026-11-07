@@ -5,9 +5,10 @@ import { formatDate, formatPrice, LONG_DATE } from "@/lib/format";
 
 interface Props {
   opportunity: Opportunity;
+  preload?: boolean;
 }
 
-export default function OpportunityCard({ opportunity }: Props) {
+export default function OpportunityCard({ opportunity, preload }: Props) {
   const type = opportunity.type === "JOB" ? "Emploi" : "Formation";
 
   return (
@@ -23,6 +24,8 @@ export default function OpportunityCard({ opportunity }: Props) {
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 360px"
             className="object-cover object-top transition-transform duration-300 group-hover:scale-105"
+            preload={preload}
+            fetchPriority={preload ? "high" : undefined}
           />
         ) : (
           <span className="font-serif text-2xl font-bold text-white">{type}</span>

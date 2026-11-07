@@ -67,6 +67,7 @@ export default async function ArticlePage({ params }: Props) {
             sizes="(max-width: 768px) 100vw, 768px"
             className="mx-auto mb-8 h-auto max-h-[85vh] w-auto max-w-full rounded-xl"
             preload
+            fetchPriority="high"
           />
         )}
 

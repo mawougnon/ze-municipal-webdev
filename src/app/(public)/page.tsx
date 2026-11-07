@@ -66,6 +66,7 @@ export default async function HomePage() {
           sizes="100vw"
           className="scale-105 object-cover"
           preload
+          fetchPriority="high"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/55 to-black/80" />
 
@@ -84,7 +85,7 @@ export default async function HomePage() {
                       ? "h-14 w-14 rounded-full bg-white object-contain p-1.5 shadow-lg md:h-24 md:w-24"
                       : "h-11 w-auto rounded-lg bg-white object-contain px-2 py-1 shadow-lg md:h-[4.5rem]"
                   }
-                  preload
+                  loading="eager"
                 />
               </div>
             ))}
@@ -291,10 +292,10 @@ export default async function HomePage() {
             </h2>
             <p className="mb-4 text-justify leading-relaxed text-gray-600">
               Zè est reconnue pour ses cultures d’ananas, de manioc et d’huile de palme, témoins
-              d’une agriculture portée par sa jeunesse. La commune abrite également des
-              sites naturels et culturels d’exception : la <strong>forêt sacrée d’Assanmê</strong>,
-              la <strong>forêt sacrée de Zannoudji</strong>, la <strong>forêt de Djigbé</strong>{" "}
-              gérée par l’ONAB, et le célèbre <strong>marché de bétail</strong>, véritable poumon
+              d’une agriculture portée par sa jeunesse. La commune abrite également des sites
+              naturels et culturels d’exception : la <strong>forêt sacrée d’Assanmê</strong>, la{" "}
+              <strong>forêt sacrée de Zannoudji</strong>, la <strong>forêt de Djigbé</strong> gérée
+              par l’ONAB, et le célèbre <strong>marché de bétail</strong>, véritable poumon
               économique de la région.
             </p>
             <p className="mb-8 text-justify leading-relaxed text-gray-600">

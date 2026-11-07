@@ -9,10 +9,10 @@ export default function Navbar() {
           <Image
             src="/logo-benin.png"
             alt="Mairie des Jeunes de Zè"
-            width={120}
+            width={55}
             height={48}
             className="h-10 w-auto object-contain md:h-12"
-            preload
+            loading="eager"
           />
         </Link>
 
@@ -40,10 +40,10 @@ export default function Navbar() {
         <Image
           src="/logo-commune-ze.jpg"
           alt="Commune de Zè"
-          width={100}
-          height={50}
+          width={48}
+          height={48}
           className="h-10 w-auto object-contain md:h-12"
-          preload
+          loading="eager"
         />
       </div>
 

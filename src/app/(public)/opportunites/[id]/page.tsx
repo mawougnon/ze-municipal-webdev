@@ -103,6 +103,7 @@ export default async function OpportunityPage({ params }: Props) {
               sizes="(max-width: 1024px) 100vw, 780px"
               className="mx-auto h-auto max-h-[85vh] w-auto max-w-full rounded-xl"
               preload
+              fetchPriority="high"
             />
           )}
 
