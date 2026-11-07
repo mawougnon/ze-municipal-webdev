@@ -54,7 +54,7 @@ export default function ApplicationCard({ application }: Props) {
                 href={whatsappLink(application.phone)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1 text-green-600 hover:underline"
+                className="flex items-center gap-1 text-green-800 hover:underline"
               >
                 <FaWhatsapp aria-hidden /> {application.phone} (WhatsApp)
               </a>
@@ -103,7 +103,7 @@ export default function ApplicationCard({ application }: Props) {
           </span>
           <button
             onClick={handleDelete}
-            className="flex items-center gap-1 text-xs text-red-400 transition hover:text-red-600"
+            className="flex items-center gap-1 text-xs text-red-700 transition hover:text-red-600"
             title="Supprimer cette candidature"
           >
             <FaTrash aria-hidden /> Supprimer

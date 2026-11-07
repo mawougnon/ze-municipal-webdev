@@ -106,7 +106,7 @@ export default function FileUpload({
         />
       </label>
       {uploading && <p className="mt-1 text-sm text-gray-500">Envoi en cours...</p>}
-      {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
+      {error && <p className="mt-1 text-sm text-red-700">{error}</p>}
     </div>
   );
 }

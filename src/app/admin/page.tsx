@@ -159,7 +159,7 @@ export default async function AdminPage() {
                   </h3>
                   <p className="mt-1 text-sm text-gray-500">{section.stat}</p>
                 </div>
-                <span className="text-xl text-gray-500 transition group-hover:text-green-600">
+                <span className="text-xl text-gray-500 transition group-hover:text-green-800">
                   →
                 </span>
               </div>
