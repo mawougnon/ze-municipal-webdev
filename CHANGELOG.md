@@ -5,7 +5,7 @@
 ### Added
 
 - Documents area, with the annual work plan in the featured place. It replaces the list of activities.
-- Up to 10 photos per article, shown without cropping, with a gallery usable from the keyboard.
+- Up to 10 photos per article, opened in full without cropping, in a gallery usable from the keyboard.
 - Publish and save as draft buttons on articles, offers and documents.
 - Offer pages with an optional poster, and price, deadline and apply button always in view.
 - Roles: `ADMIN` for content, `SUPERADMIN` for accounts. Account management and activity log pages.
