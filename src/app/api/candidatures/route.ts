@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { flattenError } from "zod/mini";
 import { applicationSchema } from "@/lib/applications";
 import { isOpen } from "@/lib/opportunities";
 import { prisma } from "@/lib/prisma";
@@ -15,7 +16,7 @@ export async function POST(req: Request) {
 
     if (!result.success) {
       return NextResponse.json(
-        { error: "Données invalides.", details: result.error.flatten().fieldErrors },
+        { error: "Données invalides.", details: flattenError(result.error).fieldErrors },
         { status: 400 },
       );
     }

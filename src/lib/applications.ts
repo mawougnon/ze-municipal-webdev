@@ -1,42 +1,48 @@
+import * as z from "zod/mini";
 import { BENIN_PHONE, normalizeBeninPhone } from "@/lib/phone";
-import { z } from "@/lib/zod";
+
+// Visitors download this schema with the form, hence zod/mini. See lib/zod.ts for the setting
+z.config({ jitless: true });
 
 export const applicationSchema = z.object({
-  opportunityId: z.string().min(1),
+  opportunityId: z.string().check(z.minLength(1)),
   // Names in Fon or Yoruba use letters such as ɛ, ɔ, ɖ and tone marks
-  fullName: z
-    .string()
-    .transform((val) => val.normalize("NFC").trim().replace(/\s+/g, " "))
-    .pipe(
-      z
-        .string()
-        .min(3, "Le nom doit contenir au moins 3 caractères.")
-        .max(100, "Le nom est trop long.")
-        .regex(/^[\p{L}\p{M}'’ -]+$/u, "Le nom ne peut contenir que des lettres.")
-        .refine((val) => val.split(" ").length >= 2, {
-          message: "Veuillez saisir votre nom et votre prénom.",
-        }),
+  fullName: z.pipe(
+    z.pipe(
+      z.string(),
+      z.transform((val) => val.normalize("NFC").trim().replace(/\s+/g, " ")),
     ),
-  phone: z
-    .string()
-    .transform(normalizeBeninPhone)
-    .pipe(
-      z.string().regex(BENIN_PHONE, "Le numéro doit comporter 10 chiffres et commencer par 01."),
+    z.string().check(
+      z.minLength(3, "Le nom doit contenir au moins 3 caractères."),
+      z.maxLength(100, "Le nom est trop long."),
+      z.regex(/^[\p{L}\p{M}'’ -]+$/u, "Le nom ne peut contenir que des lettres."),
+      z.refine((val) => val.split(" ").length >= 2, {
+        error: "Veuillez saisir votre nom et votre prénom.",
+      }),
     ),
-  email: z.string().email("Adresse email invalide.").optional().or(z.literal("")).or(z.null()),
-  message: z
-    .string()
-    .max(1000, "Message trop long (1000 caractères au maximum).")
-    .optional()
-    .or(z.null()),
+  ),
+  phone: z.pipe(
+    z.pipe(z.string(), z.transform(normalizeBeninPhone)),
+    z
+      .string()
+      .check(z.regex(BENIN_PHONE, "Le numéro doit comporter 10 chiffres et commencer par 01.")),
+  ),
+  email: z.optional(z.union([z.email("Adresse email invalide."), z.literal(""), z.null()])),
+  message: z.optional(
+    z.nullable(
+      z.string().check(z.maxLength(1000, "Message trop long (1000 caractères au maximum).")),
+    ),
+  ),
   consent: z.literal(true, { error: "Votre accord est nécessaire pour envoyer la candidature." }),
-  files: z
-    .array(z.string().regex(/^[0-9a-f-]{36}\.pdf$/, "Document invalide."))
-    .max(5, "5 documents au maximum.")
-    .default([]),
+  files: z._default(
+    z
+      .array(z.string().check(z.regex(/^[0-9a-f-]{36}\.pdf$/, "Document invalide.")))
+      .check(z.maxLength(5, "5 documents au maximum.")),
+    [],
+  ),
 });
 
-export const applicantSchema = applicationSchema.pick({
+export const applicantSchema = z.pick(applicationSchema, {
   fullName: true,
   phone: true,
   email: true,

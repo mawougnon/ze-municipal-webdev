@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { applicationSchema } from "@/lib/applications";
+import { applicantSchema, applicationSchema } from "@/lib/applications";
 
 const base = {
   opportunityId: "offre-1",
@@ -61,5 +61,26 @@ describe("documents", () => {
     ["six files", [1, 2, 3, 4, 5, 6].map(issued)],
   ])("rejects %s", (_, files) => {
     expect(applicationSchema.safeParse({ ...base, files }).success).toBe(false);
+  });
+});
+
+describe("the messages shown to the applicant", () => {
+  const firstError = (input: object) =>
+    applicantSchema.safeParse({ ...base, ...input }).error?.issues[0].message;
+
+  it("explains each refused field", () => {
+    expect(firstError({ fullName: "Jean" })).toBe("Veuillez saisir votre nom et votre prénom.");
+    expect(firstError({ phone: "12" })).toBe(
+      "Le numéro doit comporter 10 chiffres et commencer par 01.",
+    );
+    expect(firstError({ email: "pas-une-adresse" })).toBe("Adresse email invalide.");
+    expect(firstError({ message: "x".repeat(1001) })).toBe(
+      "Message trop long (1000 caractères au maximum).",
+    );
+  });
+
+  it("accepts an empty optional field", () => {
+    expect(firstError({ email: "", message: "" })).toBeUndefined();
+    expect(firstError({ email: null, message: null })).toBeUndefined();
   });
 });

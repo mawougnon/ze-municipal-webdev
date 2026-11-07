@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import type { z } from "zod";
+import { flattenError } from "zod/mini";
+import type { z } from "zod/mini";
 import { applicantSchema } from "@/lib/applications";
 import { formatPrice } from "@/lib/format";
 
@@ -113,7 +114,7 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
 
   function handleBlur(name: keyof ApplicantFields) {
     const result = applicantSchema.safeParse(form);
-    const fieldError = result.success ? undefined : result.error.flatten().fieldErrors[name];
+    const fieldError = result.success ? undefined : flattenError(result.error).fieldErrors[name];
     if (fieldError) setErrors((current) => ({ ...current, [name]: fieldError }));
   }
 
@@ -160,7 +161,7 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
 
     const result = applicantSchema.safeParse(form);
     if (!result.success) {
-      setErrors(result.error.flatten().fieldErrors);
+      setErrors(flattenError(result.error).fieldErrors);
       return;
     }
     if (!consent) return;
