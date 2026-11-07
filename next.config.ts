@@ -3,6 +3,8 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   // Do not announce the framework in every response
   poweredByHeader: false,
+  // next dev must not add files to the project
+  agentRules: false,
   images: {
     remotePatterns: [
       {
