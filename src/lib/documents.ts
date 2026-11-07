@@ -1,7 +1,8 @@
 import "server-only";
-import { z } from "zod";
+import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { isProjectFile } from "@/lib/storage";
+import { z } from "@/lib/zod";
 
 export const documentSchema = z
   .object({
@@ -25,4 +26,13 @@ export async function publishedDocuments() {
   });
   const featured = documents.find((document) => document.featured);
   return { featured, others: documents.filter((document) => document !== featured) };
+}
+
+// One featured document at a time, and a draft does not replace the online one
+export function releaseFeaturedPlace(
+  tx: Prisma.TransactionClient,
+  document: { featured: boolean; published: boolean },
+) {
+  if (!document.featured || !document.published) return;
+  return tx.document.updateMany({ where: { featured: true }, data: { featured: false } });
 }

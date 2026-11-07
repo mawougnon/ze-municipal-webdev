@@ -1,26 +1,21 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/auth";
-import { logAdminAction } from "@/lib/audit";
-import { documentSchema } from "@/lib/documents";
+import { adminAccess } from "@/lib/admin";
+import { logSave } from "@/lib/audit";
+import { documentSchema, releaseFeaturedPlace } from "@/lib/documents";
 import { prisma } from "@/lib/prisma";
+import { readBody } from "@/lib/request";
 
 export async function POST(req: Request) {
-  const session = await auth();
-  if (!session) return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
+  const { session, denied } = await adminAccess();
+  if (denied) return denied;
 
-  const result = documentSchema.safeParse(await req.json().catch(() => null));
-  if (!result.success)
-    return NextResponse.json({ error: result.error.issues[0].message }, { status: 400 });
+  const { data, invalid } = await readBody(req, documentSchema);
+  if (invalid) return invalid;
 
-  const { data } = result;
   const document = await prisma.$transaction(async (tx) => {
-    // One featured document at a time, and a draft does not replace the online one
-    if (data.featured && data.published) {
-      await tx.document.updateMany({ where: { featured: true }, data: { featured: false } });
-    }
+    await releaseFeaturedPlace(tx, data);
     const created = await tx.document.create({ data });
-    const action = created.published ? "DOCUMENT_SAVED_ONLINE" : "DOCUMENT_SAVED_DRAFT";
-    await logAdminAction(tx, session, req, action, created.title);
+    await logSave(tx, session, req, "DOCUMENT", created);
     return created;
   });
 

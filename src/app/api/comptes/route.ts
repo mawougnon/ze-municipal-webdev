@@ -4,26 +4,25 @@ import { accountSchema } from "@/lib/accounts";
 import { superadminAccess } from "@/lib/admin";
 import { logAdminAction } from "@/lib/audit";
 import { prisma } from "@/lib/prisma";
+import { errorResponse, readBody } from "@/lib/request";
 
 export async function POST(req: Request) {
-  const { session, refusal: denied } = await superadminAccess();
+  const { session, denied } = await superadminAccess();
   if (denied) return denied;
 
-  const result = accountSchema.safeParse(await req.json().catch(() => null));
-  if (!result.success)
-    return NextResponse.json({ error: result.error.issues[0].message }, { status: 400 });
+  const { data, invalid } = await readBody(req, accountSchema);
+  if (invalid) return invalid;
 
-  const { email, role } = result.data;
   try {
     await prisma.$transaction(async (tx) => {
-      await tx.user.create({ data: result.data });
-      await logAdminAction(tx, session, req, "ACCOUNT_CREATED", `${email} (${role})`);
+      await tx.user.create({ data });
+      await logAdminAction(tx, session, req, "ACCOUNT_CREATED", `${data.email} (${data.role})`);
     });
-  } catch (e) {
-    if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") {
-      return NextResponse.json({ error: "Cette adresse a déjà un compte." }, { status: 409 });
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+      return errorResponse("Cette adresse a déjà un compte.", 409);
     }
-    throw e;
+    throw error;
   }
 
   return NextResponse.json({ success: true }, { status: 201 });

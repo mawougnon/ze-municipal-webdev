@@ -1,16 +1,17 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/auth";
+import { adminAccess } from "@/lib/admin";
 import { removeFiles } from "@/lib/application-files";
 import { logAdminAction } from "@/lib/audit";
 import { prisma } from "@/lib/prisma";
+import { errorResponse } from "@/lib/request";
 
 interface Context {
   params: Promise<{ id: string }>;
 }
 
 export async function DELETE(req: Request, { params }: Context) {
-  const session = await auth();
-  if (!session) return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
+  const { session, denied } = await adminAccess();
+  if (denied) return denied;
 
   const { id } = await params;
 
@@ -22,7 +23,7 @@ export async function DELETE(req: Request, { params }: Context) {
       return deleted.files.map((file) => file.path);
     })
     .catch(() => null);
-  if (!files) return NextResponse.json({ error: "Candidature introuvable." }, { status: 404 });
+  if (!files) return errorResponse("Candidature introuvable.", 404);
 
   // The daily purge retries a file that could not be removed
   await removeFiles(files).catch((error) => console.error("APPLICATION_FILE_ERROR", error));

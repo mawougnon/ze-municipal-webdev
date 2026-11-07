@@ -1,28 +1,28 @@
 import { NextResponse } from "next/server";
-import { z } from "zod";
-import { auth } from "@/auth";
+import { adminAccess } from "@/lib/admin";
+import { errorResponse, readBody } from "@/lib/request";
 import { safeFileName } from "@/lib/storage";
 import { supabaseAdmin } from "@/lib/supabase-admin";
+import { z } from "@/lib/zod";
 
 const uploadSchema = z.object({
-  bucket: z.enum(["photos", "documents"]),
-  fileName: z.string().min(1).max(200),
+  bucket: z.enum(["photos", "documents"], { error: "Fichier invalide." }),
+  fileName: z.string({ error: "Fichier invalide." }).min(1).max(200),
 });
 
 // Files go straight to storage: they can exceed the body limit of a server function
 export async function POST(req: Request) {
-  const session = await auth();
-  if (!session) return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
+  const { denied } = await adminAccess();
+  if (denied) return denied;
 
-  const result = uploadSchema.safeParse(await req.json().catch(() => null));
-  if (!result.success) return NextResponse.json({ error: "Fichier invalide." }, { status: 400 });
+  const { data: body, invalid } = await readBody(req, uploadSchema);
+  if (invalid) return invalid;
 
-  const { bucket, fileName } = result.data;
-  const path = `${Date.now()}-${safeFileName(fileName)}`;
-  const { data, error } = await supabaseAdmin.storage.from(bucket).createSignedUploadUrl(path);
+  const path = `${Date.now()}-${safeFileName(body.fileName)}`;
+  const { data, error } = await supabaseAdmin.storage.from(body.bucket).createSignedUploadUrl(path);
   if (error) {
     console.error("SIGNED_UPLOAD_ERROR", error);
-    return NextResponse.json({ error: "Erreur serveur." }, { status: 500 });
+    return errorResponse("Erreur serveur.", 500);
   }
 
   return NextResponse.json({ path, token: data.token }, { status: 201 });

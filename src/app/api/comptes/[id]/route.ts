@@ -4,6 +4,8 @@ import { roleSchema } from "@/lib/accounts";
 import { superadminAccess } from "@/lib/admin";
 import { logAdminAction } from "@/lib/audit";
 import { prisma } from "@/lib/prisma";
+import { errorResponse, readBody } from "@/lib/request";
+import { z } from "@/lib/zod";
 
 interface Context {
   params: Promise<{ id: string }>;
@@ -12,41 +14,34 @@ interface Context {
 // Nobody can demote or delete their own account, so a SUPERADMIN always remains
 async function findOtherAccount(id: string, session: Session) {
   const account = await prisma.user.findUnique({ where: { id }, select: { email: true } });
-  if (!account) {
-    return { refusal: NextResponse.json({ error: "Compte introuvable." }, { status: 404 }) };
-  }
+  if (!account) return { refusal: errorResponse("Compte introuvable.", 404) };
   if (account.email === session.user.email) {
     return {
-      refusal: NextResponse.json(
-        { error: "Un autre administrateur principal doit modifier votre compte." },
-        { status: 400 },
-      ),
+      refusal: errorResponse("Un autre administrateur principal doit modifier votre compte.", 400),
     };
   }
   return { account };
 }
 
 export async function PATCH(req: Request, { params }: Context) {
-  const { session, refusal: denied } = await superadminAccess();
+  const { session, denied } = await superadminAccess();
   if (denied) return denied;
 
-  const body = await req.json().catch(() => null);
-  const role = roleSchema.safeParse(body?.role);
-  if (!role.success)
-    return NextResponse.json({ error: role.error.issues[0].message }, { status: 400 });
+  const { data, invalid } = await readBody(req, z.object({ role: roleSchema }));
+  if (invalid) return invalid;
 
   const { id } = await params;
   const { account, refusal } = await findOtherAccount(id, session);
   if (refusal) return refusal;
 
   await prisma.$transaction(async (tx) => {
-    await tx.user.update({ where: { id }, data: { role: role.data } });
+    await tx.user.update({ where: { id }, data: { role: data.role } });
     await logAdminAction(
       tx,
       session,
       req,
       "ACCOUNT_ROLE_CHANGED",
-      `${account.email} (${role.data})`,
+      `${account.email} (${data.role})`,
     );
   });
 
@@ -54,7 +49,7 @@ export async function PATCH(req: Request, { params }: Context) {
 }
 
 export async function DELETE(req: Request, { params }: Context) {
-  const { session, refusal: denied } = await superadminAccess();
+  const { session, denied } = await superadminAccess();
   if (denied) return denied;
 
   const { id } = await params;

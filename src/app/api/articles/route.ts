@@ -1,27 +1,26 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/auth";
+import { adminAccess } from "@/lib/admin";
 import { articleSchema } from "@/lib/articles";
-import { logAdminAction } from "@/lib/audit";
+import { logSave } from "@/lib/audit";
 import { prisma } from "@/lib/prisma";
+import { readBody } from "@/lib/request";
 
 export async function POST(req: Request) {
-  const session = await auth();
-  if (!session) return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
+  const { session, denied } = await adminAccess();
+  if (denied) return denied;
 
-  const result = articleSchema.safeParse(await req.json().catch(() => null));
-  if (!result.success)
-    return NextResponse.json({ error: result.error.issues[0].message }, { status: 400 });
+  const { data, invalid } = await readBody(req, articleSchema);
+  if (invalid) return invalid;
 
+  const { photos, ...fields } = data;
   const article = await prisma.$transaction(async (tx) => {
-    const { photos, ...fields } = result.data;
     const created = await tx.article.create({
       data: {
         ...fields,
         photos: { create: photos.map((url, position) => ({ url, position })) },
       },
     });
-    const action = created.published ? "ARTICLE_SAVED_ONLINE" : "ARTICLE_SAVED_DRAFT";
-    await logAdminAction(tx, session, req, action, created.title);
+    await logSave(tx, session, req, "ARTICLE", created);
     return created;
   });
 

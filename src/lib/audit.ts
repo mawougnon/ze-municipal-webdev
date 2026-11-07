@@ -20,3 +20,14 @@ export function logAdminAction(
     },
   });
 }
+
+export function logSave(
+  tx: Prisma.TransactionClient,
+  session: Session,
+  req: Request,
+  kind: "ARTICLE" | "DOCUMENT" | "OPPORTUNITY",
+  saved: { title: string; published: boolean },
+) {
+  const state = saved.published ? "ONLINE" : "DRAFT";
+  return logAdminAction(tx, session, req, `${kind}_SAVED_${state}`, saved.title);
+}
