@@ -17,7 +17,7 @@ export async function POST(req: Request) {
     const created = await tx.article.create({
       data: {
         ...fields,
-        photos: { create: photos.map((url, position) => ({ url, position })) },
+        photos: { create: photos.map((photo, position) => ({ ...photo, position })) },
       },
     });
     await logSave(tx, session, req, "ARTICLE", created);

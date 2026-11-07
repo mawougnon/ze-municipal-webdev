@@ -1,9 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import FileUpload from "@/components/FileUpload";
+import FocusPicker from "@/components/FocusPicker";
 import PublishButtons, { wantsPublish } from "@/components/PublishButtons";
 import { useAdminRequest } from "@/components/useAdminRequest";
 
@@ -17,6 +17,8 @@ interface Props {
     isFree: boolean;
     price: string;
     imageUrl: string;
+    imageFocusX: number;
+    imageFocusY: number;
     published: boolean;
   };
 }
@@ -30,6 +32,7 @@ export default function OpportunityForm({ id, initial }: Props) {
   const { saving, error, send } = useAdminRequest("/admin/opportunites");
   const [isFree, setIsFree] = useState(initial.isFree);
   const [imageUrl, setImageUrl] = useState(initial.imageUrl);
+  const [imageFocus, setImageFocus] = useState({ x: initial.imageFocusX, y: initial.imageFocusY });
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -43,6 +46,8 @@ export default function OpportunityForm({ id, initial }: Props) {
       isFree,
       price: isFree ? null : Number(form.get("price")),
       imageUrl,
+      imageFocusX: imageFocus.x,
+      imageFocusY: imageFocus.y,
       published: wantsPublish(e),
     });
   }
@@ -76,18 +81,23 @@ export default function OpportunityForm({ id, initial }: Props) {
 
       <div>
         <p className={LABEL}>Affiche (optionnel)</p>
-        <FileUpload bucket="photos" onUpload={setImageUrl} />
+        <FileUpload
+          bucket="photos"
+          onUpload={(url) => {
+            setImageUrl(url);
+            setImageFocus({ x: 50, y: 0 });
+          }}
+        />
         {imageUrl && (
           <>
-            <div className="relative mt-3 aspect-[3/2] w-full overflow-hidden rounded-lg bg-gray-100">
-              <Image
-                src={imageUrl}
-                alt="Aperçu de l’affiche"
-                fill
-                sizes="(max-width: 768px) 100vw, 768px"
-                className="object-contain"
-              />
-            </div>
+            <FocusPicker
+              src={imageUrl}
+              alt="Aperçu de l’affiche"
+              focusX={imageFocus.x}
+              focusY={imageFocus.y}
+              onChange={(x, y) => setImageFocus({ x, y })}
+              previewAspect="aspect-[3/2]"
+            />
             <button
               type="button"
               onClick={() => setImageUrl("")}

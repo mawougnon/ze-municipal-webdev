@@ -2,11 +2,12 @@
 
 import Image from "next/image";
 import { useRef, useState } from "react";
+import { type FocusedPhoto, focusPosition } from "@/lib/focus";
 
 const CONTROL = "rounded-lg bg-white px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-200";
 
 interface Props {
-  photos: string[];
+  photos: FocusedPhoto[];
   title: string;
 }
 
@@ -24,19 +25,20 @@ export default function ArticleGallery({ photos, title }: Props) {
   return (
     <>
       <ul className="mt-10 grid grid-cols-2 gap-3 md:grid-cols-3">
-        {photos.map((url, i) => (
-          <li key={url}>
+        {photos.map((photo, i) => (
+          <li key={photo.url}>
             <button
               type="button"
               onClick={() => open(i)}
               className="relative block aspect-square w-full overflow-hidden rounded-xl bg-gray-100"
             >
               <Image
-                src={url}
+                src={photo.url}
                 alt={`Agrandir la photo ${i + 1} sur ${total} : ${title}`}
                 fill
                 sizes="(max-width: 768px) 50vw, 256px"
                 className="object-cover transition-transform duration-300 hover:scale-105"
+                style={{ objectPosition: focusPosition(photo.focusX, photo.focusY) }}
               />
             </button>
           </li>
@@ -55,7 +57,7 @@ export default function ArticleGallery({ photos, title }: Props) {
       >
         <div className="relative h-[80vh] w-[92vw]">
           <Image
-            src={photos[current]}
+            src={photos[current].url}
             alt={`Photo ${current + 1} sur ${total} : ${title}`}
             fill
             sizes="92vw"

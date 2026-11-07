@@ -6,8 +6,10 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import FileUpload from "@/components/FileUpload";
+import FocusPicker from "@/components/FocusPicker";
 import PublishButtons, { wantsPublish } from "@/components/PublishButtons";
 import { useAdminRequest } from "@/components/useAdminRequest";
+import { type FocusedPhoto, focusPosition } from "@/lib/focus";
 import { MAX_GALLERY_PHOTOS } from "@/lib/storage";
 
 interface Props {
@@ -16,7 +18,9 @@ interface Props {
     title: string;
     content: string;
     coverImageUrl: string;
-    photos: string[];
+    coverFocusX: number;
+    coverFocusY: number;
+    photos: FocusedPhoto[];
     published: boolean;
   };
 }
@@ -29,6 +33,7 @@ export default function ArticleForm({ id, initial }: Props) {
   const { saving, error, setError, send } = useAdminRequest("/admin/articles");
   const [title, setTitle] = useState(initial.title);
   const [coverImageUrl, setCoverImageUrl] = useState(initial.coverImageUrl);
+  const [coverFocus, setCoverFocus] = useState({ x: initial.coverFocusX, y: initial.coverFocusY });
   const [photos, setPhotos] = useState(initial.photos);
 
   const editor = useEditor({
@@ -49,6 +54,8 @@ export default function ArticleForm({ id, initial }: Props) {
       title,
       content,
       coverImageUrl,
+      coverFocusX: coverFocus.x,
+      coverFocusY: coverFocus.y,
       photos,
       published: wantsPublish(e),
     });
@@ -90,18 +97,23 @@ export default function ArticleForm({ id, initial }: Props) {
 
       <div>
         <p className={LABEL}>Photo de couverture (optionnel)</p>
-        <FileUpload bucket="photos" onUpload={setCoverImageUrl} />
+        <FileUpload
+          bucket="photos"
+          onUpload={(url) => {
+            setCoverImageUrl(url);
+            setCoverFocus({ x: 50, y: 50 });
+          }}
+        />
         {coverImageUrl && (
           <>
-            <div className="relative mt-3 aspect-[3/2] w-full overflow-hidden rounded-lg bg-gray-100">
-              <Image
-                src={coverImageUrl}
-                alt="Aperçu de la couverture"
-                fill
-                sizes="(max-width: 768px) 100vw, 768px"
-                className="object-contain"
-              />
-            </div>
+            <FocusPicker
+              src={coverImageUrl}
+              alt="Aperçu de la couverture"
+              focusX={coverFocus.x}
+              focusY={coverFocus.y}
+              onChange={(x, y) => setCoverFocus({ x, y })}
+              previewAspect="aspect-[2/1]"
+            />
             <button type="button" onClick={() => setCoverImageUrl("")} className={`mt-2 ${REMOVE}`}>
               Retirer la couverture
             </button>
@@ -118,12 +130,14 @@ export default function ArticleForm({ id, initial }: Props) {
             bucket="photos"
             multiple
             limit={MAX_GALLERY_PHOTOS - photos.length}
-            onUpload={(url) => setPhotos((current) => [...current, url])}
+            onUpload={(url) =>
+              setPhotos((current) => [...current, { url, focusX: 50, focusY: 50 }])
+            }
           />
         )}
         {photos.length > 0 && (
           <ul className="mt-3 grid grid-cols-2 gap-3 md:grid-cols-3">
-            {photos.map((url, i) => (
+            {photos.map(({ url, focusX, focusY }, i) => (
               <li key={url}>
                 <div className="relative aspect-square overflow-hidden rounded-lg bg-gray-100">
                   <Image
@@ -132,12 +146,29 @@ export default function ArticleForm({ id, initial }: Props) {
                     fill
                     sizes="(max-width: 768px) 50vw, 256px"
                     className="object-cover"
+                    style={{ objectPosition: focusPosition(focusX, focusY) }}
                   />
                 </div>
+                <details className="mt-1">
+                  <summary className="cursor-pointer text-sm text-green-800">Cadrer</summary>
+                  <FocusPicker
+                    src={url}
+                    alt={`Cadrage de la photo ${i + 1}`}
+                    focusX={focusX}
+                    focusY={focusY}
+                    onChange={(x, y) =>
+                      setPhotos((current) =>
+                        current.map((photo) =>
+                          photo.url === url ? { url, focusX: x, focusY: y } : photo,
+                        ),
+                      )
+                    }
+                  />
+                </details>
                 <button
                   type="button"
                   onClick={() =>
-                    setPhotos((current) => current.filter((photoUrl) => photoUrl !== url))
+                    setPhotos((current) => current.filter((photo) => photo.url !== url))
                   }
                   className={`mt-1 ${REMOVE}`}
                 >

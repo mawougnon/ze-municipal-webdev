@@ -7,6 +7,7 @@
 - Documents area, with the annual work plan in the featured place. It replaces the list of activities.
 - Up to 10 photos per article, opened in full without cropping, in a gallery usable from the keyboard.
 - Publish and save as draft buttons on articles, offers and documents.
+- A focal point on each photo and poster keeps the important part visible in thumbnails.
 - Offer pages with an optional poster, and price, deadline and apply button always in view.
 - Roles: `ADMIN` for content, `SUPERADMIN` for accounts. Account management and activity log pages.
 - Legal notice and privacy policy. The application form asks for consent to storage outside Benin.

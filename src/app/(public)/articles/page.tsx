@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { FaNewspaper } from "react-icons/fa";
 import PageHeader from "@/components/PageHeader";
+import { focusPosition } from "@/lib/focus";
 import { formatDate } from "@/lib/format";
 import { prisma } from "@/lib/prisma";
 
@@ -40,6 +41,9 @@ export default async function ArticlesPage() {
                       fill
                       sizes="(max-width: 768px) 100vw, 33vw"
                       className="object-cover"
+                      style={{
+                        objectPosition: focusPosition(article.coverFocusX, article.coverFocusY),
+                      }}
                     />
                   </div>
                 ) : (

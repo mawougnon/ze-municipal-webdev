@@ -1,6 +1,6 @@
 import "server-only";
 import { isProjectFile } from "@/lib/storage";
-import { z } from "@/lib/zod";
+import { focusValue, z } from "@/lib/zod";
 
 // A deadline is midnight UTC of the chosen day, and that day ends 23 hours later in Benin (UTC+1)
 const DAY_END_MS = 23 * 60 * 60 * 1000;
@@ -32,6 +32,8 @@ export const opportunitySchema = z
       .string()
       .refine((url) => url === "" || isProjectFile(url, "photos"), "Affiche invalide.")
       .nullish(),
+    imageFocusX: focusValue.default(50),
+    imageFocusY: focusValue.default(0),
     published: z.boolean().default(false),
   })
   .refine((opportunity) => opportunity.isFree || opportunity.price !== null, {

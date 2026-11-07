@@ -27,7 +27,9 @@ export default async function EditArticlePage({ params }: Props) {
             title: article.title,
             content: article.content,
             coverImageUrl: article.coverImageUrl ?? "",
-            photos: article.photos.map((photo) => photo.url),
+            coverFocusX: article.coverFocusX,
+            coverFocusY: article.coverFocusY,
+            photos: article.photos.map(({ url, focusX, focusY }) => ({ url, focusX, focusY })),
             published: article.published,
           }}
         />

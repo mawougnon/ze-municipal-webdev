@@ -31,7 +31,7 @@ export async function PUT(req: Request, { params }: Context) {
           ...fields,
           photos: {
             deleteMany: {},
-            create: photos.map((url, position) => ({ url, position })),
+            create: photos.map((photo, position) => ({ ...photo, position })),
           },
         },
       });
@@ -41,7 +41,7 @@ export async function PUT(req: Request, { params }: Context) {
     .catch(() => null);
   if (!saved) return errorResponse("Article introuvable.", 404);
 
-  const kept = new Set([saved.article.coverImageUrl, ...photos]);
+  const kept = new Set([saved.article.coverImageUrl, ...photos.map((photo) => photo.url)]);
   const before = [saved.previous.coverImageUrl, ...saved.previous.photos.map((photo) => photo.url)];
   await Promise.all(
     before.filter((url) => !kept.has(url)).map((url) => removePublicFile("photos", url)),

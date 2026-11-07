@@ -12,6 +12,7 @@ test.skip(process.env.E2E_ALLOW_WRITES !== "staging", "Writes only on preproduct
 const EMAIL = "e2e-owner@example.test";
 const CODE = "424242";
 const TITLE = "E2E document";
+const ARTICLE = "E2E article";
 const ADMIN_PAGES = [
   "/admin",
   "/admin/articles",
@@ -28,6 +29,7 @@ const prisma = new PrismaClient();
 
 async function clean() {
   await prisma.document.deleteMany({ where: { title: TITLE } });
+  await prisma.article.deleteMany({ where: { title: ARTICLE } });
   await prisma.user.deleteMany({ where: { email: EMAIL } });
   await prisma.auditLog.deleteMany({ where: { userEmail: EMAIL } });
 }
@@ -105,4 +107,62 @@ test("sign in, publish a document, see it online, delete it", async ({ page, con
 
   await page.goto("/admin/journal");
   await expect(page.getByText("Document supprimé")).toBeVisible();
+});
+
+test("choose the focal point of a cover and see it in the list", async ({ page, context }) => {
+  test.setTimeout(120_000);
+
+  await prisma.user.update({
+    where: { email: EMAIL },
+    data: {
+      otpHash: await bcrypt.hash(CODE, 10),
+      otpExpires: new Date(Date.now() + 10 * 60 * 1000),
+      otpAttempts: 0,
+    },
+  });
+  await page.goto(`/portail/${process.env.ADMIN_SECRET_TOKEN}`);
+  await page.getByPlaceholder("votre@email.com").fill(EMAIL);
+  await page.getByRole("button", { name: /Continuer/ }).click();
+  await page.getByPlaceholder("000000").fill(CODE);
+  await page.getByRole("button", { name: /Confirmer/ }).click();
+  await expect(page).toHaveURL(/\/admin$/, { timeout: 30_000 });
+
+  await page.goto("/admin/articles/nouveau");
+  await page.getByLabel("Titre").fill(ARTICLE);
+  await page.getByLabel("Contenu de l’article").fill("Texte du test.");
+  await page.locator('input[type="file"]').first().setInputFiles("public/culture-manioc.jpg");
+  const cover = page.getByRole("img", { name: "Aperçu de la couverture" });
+  await expect(cover).toBeVisible({ timeout: 30_000 });
+
+  const box = await cover.boundingBox();
+  await cover.click({ position: { x: box!.width * 0.2, y: box!.height * 0.8 } });
+  await expect(page.getByLabel("Horizontal")).toHaveValue("20");
+  await expect(page.getByLabel("Vertical")).toHaveValue("80");
+  await page.getByLabel("Vertical").focus();
+  await page.keyboard.press("ArrowUp");
+  await expect(page.getByLabel("Vertical")).toHaveValue("81");
+
+  const { violations } = await new AxeBuilder({ page }).analyze();
+  expect(
+    violations
+      .filter((violation) => violation.impact === "serious" || violation.impact === "critical")
+      .map((violation) => violation.id),
+  ).toEqual([]);
+
+  await page.getByRole("button", { name: "Publier", exact: true }).click();
+  await expect(page).toHaveURL(/\/admin\/articles$/, { timeout: 30_000 });
+
+  const visitor = await context.browser()!.newContext();
+  const publicPage = await visitor.newPage();
+  await publicPage.goto(new URL("/articles", page.url()).href);
+  await expect(publicPage.getByRole("img", { name: ARTICLE })).toHaveCSS(
+    "object-position",
+    "20% 81%",
+  );
+  await visitor.close();
+
+  await page.getByRole("link", { name: new RegExp(ARTICLE) }).click();
+  page.on("dialog", (dialog) => dialog.accept());
+  await page.getByRole("button", { name: "Supprimer" }).click();
+  await expect(page).toHaveURL(/\/admin\/articles$/, { timeout: 30_000 });
 });

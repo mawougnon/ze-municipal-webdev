@@ -17,6 +17,8 @@ export default async function NewOpportunityPage() {
             isFree: true,
             price: "",
             imageUrl: "",
+            imageFocusX: 50,
+            imageFocusY: 0,
             published: false,
           }}
         />

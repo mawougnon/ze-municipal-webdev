@@ -77,7 +77,10 @@ export default async function ArticlePage({ params }: Props) {
         />
 
         {article.photos.length > 0 && (
-          <ArticleGallery photos={article.photos.map((photo) => photo.url)} title={article.title} />
+          <ArticleGallery
+            photos={article.photos.map(({ url, focusX, focusY }) => ({ url, focusX, focusY }))}
+            title={article.title}
+          />
         )}
 
         <div className="mt-10 border-t border-gray-100 pt-6">

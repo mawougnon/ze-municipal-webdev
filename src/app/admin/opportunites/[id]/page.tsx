@@ -28,6 +28,8 @@ export default async function EditOpportunityPage({ params }: Props) {
             isFree: opportunity.isFree,
             price: opportunity.price ? String(opportunity.price) : "",
             imageUrl: opportunity.imageUrl ?? "",
+            imageFocusX: opportunity.imageFocusX,
+            imageFocusY: opportunity.imageFocusY,
             published: opportunity.published,
           }}
         />

@@ -4,3 +4,11 @@ import { z } from "zod";
 z.config({ jitless: true });
 
 export { z };
+
+const INVALID_FOCUS = "Point focal invalide.";
+
+export const focusValue = z
+  .number(INVALID_FOCUS)
+  .int(INVALID_FOCUS)
+  .min(0, INVALID_FOCUS)
+  .max(100, INVALID_FOCUS);

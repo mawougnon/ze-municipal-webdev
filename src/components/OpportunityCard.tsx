@@ -1,6 +1,7 @@
 import type { Opportunity } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
+import { focusPosition } from "@/lib/focus";
 import { formatDate, formatPrice, LONG_DATE } from "@/lib/format";
 
 interface Props {
@@ -23,7 +24,10 @@ export default function OpportunityCard({ opportunity, preload }: Props) {
             alt=""
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 360px"
-            className="object-cover object-top transition-transform duration-300 group-hover:scale-105"
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            style={{
+              objectPosition: focusPosition(opportunity.imageFocusX, opportunity.imageFocusY),
+            }}
             preload={preload}
             fetchPriority={preload ? "high" : undefined}
           />

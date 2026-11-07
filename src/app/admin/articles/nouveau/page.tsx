@@ -9,7 +9,15 @@ export default async function NewArticlePage() {
       <div className="mx-auto max-w-3xl">
         <h1 className="mb-8 text-2xl font-bold text-gray-800">Nouvel article</h1>
         <ArticleForm
-          initial={{ title: "", content: "", coverImageUrl: "", photos: [], published: false }}
+          initial={{
+            title: "",
+            content: "",
+            coverImageUrl: "",
+            coverFocusX: 50,
+            coverFocusY: 50,
+            photos: [],
+            published: false,
+          }}
         />
       </div>
     </main>

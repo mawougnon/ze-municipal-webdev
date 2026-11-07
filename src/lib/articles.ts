@@ -1,7 +1,7 @@
 import "server-only";
 import sanitizeHtml from "sanitize-html";
 import { isProjectFile, MAX_GALLERY_PHOTOS } from "@/lib/storage";
-import { z } from "@/lib/zod";
+import { focusValue, z } from "@/lib/zod";
 
 export const articleSchema = z.object({
   title: z.string().trim().min(3, "Titre trop court.").max(300, "Titre trop long."),
@@ -10,8 +10,16 @@ export const articleSchema = z.object({
     .string()
     .refine((url) => url === "" || isProjectFile(url, "photos"), "Image de couverture invalide.")
     .nullish(),
+  coverFocusX: focusValue.default(50),
+  coverFocusY: focusValue.default(50),
   photos: z
-    .array(z.string().refine((url) => isProjectFile(url, "photos"), "Photo invalide."))
+    .array(
+      z.object({
+        url: z.string().refine((url) => isProjectFile(url, "photos"), "Photo invalide."),
+        focusX: focusValue.default(50),
+        focusY: focusValue.default(50),
+      }),
+    )
     .max(MAX_GALLERY_PHOTOS, "Un article compte 10 photos au plus, couverture comprise.")
     .default([]),
   published: z.boolean().default(false),

@@ -66,7 +66,7 @@ it("saves the gallery in order and removes only the photos taken out", async () 
         title: "Titre",
         content: "<p>x</p>",
         coverImageUrl: file("cover"),
-        photos: [file("new"), file("kept")],
+        photos: [{ url: file("new"), focusX: 10, focusY: 90 }, { url: file("kept") }],
         published: true,
       }),
     }),
@@ -77,8 +77,8 @@ it("saves the gallery in order and removes only the photos taken out", async () 
   expect(db.article.update.mock.calls[0][0].data.photos).toEqual({
     deleteMany: {},
     create: [
-      { url: file("new"), position: 0 },
-      { url: file("kept"), position: 1 },
+      { url: file("new"), focusX: 10, focusY: 90, position: 0 },
+      { url: file("kept"), focusX: 50, focusY: 50, position: 1 },
     ],
   });
   expect(removePublicFile.mock.calls).toEqual([["photos", file("gone")]]);
