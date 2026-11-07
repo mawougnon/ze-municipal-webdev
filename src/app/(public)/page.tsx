@@ -291,7 +291,7 @@ export default async function HomePage() {
             </h2>
             <p className="mb-4 text-justify leading-relaxed text-gray-600">
               Zè est reconnue pour ses cultures d’ananas, de manioc et d’huile de palme, témoins
-              d’une agriculture vibrante portée par sa jeunesse. La commune abrite également des
+              d’une agriculture portée par sa jeunesse. La commune abrite également des
               sites naturels et culturels d’exception : la <strong>forêt sacrée d’Assanmê</strong>,
               la <strong>forêt sacrée de Zannoudji</strong>, la <strong>forêt de Djigbé</strong>{" "}
               gérée par l’ONAB, et le célèbre <strong>marché de bétail</strong>, véritable poumon
