@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import LoginPage from "@/app/login/page";
+import LoginForm from "@/components/LoginForm";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { robots: { index: false, follow: false } };
@@ -9,11 +9,10 @@ export default async function SecretEntry({ params }: { params: Promise<{ token:
 
   const validToken = process.env.ADMIN_SECRET_TOKEN;
 
-  // Invalid token → fake 404
+  // A wrong token looks like any page that does not exist
   if (!validToken || token !== validToken) {
     notFound();
   }
 
-  // Valid token → render login page directly
-  return <LoginPage />;
+  return <LoginForm />;
 }

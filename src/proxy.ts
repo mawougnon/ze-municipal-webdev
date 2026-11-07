@@ -22,7 +22,7 @@ function contentSecurityPolicy(nonce: string) {
   ].join("; ");
 }
 
-function respond(req: NextRequest, hidden: boolean) {
+function respond(req: NextRequest, hidden = false) {
   const nonce = btoa(crypto.randomUUID());
   const csp = contentSecurityPolicy(nonce);
   const headers = new Headers(req.headers);
@@ -36,16 +36,17 @@ function respond(req: NextRequest, hidden: boolean) {
   return response;
 }
 
-// Admin pages for anonymous visitors, and the bare login route, look like a 404.
+// Admin pages look like a 404 for anonymous visitors.
 // Each admin page also checks the session itself (lib/admin.ts).
 const adminProxy = auth((req) => respond(req, !req.auth));
 
 export default function proxy(req: NextRequest) {
-  const path = req.nextUrl.pathname;
   // Reading the session sets cookies, so only admin pages do it: visitors of the public
   // site receive none.
-  if (path.startsWith("/admin")) return adminProxy(req, { params: Promise.resolve({}) });
-  return respond(req, path.startsWith("/login"));
+  if (req.nextUrl.pathname.startsWith("/admin")) {
+    return adminProxy(req, { params: Promise.resolve({}) });
+  }
+  return respond(req);
 }
 
 export const config = {

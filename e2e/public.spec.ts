@@ -66,7 +66,7 @@ test("the page of an offer and its form have no serious accessibility problem", 
   expect(serious.map((v) => v.id)).toEqual([]);
 });
 
-test("the admin area and the bare login page look like they do not exist", async ({ page }) => {
+test("the admin area and the login page have no public address", async ({ page }) => {
   expect((await page.goto("/admin"))?.status()).toBe(404);
   expect((await page.goto("/admin/comptes"))?.status()).toBe(404);
   expect((await page.goto("/login"))?.status()).toBe(404);

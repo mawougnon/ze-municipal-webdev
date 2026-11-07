@@ -21,7 +21,7 @@ export default async function AdminPage() {
 
   async function handleSignOut() {
     "use server";
-    // /login is hidden behind a 404, so go back to the public site
+    // The login page has a secret address, so go back to the public site
     await signOut({ redirectTo: "/" });
   }
 

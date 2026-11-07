@@ -23,7 +23,7 @@ Next.js 16 (App Router), TypeScript, PostgreSQL and Storage on Supabase, Prisma 
 
 **Sessions.** The account is read again on every request, so a removed account or a changed role applies at once.
 
-**Authorization.** Every API route and every admin page checks the session on the server. `proxy.ts` only hides the admin pages. Admin changes are written to the activity log in the same transaction as the change.
+**Authorization.** Every API route and every admin page checks the session on the server. `src/proxy.ts` only hides the admin pages. Admin changes are written to the activity log in the same transaction as the change.
 
 **Applicants' documents.** They go to a private bucket under random names. The server issues a one-time upload link per file, with limits per IP address and per hour. An admin reads a file through a link valid for one minute, and each reading is logged. A daily job deletes applications after 6 months, log lines after a year, and files left without an application.
 
@@ -41,6 +41,20 @@ Next.js 16 (App Router), TypeScript, PostgreSQL and Storage on Supabase, Prisma 
 - Backups depend on the Supabase plan, and the free plan has none.
 - The browser tests run by hand, not in CI, because they need a running server.
 
+## Project layout
+
+```text
+src/app         pages and API routes
+src/components  interface
+src/lib         rules, validation and access to data
+prisma          database schema and migrations
+scripts         administration commands
+e2e             browser tests
+docs            handover guide
+```
+
+Unit tests sit beside the code they check.
+
 ## Run it locally
 
 You need Node.js 24, a Supabase project and a Resend account.
@@ -49,7 +63,7 @@ You need Node.js 24, a Supabase project and a Resend account.
 git clone https://github.com/MAWOUGNON/ze-municipal-platform.git
 cd ze-municipal-platform
 npm install
-cp env.example .env
+cp .env.example .env
 ```
 
 Fill in `.env`, then:
@@ -84,7 +98,7 @@ E2E_ALLOW_WRITES=staging node --env-file=.env.staging node_modules/@playwright/t
 
 ## Deployment
 
-Vercel deploys `master`. Migrations are applied by hand with `npm run db:migrate`, which uses `DIRECT_URL`. `env.example` lists every variable, and the daily purge in `vercel.json` needs `CRON_SECRET`. The handover of the site is described in [docs/PASSATION.md](docs/PASSATION.md).
+Vercel deploys `master`. Migrations are applied by hand with `npm run db:migrate`, which uses `DIRECT_URL`. `.env.example` lists every variable, and the daily purge in `vercel.json` needs `CRON_SECRET`. The handover of the site is described in [docs/PASSATION.md](docs/PASSATION.md).
 
 ## License
 
