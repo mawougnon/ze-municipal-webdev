@@ -1,6 +1,5 @@
 @import "tailwindcss";
 
-/* Theme tokens */
 @theme inline {
   --color-border: #e5e7eb;
   --color-ring: #16a34a;
@@ -13,76 +12,37 @@
   --radius-4xl: 1.625rem;
 }
 
-/* Base resets */
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
 }
 
-/* Interactivity */
-img {
-  user-select: none;
-  -webkit-user-drag: none;
-}
-a,
-button,
-[role="button"] {
-  cursor: pointer;
-}
-input,
-textarea {
-  cursor: text;
+/* The site has one theme */
+:root {
+  color-scheme: light;
 }
 
-/* Global readable defaults (override Tailwind / theme inheritance)
-   Forces dark text on white for body, inputs, and buttons in both light and dark
-   system themes. The editor and form fields must always be legible.
- */
 body {
   color: #111827;
   background-color: #ffffff;
 }
 
-/* Inputs are always light-background with dark text regardless of OS theme */
-input,
-textarea,
-select {
-  color: #111827 !important;
-  background-color: #ffffff !important;
-  border-color: #d1d5db !important;
+img {
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
-input::placeholder,
-textarea::placeholder {
-  color: #9ca3af !important;
-}
-
-/* TipTap / ProseMirror editor
-   The editor container (.editor-wrapper) forces a white canvas so the rich text
-   content is always readable, even when the OS is in dark mode.
- */
-.editor-wrapper {
-  background-color: #ffffff !important;
+a,
+button,
+[role="button"] {
+  cursor: pointer;
 }
 
 .ProseMirror {
-  color: #111827 !important;
-  background-color: #ffffff !important;
   outline: none;
 }
 
-.ProseMirror p,
-.ProseMirror li,
-.ProseMirror h1,
-.ProseMirror h2,
-.ProseMirror h3,
-.ProseMirror strong,
-.ProseMirror em {
-  color: #111827 !important;
-}
-
-/* Article public content styling */
 .article-content h1,
 .article-content h2,
 .article-content h3 {
@@ -136,43 +96,4 @@ textarea::placeholder {
   margin: 1.5rem 0;
   color: #6b7280;
   font-style: italic;
-}
-
-/* Dark mode overrides */
-@media (prefers-color-scheme: dark) {
-  body {
-    background-color: #0f1a12;
-    color: #f0f0e8;
-  }
-
-  /* Inputs stay light regardless of OS dark mode */
-  input,
-  textarea,
-  select {
-    color: #111827 !important;
-    background-color: #f9fafb !important;
-  }
-
-  /* Outlined danger buttons (e.g. delete) */
-  button[class*="border-red"] {
-    color: #ef4444 !important;
-    border-color: #ef4444 !important;
-    background-color: transparent !important;
-  }
-
-  /* Cancel / secondary buttons: explicit colors so they don't vanish */
-  button[class*="border-gray"] {
-    color: #374151 !important;
-    background-color: #ffffff !important;
-    border-color: #d1d5db !important;
-  }
-
-  /* Action row wraps on small screens */
-  .flex.gap-3 {
-    flex-wrap: wrap;
-  }
-
-  .flex.gap-3 button {
-    white-space: nowrap;
-  }
 }

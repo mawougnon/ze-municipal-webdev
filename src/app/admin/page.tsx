@@ -1,6 +1,7 @@
 import { signOut } from "@/auth";
 import { requireAdmin } from "@/lib/admin";
 import Link from "next/link";
+import { FaBriefcase, FaFileAlt, FaInbox, FaLock, FaNewspaper, FaUsers } from "react-icons/fa";
 import { prisma } from "@/lib/prisma";
 import { ROLE_LABELS } from "@/lib/accounts";
 
@@ -21,7 +22,6 @@ export default async function AdminPage() {
 
   async function handleSignOut() {
     "use server";
-    // The login page has a secret address, so go back to the public site
     await signOut({ redirectTo: "/" });
   }
 
@@ -29,25 +29,25 @@ export default async function AdminPage() {
     {
       label: "Articles",
       href: "/admin/articles",
-      icon: "📰",
+      icon: <FaNewspaper />,
       stat: `${publishedArticles}/${articleCount} publiés`,
     },
     {
       label: "Documents",
       href: "/admin/documents",
-      icon: "📋",
+      icon: <FaFileAlt />,
       stat: `${publishedDocuments}/${documentCount} publiés`,
     },
     {
       label: "Offres & Formations",
       href: "/admin/opportunites",
-      icon: "💼",
+      icon: <FaBriefcase />,
       stat: `${opportunityCount} offre(s)`,
     },
     {
       label: "Candidatures reçues",
       href: "/admin/candidatures",
-      icon: "📨",
+      icon: <FaInbox />,
       stat: `${applicationCount} candidature(s)`,
     },
     ...(session.user.role === "SUPERADMIN"
@@ -55,13 +55,13 @@ export default async function AdminPage() {
           {
             label: "Comptes",
             href: "/admin/comptes",
-            icon: "👥",
+            icon: <FaUsers />,
             stat: `${accountCount} compte(s)`,
           },
           {
             label: "Journal d’activité",
             href: "/admin/journal",
-            icon: "🔒",
+            icon: <FaLock />,
             stat: "Connexions et modifications",
           },
         ]
@@ -70,7 +70,6 @@ export default async function AdminPage() {
 
   return (
     <main className="min-h-screen bg-gray-50">
-      {/* Top bar */}
       <div className="flex items-center justify-between border-b border-gray-200 bg-white px-8 py-4 shadow-sm">
         <div className="flex items-center gap-3">
           <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-700 text-sm font-bold text-white">
@@ -100,20 +99,18 @@ export default async function AdminPage() {
       </div>
 
       <div className="mx-auto max-w-5xl px-8 py-10">
-        {/* Welcome */}
         <div className="mb-10">
           <p className="mb-1 text-xs font-semibold tracking-widest text-green-700 uppercase">
             Tableau de bord
           </p>
           <h1 className="font-serif text-3xl font-bold text-gray-900">
-            Bonjour, {session?.user?.name} 👋
+            Bonjour, {session?.user?.name}
           </h1>
           <p className="mt-1 text-sm text-gray-500">
             Mairie des Jeunes de Zè · Espace Administration
           </p>
         </div>
 
-        {/* Stats */}
         <div className="mb-10 grid grid-cols-2 gap-4 md:grid-cols-4">
           {[
             { label: "Articles", value: articleCount, color: "text-blue-600", bg: "bg-blue-50" },
@@ -146,7 +143,6 @@ export default async function AdminPage() {
           ))}
         </div>
 
-        {/* Navigation cards */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {sections.map((s) => (
             <Link
@@ -156,7 +152,7 @@ export default async function AdminPage() {
             >
               <div className="flex items-start justify-between">
                 <div>
-                  <span className="mb-3 block text-2xl">{s.icon}</span>
+                  <span className="mb-3 block text-2xl text-green-800">{s.icon}</span>
                   <h3 className="font-semibold text-gray-800 transition group-hover:text-green-700">
                     {s.label}
                   </h3>

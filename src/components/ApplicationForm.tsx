@@ -35,11 +35,9 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
-    // Clear error on change
     setErrors((prev) => ({ ...prev, [name]: undefined }));
   }
 
-  // Validate a single field on blur
   function handleBlur(e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) {
     const { name } = e.target;
     const result = applicantSchema.safeParse(form);
@@ -53,13 +51,11 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
     const files = Array.from(e.target.files || []);
     if (!files.length) return;
 
-    // Max 5 files, max 5MB each
     if (cvFiles.length + files.length > 5) {
       setServerError("Maximum 5 fichiers autorisés.");
       return;
     }
     for (const file of files) {
-      // The documents bucket only accepts PDF: say it here instead of failing later
       if (file.type !== "application/pdf") {
         setServerError(`"${file.name}" n'est pas un PDF. Seuls les fichiers PDF sont acceptés.`);
         return;
@@ -92,7 +88,6 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
       }
     }
 
-    // A failed upload used to vanish silently: the applicant must know before sending
     if (failed.length > 0) {
       setServerError(`Échec de l'envoi de : ${failed.join(", ")}. Réessayez.`);
     }
@@ -160,9 +155,8 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
   if (success) {
     return (
       <div className="rounded-xl border border-green-200 bg-green-50 p-8 text-center">
-        <p className="text-lg font-bold text-green-700">✅ Candidature reçue !</p>
+        <p className="text-lg font-bold text-green-700">Candidature reçue</p>
 
-        {/* Payment message: only shown for paid opportunities */}
         {!isFree && (
           <p className="mt-3 leading-relaxed text-gray-600">
             Pour finaliser votre candidature, nos services vous contacteront dans les plus brefs
@@ -204,7 +198,7 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
           {uploading && <p className="mt-2 text-sm text-gray-500">Envoi en cours...</p>}
           {cvFiles.map((_, i) => (
             <p key={i} className="mt-1 text-sm text-green-600">
-              ✅ Fichier {i + 1} uploadé
+              Fichier {i + 1} envoyé
             </p>
           ))}
         </div>
@@ -219,7 +213,6 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-5" noValidate>
-        {/* Full name: letters only */}
         <div>
           <label
             htmlFor="application-fullName"
@@ -239,7 +232,6 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
           {errors.fullName && <p className="mt-1 text-xs text-red-500">{errors.fullName}</p>}
         </div>
 
-        {/* WhatsApp: Benin format */}
         <div>
           <label
             htmlFor="application-phone"
@@ -260,7 +252,6 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
           {errors.phone && <p className="mt-1 text-xs text-red-500">{errors.phone}</p>}
         </div>
 
-        {/* Email: optional */}
         <div>
           <label
             htmlFor="application-email"
@@ -279,7 +270,6 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
           {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email}</p>}
         </div>
 
-        {/* Message: optional */}
         <div>
           <label
             htmlFor="application-message"
@@ -298,13 +288,12 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
           {errors.message && <p className="mt-1 text-xs text-red-500">{errors.message}</p>}
         </div>
 
-        {/* File upload: optional, toggled */}
         {type === "JOB" &&
           uploadSection("Je souhaite joindre des documents (CV, lettre de motivation...)")}
         {type === "TRAINING" &&
           uploadSection("Je souhaite joindre des documents (attestations, diplômes...)")}
 
-        {/* A separate statement, never ticked in advance */}
+        {/* Book V of the digital code: a separate statement, never ticked in advance */}
         <div>
           <label className="flex items-start gap-3 text-sm text-gray-700">
             <input

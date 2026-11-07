@@ -3,6 +3,7 @@ import { formatDate } from "@/lib/format";
 import { prisma } from "@/lib/prisma";
 import Image from "next/image";
 import Link from "next/link";
+import { FaNewspaper } from "react-icons/fa";
 
 export const metadata: Metadata = {
   title: "Actualités",
@@ -32,7 +33,6 @@ export default async function ArticlesPublicPage() {
                 href={`/articles/${a.id}`}
                 className="block overflow-hidden rounded-xl border border-gray-100 bg-gray-50 transition hover:border-green-200 hover:shadow-md"
               >
-                {/* Cover image on the card */}
                 {a.coverImageUrl ? (
                   <div className="relative h-48 w-full">
                     <Image
@@ -45,7 +45,7 @@ export default async function ArticlesPublicPage() {
                   </div>
                 ) : (
                   <div className="flex h-48 w-full items-center justify-center bg-green-50">
-                    <span className="text-4xl text-green-200">📰</span>
+                    <FaNewspaper aria-hidden className="text-4xl text-green-200" />
                   </div>
                 )}
 

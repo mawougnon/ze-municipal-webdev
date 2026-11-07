@@ -4,6 +4,7 @@ import { formatDate } from "@/lib/format";
 import { useRouter } from "next/navigation";
 import { Application, ApplicationFile, Opportunity } from "@prisma/client";
 import { whatsappLink } from "@/lib/phone";
+import { FaEnvelope, FaPaperclip, FaTrash, FaWhatsapp } from "react-icons/fa";
 
 type CandidatureWithOpportunity = Application & {
   opportunity: Pick<Opportunity, "title" | "type">;
@@ -21,7 +22,7 @@ export default function CandidatureCard({ a }: { a: CandidatureWithOpportunity }
     if (res.ok) {
       router.refresh();
     } else {
-      alert("Erreur lors de la suppression. Réessaie.");
+      alert("La suppression a échoué. Réessayez.");
     }
   }
 
@@ -51,7 +52,7 @@ export default function CandidatureCard({ a }: { a: CandidatureWithOpportunity }
                 rel="noopener noreferrer"
                 className="flex items-center gap-1 text-green-600 hover:underline"
               >
-                📱 {a.phone} (WhatsApp)
+                <FaWhatsapp aria-hidden /> {a.phone} (WhatsApp)
               </a>
             )}
             {a.email && (
@@ -59,7 +60,7 @@ export default function CandidatureCard({ a }: { a: CandidatureWithOpportunity }
                 href={`mailto:${a.email}`}
                 className="flex items-center gap-1 text-blue-600 hover:underline"
               >
-                📧 {a.email}
+                <FaEnvelope aria-hidden /> {a.email}
               </a>
             )}
           </div>
@@ -80,7 +81,8 @@ export default function CandidatureCard({ a }: { a: CandidatureWithOpportunity }
                   rel="noopener noreferrer"
                   className="rounded-lg border border-blue-100 px-3 py-1 text-sm text-blue-600 hover:underline"
                 >
-                  📎 Document {i + 1}
+                  <FaPaperclip aria-hidden className="mr-1 inline" />
+                  Document {i + 1}
                 </a>
               ))}
             </div>
@@ -100,7 +102,7 @@ export default function CandidatureCard({ a }: { a: CandidatureWithOpportunity }
             className="flex items-center gap-1 text-xs text-red-400 transition hover:text-red-600"
             title="Supprimer cette candidature"
           >
-            🗑️ Supprimer
+            <FaTrash aria-hidden /> Supprimer
           </button>
         </div>
       </div>

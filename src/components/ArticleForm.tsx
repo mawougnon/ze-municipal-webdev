@@ -182,7 +182,7 @@ export default function ArticleForm({ id, initial }: Props) {
             </button>
           ))}
         </div>
-        <div className="editor-wrapper min-h-[200px] rounded-lg border border-gray-300 bg-white p-4 focus-within:ring-2 focus-within:ring-blue-500">
+        <div className="min-h-[200px] rounded-lg border border-gray-300 bg-white p-4 focus-within:ring-2 focus-within:ring-blue-500">
           <EditorContent editor={editor} />
         </div>
       </div>
