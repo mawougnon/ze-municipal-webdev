@@ -1,4 +1,5 @@
 import Link from "next/link";
+import AdminBackLink from "@/components/AdminBackLink";
 import { requireSuperadmin } from "@/lib/admin";
 import { formatDate } from "@/lib/format";
 import { prisma } from "@/lib/prisma";
@@ -22,9 +23,9 @@ const LABELS: Record<string, { label: string; color: string }> = {
   ARTICLE_SAVED_ONLINE: { label: "Article enregistré, en ligne", color: "text-gray-700" },
   ARTICLE_SAVED_DRAFT: { label: "Article enregistré, brouillon", color: "text-gray-700" },
   ARTICLE_DELETED: { label: "Article supprimé", color: "text-gray-700" },
-  OFFER_SAVED_ONLINE: { label: "Offre enregistrée, en ligne", color: "text-gray-700" },
-  OFFER_SAVED_DRAFT: { label: "Offre enregistrée, brouillon", color: "text-gray-700" },
-  OFFER_DELETED: { label: "Offre supprimée", color: "text-gray-700" },
+  OPPORTUNITY_SAVED_ONLINE: { label: "Offre enregistrée, en ligne", color: "text-gray-700" },
+  OPPORTUNITY_SAVED_DRAFT: { label: "Offre enregistrée, brouillon", color: "text-gray-700" },
+  OPPORTUNITY_DELETED: { label: "Offre supprimée", color: "text-gray-700" },
   DOCUMENT_SAVED_ONLINE: { label: "Document enregistré, en ligne", color: "text-gray-700" },
   DOCUMENT_SAVED_DRAFT: { label: "Document enregistré, brouillon", color: "text-gray-700" },
   DOCUMENT_DELETED: { label: "Document supprimé", color: "text-gray-700" },
@@ -33,11 +34,11 @@ const LABELS: Record<string, { label: string; color: string }> = {
   APPLICATION_DELETED: { label: "Candidature supprimée", color: "text-gray-700" },
 };
 
-export default async function JournalPage({
-  searchParams,
-}: {
+interface Props {
   searchParams: Promise<{ page?: string }>;
-}) {
+}
+
+export default async function AdminJournalPage({ searchParams }: Props) {
   await requireSuperadmin();
 
   const { page } = await searchParams;
@@ -53,10 +54,8 @@ export default async function JournalPage({
   return (
     <main className="min-h-screen bg-gray-50 p-4 md:p-8">
       <div className="mx-auto max-w-5xl">
-        <Link href="/admin" className="text-sm text-gray-500 hover:text-gray-800">
-          ← Retour au tableau de bord
-        </Link>
-        <h1 className="mt-4 mb-6 text-2xl font-bold text-gray-800">Journal d’activité</h1>
+        <AdminBackLink />
+        <h1 className="mb-6 text-2xl font-bold text-gray-800">Journal d’activité</h1>
 
         <div className="divide-y divide-gray-100 rounded-xl border border-gray-100 bg-white shadow-sm">
           {logs.length === 0 && <p className="p-4 text-sm text-gray-500">Aucun événement.</p>}

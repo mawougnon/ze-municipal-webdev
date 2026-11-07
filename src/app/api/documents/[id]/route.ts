@@ -1,11 +1,13 @@
+import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { logAdminAction } from "@/lib/audit";
 import { documentSchema } from "@/lib/documents";
 import { prisma } from "@/lib/prisma";
 import { removePublicFile } from "@/lib/supabase-admin";
-import { NextResponse } from "next/server";
 
-type Context = { params: Promise<{ id: string }> };
+interface Context {
+  params: Promise<{ id: string }>;
+}
 
 export async function PUT(req: Request, { params }: Context) {
   const session = await auth();

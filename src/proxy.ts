@@ -1,5 +1,5 @@
-import { auth } from "@/auth";
 import { type NextRequest, NextResponse } from "next/server";
+import { auth } from "@/auth";
 
 const isDev = process.env.NODE_ENV !== "production";
 

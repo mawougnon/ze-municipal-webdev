@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { BENIN_PHONE, normalizeBeninPhone } from "@/lib/phone";
 
-export const candidatureSchema = z.object({
+export const applicationSchema = z.object({
   opportunityId: z.string().min(1),
   // Names in Fon or Yoruba use letters such as ɛ, ɔ, ɖ and tone marks
   fullName: z
@@ -36,7 +36,7 @@ export const candidatureSchema = z.object({
     .default([]),
 });
 
-export const applicantSchema = candidatureSchema.pick({
+export const applicantSchema = applicationSchema.pick({
   fullName: true,
   phone: true,
   email: true,

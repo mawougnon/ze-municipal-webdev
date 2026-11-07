@@ -1,7 +1,11 @@
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import Navbar from "@/components/Navbar";
 
-export default function PublicLayout({ children }: { children: React.ReactNode }) {
+interface Props {
+  children: React.ReactNode;
+}
+
+export default function PublicLayout({ children }: Props) {
   return (
     <>
       <Navbar />

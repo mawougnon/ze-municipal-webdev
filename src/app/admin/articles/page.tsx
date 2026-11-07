@@ -1,9 +1,10 @@
-import { formatDate } from "@/lib/format";
-import { requireAdmin } from "@/lib/admin";
-import { prisma } from "@/lib/prisma";
 import Link from "next/link";
+import AdminBackLink from "@/components/AdminBackLink";
+import { requireAdmin } from "@/lib/admin";
+import { formatDate } from "@/lib/format";
+import { prisma } from "@/lib/prisma";
 
-export default async function ArticlesPage() {
+export default async function AdminArticlesPage() {
   await requireAdmin();
 
   const articles = await prisma.article.findMany({
@@ -12,13 +13,14 @@ export default async function ArticlesPage() {
   });
 
   return (
-    <main className="min-h-screen bg-gray-50 p-8">
+    <main className="min-h-screen bg-gray-50 p-4 md:p-8">
       <div className="mx-auto max-w-4xl">
+        <AdminBackLink />
         <div className="mb-8 flex items-center justify-between">
           <h1 className="text-2xl font-bold text-gray-800">Articles</h1>
           <Link
             href="/admin/articles/nouveau"
-            className="rounded-lg bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-700"
+            className="rounded-lg bg-green-700 px-4 py-2 text-white transition hover:bg-green-800"
           >
             + Nouvel article
           </Link>
@@ -53,7 +55,7 @@ export default async function ArticlesPage() {
 
                 <Link
                   href={`/admin/articles/${article.id}`}
-                  className="text-sm text-blue-600 hover:underline"
+                  className="text-sm text-green-800 hover:underline"
                 >
                   Modifier
                 </Link>
@@ -61,12 +63,6 @@ export default async function ArticlesPage() {
             ))}
           </div>
         )}
-
-        <div className="mt-6">
-          <Link href="/admin" className="text-sm text-gray-500 hover:text-gray-600">
-            ← Retour au tableau de bord
-          </Link>
-        </div>
       </div>
     </main>
   );

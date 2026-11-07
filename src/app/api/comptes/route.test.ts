@@ -29,11 +29,11 @@ beforeEach(() => {
 });
 
 it.each([
-  ["anonymous", null],
-  ["a content admin", { user: { email: "admin@example.com", role: "ADMIN" } }],
-])("refuses %s", async (_label, session) => {
+  ["anonymous", null, 401],
+  ["a content admin", { user: { email: "admin@example.com", role: "ADMIN" } }, 403],
+])("refuses %s", async (_label, session, status) => {
   auth.mockResolvedValue(session);
-  expect((await post()).status).toBe(403);
+  expect((await post()).status).toBe(status);
   expect(db.user.create).not.toHaveBeenCalled();
 });
 

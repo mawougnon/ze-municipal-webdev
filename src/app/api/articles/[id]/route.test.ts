@@ -59,7 +59,7 @@ it("saves the gallery in order and removes only the photos taken out", async () 
     coverImageUrl: file("cover"),
   });
 
-  const res = await PUT(
+  const response = await PUT(
     new Request("http://localhost/api/articles/a1", {
       method: "PUT",
       body: JSON.stringify({
@@ -73,7 +73,7 @@ it("saves the gallery in order and removes only the photos taken out", async () 
     { params: Promise.resolve({ id: "a1" }) },
   );
 
-  expect(res.status).toBe(200);
+  expect(response.status).toBe(200);
   expect(db.article.update.mock.calls[0][0].data.photos).toEqual({
     deleteMany: {},
     create: [

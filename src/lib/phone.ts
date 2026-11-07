@@ -5,4 +5,6 @@ export function normalizeBeninPhone(raw: string) {
 
 export const BENIN_PHONE = /^01[0-9]{8}$/;
 
-export const whatsappLink = (phone: string) => `https://wa.me/229${phone}`;
+export function whatsappLink(phone: string) {
+  return `https://wa.me/229${phone}`;
+}

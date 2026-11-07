@@ -1,10 +1,10 @@
 "use client";
 
-import { formatPrice } from "@/lib/format";
 import Link from "next/link";
 import { useState } from "react";
 import type { z } from "zod";
-import { applicantSchema } from "@/lib/candidatures";
+import { applicantSchema } from "@/lib/applications";
+import { formatPrice } from "@/lib/format";
 
 interface Props {
   opportunityId: string;
@@ -13,16 +13,16 @@ interface Props {
   type: string;
 }
 
-type FormData = z.input<typeof applicantSchema>;
+type ApplicantFields = z.input<typeof applicantSchema>;
 
 export default function ApplicationForm({ opportunityId, isFree, price, type }: Props) {
-  const [form, setForm] = useState<FormData>({
+  const [form, setForm] = useState<ApplicantFields>({
     fullName: "",
     phone: "",
     email: "",
     message: "",
   });
-  const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
+  const [errors, setErrors] = useState<Partial<Record<keyof ApplicantFields, string>>>({});
   const [consent, setConsent] = useState(false);
   const [consentError, setConsentError] = useState("");
   const [wantsToUploadCV, setWantsToUploadCV] = useState(false);
@@ -42,7 +42,7 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
     const { name } = e.target;
     const result = applicantSchema.safeParse(form);
     if (!result.success) {
-      const fieldError = result.error.flatten().fieldErrors[name as keyof FormData];
+      const fieldError = result.error.flatten().fieldErrors[name as keyof ApplicantFields];
       if (fieldError) setErrors((prev) => ({ ...prev, [name]: fieldError[0] }));
     }
   }
@@ -52,12 +52,12 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
     if (!files.length) return;
 
     if (cvFiles.length + files.length > 5) {
-      setServerError("Maximum 5 fichiers autorisés.");
+      setServerError("5 fichiers au maximum.");
       return;
     }
     for (const file of files) {
       if (file.type !== "application/pdf") {
-        setServerError(`"${file.name}" n'est pas un PDF. Seuls les fichiers PDF sont acceptés.`);
+        setServerError(`"${file.name}" n’est pas un PDF. Seuls les fichiers PDF sont acceptés.`);
         return;
       }
       if (file.size > 5 * 1024 * 1024) {
@@ -74,9 +74,9 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
     for (const file of files) {
       try {
         const { supabase } = await import("@/lib/supabase");
-        const res = await fetch("/api/fichiers-candidature", { method: "POST" });
-        if (!res.ok) throw new Error();
-        const { path, token } = await res.json();
+        const response = await fetch("/api/fichiers-candidature", { method: "POST" });
+        if (!response.ok) throw new Error();
+        const { path, token } = await response.json();
         const { error } = await supabase.storage
           .from("applications")
           .uploadToSignedUrl(path, token, file, { contentType: "application/pdf" });
@@ -89,7 +89,7 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
     }
 
     if (failed.length > 0) {
-      setServerError(`Échec de l'envoi de : ${failed.join(", ")}. Réessayez.`);
+      setServerError(`Échec de l’envoi de : ${failed.join(", ")}. Réessayez.`);
     }
     setCvFiles((prev) => [...prev, ...uploaded]);
     setUploading(false);
@@ -116,7 +116,7 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
     setLoading(true);
 
     try {
-      const res = await fetch("/api/candidatures", {
+      const response = await fetch("/api/candidatures", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -127,8 +127,8 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
         }),
       });
 
-      if (!res.ok) {
-        const data = await res.json();
+      if (!response.ok) {
+        const data = await response.json();
         if (data.details) {
           setErrors({
             fullName: data.details.fullName?.[0],
@@ -143,9 +143,9 @@ export default function ApplicationForm({ opportunityId, isFree, price, type }: 
       }
 
       setSuccess(true);
-    } catch (err) {
+    } catch (error) {
       setServerError(
-        err instanceof Error ? err.message : "Une erreur est survenue. Veuillez réessayer.",
+        error instanceof Error ? error.message : "Une erreur est survenue. Réessayez.",
       );
     } finally {
       setLoading(false);

@@ -28,7 +28,7 @@ export async function POST(req: Request) {
           : error instanceof Error && /resend|email|domain/i.test(error.message)
             ? "EMAIL"
             : "UNKNOWN";
-      console.error(`OTP_SEND_ERROR [${stage}]:`, error);
+      console.error("OTP_SEND_ERROR", stage, error);
     }
   });
 

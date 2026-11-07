@@ -50,21 +50,21 @@ export default function FileUpload({
       try {
         file = await prepareImage(picked);
       } catch {
-        return "Format d'image non pris en charge. Envoyez une photo JPEG ou PNG.";
+        return "Format d’image non pris en charge. Envoyez une photo JPEG ou PNG.";
       }
     }
     if (file.size > MAX_BYTES) return "Le fichier dépasse 5 Mo.";
 
-    const res = await fetch("/api/envois", {
+    const response = await fetch("/api/envois", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ bucket, fileName: file.name }),
     }).catch(() => null);
-    const upload = res?.ok ? await res.json() : null;
+    const upload = response?.ok ? await response.json() : null;
     const { error: uploadError } = upload
       ? await supabase.storage.from(bucket).uploadToSignedUrl(upload.path, upload.token, file)
       : { error: true };
-    if (uploadError) return "L'envoi a échoué. Réessayez.";
+    if (uploadError) return "L’envoi a échoué. Réessayez.";
 
     onUpload(supabase.storage.from(bucket).getPublicUrl(upload.path).data.publicUrl);
     return null;

@@ -10,7 +10,9 @@ export const MAX_ATTEMPTS = 5;
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-export const normalizeEmail = (email: string) => email.trim().toLowerCase();
+export function normalizeEmail(email: string) {
+  return email.trim().toLowerCase();
+}
 
 export async function requestLoginCode(rawEmail: string, ip: string | null) {
   const email = normalizeEmail(rawEmail);

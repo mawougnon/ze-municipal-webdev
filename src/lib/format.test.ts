@@ -1,5 +1,5 @@
 import { expect, it } from "vitest";
-import { formatDate, formatPrice } from "@/lib/format";
+import { formatDate, formatPrice, plural } from "@/lib/format";
 
 it("shows dates in Benin time, not in the server's UTC", () => {
   // 23:30 UTC on 14 November is 00:30 on 15 November in Benin
@@ -16,4 +16,12 @@ it("keeps a deadline typed as 15 November on the 15th", () => {
 it("writes prices the French way", () => {
   expect(formatPrice(25000).replace(/\s/g, " ")).toBe("25 000");
   expect(formatPrice(null)).toBe("0");
+});
+
+it.each([
+  [0, "0 offre"],
+  [1, "1 offre"],
+  [2, "2 offres"],
+])("writes %i as %s", (count, expected) => {
+  expect(plural(count, "offre")).toBe(expected);
 });

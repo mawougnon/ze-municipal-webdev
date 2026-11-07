@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { isOpen, offerSchema, openOffersWhere } from "@/lib/offers";
+import { isOpen, opportunitySchema, openOpportunitiesWhere } from "@/lib/opportunities";
 
 const HOUR = 60 * 60 * 1000;
 
@@ -28,19 +28,19 @@ describe("deadlines", () => {
 
   it("filters in the database exactly like isOpen", () => {
     vi.setSystemTime(new Date("2026-11-15T12:00:00Z"));
-    const where = openOffersWhere();
+    const where = openOpportunitiesWhere();
     const limit = (where.OR[1] as { deadline: { gt: Date } }).deadline.gt.getTime();
-    for (const d of [
+    for (const deadlineItem of [
       Date.now() - 23 * HOUR + 1000,
       Date.now() - 23 * HOUR - 1000,
       Date.now() + HOUR,
     ]) {
-      expect(d > limit).toBe(isOpen(new Date(d)));
+      expect(deadlineItem > limit).toBe(isOpen(new Date(deadlineItem)));
     }
   });
 });
 
-describe("offerSchema", () => {
+describe("opportunitySchema", () => {
   const base = {
     type: "JOB",
     title: "Stage en informatique",
@@ -52,16 +52,22 @@ describe("offerSchema", () => {
   };
 
   it("accepts what the admin forms send", () => {
-    expect(offerSchema.safeParse(base).success).toBe(true);
+    expect(opportunitySchema.safeParse(base).success).toBe(true);
     expect(
-      offerSchema.safeParse({ ...base, deadline: new Date("2026-11-15").toISOString() }).success,
+      opportunitySchema.safeParse({ ...base, deadline: new Date("2026-11-15").toISOString() })
+        .success,
     ).toBe(true);
-    const paid = offerSchema.parse({ ...base, type: "TRAINING", isFree: false, price: 25000 });
+    const paid = opportunitySchema.parse({
+      ...base,
+      type: "TRAINING",
+      isFree: false,
+      price: 25000,
+    });
     expect(paid.price).toBe(25000);
   });
 
   it("drops the price of a free offer", () => {
-    expect(offerSchema.parse({ ...base, price: 5000 }).price).toBeNull();
+    expect(opportunitySchema.parse({ ...base, price: 5000 }).price).toBeNull();
   });
 
   it.each([
@@ -72,6 +78,6 @@ describe("offerSchema", () => {
     ["a one letter title", { ...base, title: "x" }],
     ["an unreadable body", null],
   ])("rejects %s", (_, payload) => {
-    expect(offerSchema.safeParse(payload).success).toBe(false);
+    expect(opportunitySchema.safeParse(payload).success).toBe(false);
   });
 });

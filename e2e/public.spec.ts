@@ -36,8 +36,11 @@ for (const path of PAGES) {
       await page.goto(path, { waitUntil: "networkidle" });
       const { violations } = await new AxeBuilder({ page }).analyze();
       const serious = violations
-        .filter((v) => v.impact === "serious" || v.impact === "critical")
-        .map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(" ")).join(", ")}`);
+        .filter((violation) => violation.impact === "serious" || violation.impact === "critical")
+        .map(
+          (violation) =>
+            `${violation.id}: ${violation.nodes.map((node) => node.target.join(" ")).join(", ")}`,
+        );
       expect(serious).toEqual([]);
     });
 
@@ -52,18 +55,20 @@ for (const path of PAGES) {
   });
 }
 
-test("the page of an offer and its form have no serious accessibility problem", async ({
+test("the page of an opportunity and its form have no serious accessibility problem", async ({
   page,
 }) => {
   await page.goto("/opportunites");
-  const offer = page.locator('main a[href^="/opportunites/"]').first();
-  test.skip((await offer.count()) === 0, "No offer online");
-  await offer.click();
+  const opportunity = page.locator('main a[href^="/opportunites/"]').first();
+  test.skip((await opportunity.count()) === 0, "No opportunity online");
+  await opportunity.click();
   await expect(page.getByLabel(/Nom complet/)).toBeVisible();
   await page.waitForLoadState("networkidle");
   const { violations } = await new AxeBuilder({ page }).analyze();
-  const serious = violations.filter((v) => v.impact === "serious" || v.impact === "critical");
-  expect(serious.map((v) => v.id)).toEqual([]);
+  const serious = violations.filter(
+    (violation) => violation.impact === "serious" || violation.impact === "critical",
+  );
+  expect(serious.map((violation) => violation.id)).toEqual([]);
 });
 
 test("the admin area and the login page have no public address", async ({ page }) => {
@@ -86,7 +91,7 @@ test("the sitemap lists the public pages", async ({ request }) => {
 test("writing without a session is refused", async ({ request }) => {
   expect((await request.post("/api/articles", { data: {} })).status()).toBe(401);
   expect((await request.post("/api/documents", { data: {} })).status()).toBe(401);
-  expect((await request.post("/api/comptes", { data: {} })).status()).toBe(403);
+  expect((await request.post("/api/comptes", { data: {} })).status()).toBe(401);
   expect((await request.post("/api/envois", { data: {} })).status()).toBe(401);
   expect((await request.delete("/api/candidatures/none")).status()).toBe(401);
   expect((await request.get("/api/cron/nettoyage")).status()).toBe(401);

@@ -1,7 +1,7 @@
-import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
-import { isOpen } from "@/lib/offers";
-import { candidatureSchema } from "@/lib/candidatures";
+import { applicationSchema } from "@/lib/applications";
+import { isOpen } from "@/lib/opportunities";
+import { prisma } from "@/lib/prisma";
 
 const MAX_PER_PHONE_PER_HOUR = 3;
 const MAX_TOTAL_PER_HOUR = 100;
@@ -11,7 +11,7 @@ class UnknownFileError extends Error {}
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const result = candidatureSchema.safeParse(body);
+    const result = applicationSchema.safeParse(body);
 
     if (!result.success) {
       return NextResponse.json(
@@ -44,7 +44,7 @@ export async function POST(req: Request) {
 
     if (byPhone >= MAX_PER_PHONE_PER_HOUR || total >= MAX_TOTAL_PER_HOUR) {
       return NextResponse.json(
-        { error: "Trop de soumissions. Réessayez plus tard." },
+        { error: "Trop de candidatures. Réessayez plus tard." },
         { status: 429 },
       );
     }
@@ -80,7 +80,7 @@ export async function POST(req: Request) {
     }
     return NextResponse.json({ success: true }, { status: 201 });
   } catch (error) {
-    console.error("APPLICATION_POST_ERROR:", error);
+    console.error("APPLICATION_POST_ERROR", error);
     return NextResponse.json({ error: "Erreur serveur." }, { status: 500 });
   }
 }

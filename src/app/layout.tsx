@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { headers } from "next/headers";
 import { Geist } from "next/font/google";
+import { headers } from "next/headers";
 import "./globals.css";
-import { SITE_URL } from "@/lib/site";
 import NextTopLoader from "nextjs-toploader";
+import { SITE_URL } from "@/lib/site";
 
 const geist = Geist({ subsets: ["latin"] });
 
@@ -24,7 +24,11 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
+interface Props {
+  children: React.ReactNode;
+}
+
+export default async function RootLayout({ children }: Props) {
   // Forces dynamic rendering: every page needs the nonce of its request
   await headers();
 

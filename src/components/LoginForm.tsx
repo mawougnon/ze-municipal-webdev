@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
+import { useState } from "react";
+import { FaSpinner } from "react-icons/fa";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -20,14 +20,14 @@ export default function LoginForm() {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/otp", {
+      const response = await fetch("/api/otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       });
 
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
         setError(data.error ?? "Une erreur est survenue.");
         return;
       }
@@ -56,14 +56,14 @@ export default function LoginForm() {
     }
   }
 
-  function goBack() {
+  function handleBack() {
     setStep(1);
     setOtp("");
     setError("");
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#0f1f17] px-4">
+    <div className="flex min-h-screen items-center justify-center bg-green-950 px-4">
       <div
         className="absolute inset-0 opacity-5"
         style={{
@@ -74,7 +74,7 @@ export default function LoginForm() {
 
       <div className="relative w-full max-w-md">
         <div className="overflow-hidden rounded-2xl bg-white shadow-2xl">
-          <div className="bg-[#1a3a2a] px-8 py-8 text-center">
+          <div className="bg-green-900 px-8 py-8 text-center">
             <div className="mb-5 flex justify-center gap-4">
               <Image
                 src="/logo-association-mj-ze.jpg"
@@ -88,7 +88,7 @@ export default function LoginForm() {
               Mairie des Jeunes de Zè
             </h1>
             <p className="mt-1 text-xs tracking-widest text-white/40 uppercase">
-              Administration · Accès Restreint
+              Administration · Accès restreint
             </p>
           </div>
 
@@ -116,16 +116,15 @@ export default function LoginForm() {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="votre@email.com"
                     required
-                    className="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm text-gray-800 transition-colors placeholder:text-gray-300 focus:border-[#1a3a2a] focus:outline-none"
+                    className="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm text-gray-800 transition-colors placeholder:text-gray-300 focus:border-green-900 focus:outline-none"
                   />
                 </div>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex w-full items-center justify-center gap-2 rounded-lg py-3 text-sm font-semibold text-white transition-all disabled:opacity-70"
-                  style={{ backgroundColor: loading ? "#9ca3af" : "#1a3a2a" }}
+                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-green-900 py-3 text-sm font-semibold text-white transition-all hover:bg-green-800 disabled:bg-gray-400 disabled:opacity-70"
                 >
-                  {loading && <Loader2 className="h-4 w-4 animate-spin" />}
+                  {loading && <FaSpinner aria-hidden className="h-4 w-4 animate-spin" />}
                   {loading ? "Vérification..." : "Continuer →"}
                 </button>
               </form>
@@ -156,7 +155,7 @@ export default function LoginForm() {
                     placeholder="000000"
                     maxLength={6}
                     required
-                    className="w-full rounded-lg border border-gray-200 px-4 py-4 text-center text-3xl font-bold tracking-[0.4em] text-[#1a3a2a] transition-colors placeholder:text-gray-200 focus:border-[#1a3a2a] focus:outline-none"
+                    className="w-full rounded-lg border border-gray-200 px-4 py-4 text-center text-3xl font-bold tracking-[0.4em] text-green-900 transition-colors placeholder:text-gray-200 focus:border-green-900 focus:outline-none"
                   />
                   <p className="mt-2 text-center text-xs text-gray-500">
                     Ce code expire dans 10 minutes.
@@ -166,16 +165,15 @@ export default function LoginForm() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex w-full items-center justify-center gap-2 rounded-lg py-3 text-sm font-semibold text-white transition-all disabled:opacity-70"
-                  style={{ backgroundColor: loading ? "#9ca3af" : "#16a34a" }}
+                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-green-700 py-3 text-sm font-semibold text-white transition-all hover:bg-green-800 disabled:bg-gray-400 disabled:opacity-70"
                 >
-                  {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-                  {loading ? "Vérification..." : "Confirmer l'accès"}
+                  {loading && <FaSpinner aria-hidden className="h-4 w-4 animate-spin" />}
+                  {loading ? "Vérification..." : "Confirmer l’accès"}
                 </button>
 
                 <button
                   type="button"
-                  onClick={goBack}
+                  onClick={handleBack}
                   className="w-full text-xs text-gray-500 underline underline-offset-2 transition hover:text-gray-600"
                 >
                   ← Changer d’adresse email

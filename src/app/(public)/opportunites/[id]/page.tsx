@@ -1,14 +1,16 @@
-import ApplicationForm from "@/components/ApplicationForm";
-import { formatDate, formatPrice, LONG_DATE } from "@/lib/format";
-import { isOpen } from "@/lib/offers";
-import { prisma } from "@/lib/prisma";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { cache } from "react";
+import ApplicationForm from "@/components/ApplicationForm";
+import { formatDate, formatPrice, LONG_DATE } from "@/lib/format";
+import { isOpen } from "@/lib/opportunities";
+import { prisma } from "@/lib/prisma";
 
-type Props = { params: Promise<{ id: string }> };
+interface Props {
+  params: Promise<{ id: string }>;
+}
 
 const getOpportunity = cache((id: string) =>
   prisma.opportunity.findUnique({ where: { id, published: true } }),
@@ -29,7 +31,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function OpportuniteDetailPage({ params }: Props) {
+export default async function OpportunityPage({ params }: Props) {
   const opportunity = await getOpportunity((await params).id);
 
   if (!opportunity) notFound();
@@ -44,7 +46,7 @@ export default async function OpportuniteDetailPage({ params }: Props) {
           <Link href="/opportunites" className="text-sm text-green-100 hover:text-white">
             ← Toutes les offres
           </Link>
-          <p className="mt-5 text-xs font-bold tracking-widest text-[#E8C547] uppercase">
+          <p className="mt-5 text-xs font-bold tracking-widest text-gold-light uppercase">
             {opportunity.type === "JOB" ? "Offre d’emploi" : "Formation"}
           </p>
           <h1 className="mt-2 font-serif text-2xl leading-tight font-bold break-words md:text-4xl">
@@ -55,7 +57,7 @@ export default async function OpportuniteDetailPage({ params }: Props) {
 
       <div className="mx-auto grid max-w-6xl grid-cols-1 gap-8 px-4 py-8 md:px-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-12 lg:py-12">
         <aside className="lg:order-2">
-          <div className="rounded-xl border border-gray-200 bg-[#FAFAF7] p-6 lg:sticky lg:top-24">
+          <div className="rounded-xl border border-gray-200 bg-cream p-6 lg:sticky lg:top-24">
             <dl className="space-y-4">
               <div>
                 <dt className="text-xs font-semibold tracking-widest text-gray-600 uppercase">

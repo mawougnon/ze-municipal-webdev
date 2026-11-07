@@ -4,7 +4,7 @@ interface Props {
 }
 
 const PRIMARY =
-  "rounded-lg bg-blue-600 px-6 py-2 text-white transition hover:bg-blue-700 disabled:opacity-50";
+  "rounded-lg bg-green-700 px-6 py-2 text-white transition hover:bg-green-800 disabled:opacity-50";
 const SECONDARY =
   "rounded-lg border border-gray-300 bg-white px-6 py-2 text-gray-700 transition hover:bg-gray-50 disabled:opacity-50";
 

@@ -1,13 +1,13 @@
 import { Prisma } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { accountSchema } from "@/lib/accounts";
-import { superadminSession } from "@/lib/admin";
+import { superadminAccess } from "@/lib/admin";
 import { logAdminAction } from "@/lib/audit";
 import { prisma } from "@/lib/prisma";
 
 export async function POST(req: Request) {
-  const session = await superadminSession();
-  if (!session) return NextResponse.json({ error: "Non autorisé." }, { status: 403 });
+  const { session, refusal: denied } = await superadminAccess();
+  if (denied) return denied;
 
   const result = accountSchema.safeParse(await req.json().catch(() => null));
   if (!result.success)

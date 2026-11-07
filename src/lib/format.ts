@@ -8,3 +8,8 @@ export function formatPrice(price: number | null) {
 }
 
 export const LONG_DATE = { day: "numeric", month: "long", year: "numeric" } as const;
+
+// French: 0 and 1 are singular
+export function plural(count: number, word: string) {
+  return `${count} ${word}${count > 1 ? "s" : ""}`;
+}

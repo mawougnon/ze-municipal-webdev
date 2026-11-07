@@ -3,7 +3,11 @@ import ArticleForm from "@/components/ArticleForm";
 import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
 
-export default async function EditArticlePage({ params }: { params: Promise<{ id: string }> }) {
+interface Props {
+  params: Promise<{ id: string }>;
+}
+
+export default async function EditArticlePage({ params }: Props) {
   await requireAdmin();
 
   const { id } = await params;
@@ -23,7 +27,7 @@ export default async function EditArticlePage({ params }: { params: Promise<{ id
             title: article.title,
             content: article.content,
             coverImageUrl: article.coverImageUrl ?? "",
-            photos: article.photos.map((p) => p.url),
+            photos: article.photos.map((photo) => photo.url),
             published: article.published,
           }}
         />

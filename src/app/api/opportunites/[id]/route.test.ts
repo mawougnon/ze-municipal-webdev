@@ -65,10 +65,10 @@ it("refuses a poster hosted anywhere else", async () => {
 
 it("removes the poster with the offer", async () => {
   db.opportunity.delete.mockResolvedValue({ title: "Une formation", imageUrl: poster("old") });
-  const res = await DELETE(
+  const response = await DELETE(
     new Request("http://localhost/api/opportunites/o1", { method: "DELETE" }),
     context,
   );
-  expect(res.status).toBe(200);
+  expect(response.status).toBe(200);
   expect(removePublicFile).toHaveBeenCalledWith("photos", poster("old"));
 });

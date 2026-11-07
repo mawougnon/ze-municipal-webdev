@@ -66,8 +66,11 @@ test("sign in, publish a document, see it online, delete it", async ({ page, con
     const { violations } = await new AxeBuilder({ page }).analyze();
     problems.push(
       ...violations
-        .filter((v) => v.impact === "serious" || v.impact === "critical")
-        .map((v) => `${path} ${v.id}: ${v.nodes.map((n) => n.target.join(" ")).join(", ")}`),
+        .filter((violation) => violation.impact === "serious" || violation.impact === "critical")
+        .map(
+          (violation) =>
+            `${path} ${violation.id}: ${violation.nodes.map((node) => node.target.join(" ")).join(", ")}`,
+        ),
     );
   }
   expect(problems).toEqual([]);

@@ -1,16 +1,20 @@
-import { prisma } from "@/lib/prisma";
-import { auth } from "@/auth";
 import { NextResponse } from "next/server";
-import { offerSchema } from "@/lib/offers";
+import { auth } from "@/auth";
 import { logAdminAction } from "@/lib/audit";
+import { opportunitySchema } from "@/lib/opportunities";
+import { prisma } from "@/lib/prisma";
 import { removePublicFile } from "@/lib/supabase-admin";
 
-export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
+interface Context {
+  params: Promise<{ id: string }>;
+}
+
+export async function PUT(req: Request, { params }: Context) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
 
   const { id } = await params;
-  const result = offerSchema.safeParse(await req.json().catch(() => null));
+  const result = opportunitySchema.safeParse(await req.json().catch(() => null));
   if (!result.success)
     return NextResponse.json({ error: result.error.issues[0].message }, { status: 400 });
 
@@ -18,7 +22,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     const { opportunity, previous } = await prisma.$transaction(async (tx) => {
       const previous = await tx.opportunity.findUniqueOrThrow({ where: { id } });
       const updated = await tx.opportunity.update({ where: { id }, data: result.data });
-      const action = updated.published ? "OFFER_SAVED_ONLINE" : "OFFER_SAVED_DRAFT";
+      const action = updated.published ? "OPPORTUNITY_SAVED_ONLINE" : "OPPORTUNITY_SAVED_DRAFT";
       await logAdminAction(tx, session, req, action, updated.title);
       return { opportunity: updated, previous };
     });
@@ -28,11 +32,11 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
 
     return NextResponse.json(opportunity);
   } catch {
-    return NextResponse.json({ error: "Introuvable." }, { status: 404 });
+    return NextResponse.json({ error: "Offre introuvable." }, { status: 404 });
   }
 }
 
-export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(req: Request, { params }: Context) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
 
@@ -40,14 +44,14 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
 
   try {
     const deleted = await prisma.$transaction(async (tx) => {
-      const offer = await tx.opportunity.delete({ where: { id } });
-      await logAdminAction(tx, session, req, "OFFER_DELETED", offer.title);
-      return offer;
+      const opportunity = await tx.opportunity.delete({ where: { id } });
+      await logAdminAction(tx, session, req, "OPPORTUNITY_DELETED", opportunity.title);
+      return opportunity;
     });
     await removePublicFile("photos", deleted.imageUrl);
 
     return NextResponse.json({ success: true });
   } catch {
-    return NextResponse.json({ error: "Introuvable." }, { status: 404 });
+    return NextResponse.json({ error: "Offre introuvable." }, { status: 404 });
   }
 }

@@ -1,6 +1,7 @@
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
 import { FaWhatsapp, FaFacebook, FaEnvelope, FaUsers } from "react-icons/fa";
+import { CONTACT } from "@/lib/contact";
 
 export default function Footer() {
   return (
@@ -15,7 +16,7 @@ export default function Footer() {
             className="mb-3 object-contain"
           />
           <p className="text-sm text-green-200">Initiative · Engagement · Développement</p>
-          <p className="mt-1 text-sm text-green-300">Zè, Département de l’Atlantique, Bénin</p>
+          <p className="mt-1 text-sm text-green-300">{CONTACT.address}</p>
         </div>
 
         <div>
@@ -49,18 +50,18 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="mb-6 flex flex-wrap justify-center gap-6">
+      <div className="mt-8 mb-6 flex flex-wrap justify-center gap-6">
         <a
-          href="https://wa.me/2290198704584"
+          href={CONTACT.whatsapp}
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-2 text-sm text-green-300 transition hover:text-white"
         >
-          <FaWhatsapp className="text-lg" /> Contact Direct
+          <FaWhatsapp className="text-lg" /> Contact direct
         </a>
 
         <a
-          href="https://whatsapp.com/channel/0029Vb7WVZXIiRovF2vgsk0t"
+          href={CONTACT.whatsappChannel}
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-2 text-sm text-green-300 transition hover:text-white"
@@ -69,7 +70,7 @@ export default function Footer() {
         </a>
 
         <a
-          href="https://chat.whatsapp.com/KvlauYJX31kHHfBZXvqllc"
+          href={CONTACT.whatsappGroup}
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-2 text-sm text-green-300 transition hover:text-white"
@@ -78,7 +79,7 @@ export default function Footer() {
         </a>
 
         <a
-          href="https://www.facebook.com/profile.php?id=61587212746091"
+          href={CONTACT.facebook}
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-2 text-sm text-green-300 transition hover:text-white"
@@ -87,7 +88,7 @@ export default function Footer() {
         </a>
 
         <a
-          href="mailto:mairiedesjeunesdeze2025@gmail.com"
+          href={`mailto:${CONTACT.email}`}
           className="flex items-center gap-2 text-sm text-green-300 transition hover:text-white"
         >
           <FaEnvelope className="text-lg" /> Email

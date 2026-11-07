@@ -1,10 +1,11 @@
 "use client";
 
-import FileUpload from "@/components/FileUpload";
-import PublishButtons, { wantsPublish } from "@/components/PublishButtons";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import FileUpload from "@/components/FileUpload";
+import PublishButtons, { wantsPublish } from "@/components/PublishButtons";
+import { useAdminRequest } from "@/components/useAdminRequest";
 
 interface Props {
   id?: string;
@@ -22,33 +23,13 @@ interface Props {
 
 const LABEL = "mb-1 block text-sm font-medium text-gray-700";
 const FIELD =
-  "w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none";
+  "w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-green-600 focus:outline-none";
 
-export default function OfferForm({ id, initial }: Props) {
+export default function OpportunityForm({ id, initial }: Props) {
   const router = useRouter();
+  const { saving, error, send } = useAdminRequest("/admin/opportunites");
   const [isFree, setIsFree] = useState(initial.isFree);
   const [imageUrl, setImageUrl] = useState(initial.imageUrl);
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState("");
-
-  async function send(url: string, method: string, body?: object) {
-    setSaving(true);
-    setError("");
-    const res = await fetch(url, {
-      method,
-      headers: { "Content-Type": "application/json" },
-      body: body && JSON.stringify(body),
-    }).catch(() => null);
-
-    if (res?.ok) {
-      router.push("/admin/opportunites");
-      router.refresh();
-      return;
-    }
-    const answer = await res?.json().catch(() => null);
-    setError(answer?.error ?? "L’enregistrement a échoué. Réessayez.");
-    setSaving(false);
-  }
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -69,21 +50,21 @@ export default function OfferForm({ id, initial }: Props) {
   return (
     <form onSubmit={handleSubmit} className="space-y-5 rounded-xl bg-white p-6 shadow-sm">
       <div>
-        <label htmlFor="offer-type" className={LABEL}>
+        <label htmlFor="opportunity-type" className={LABEL}>
           Type
         </label>
-        <select id="offer-type" name="type" defaultValue={initial.type} className={FIELD}>
+        <select id="opportunity-type" name="type" defaultValue={initial.type} className={FIELD}>
           <option value="JOB">Offre d’emploi</option>
           <option value="TRAINING">Formation</option>
         </select>
       </div>
 
       <div>
-        <label htmlFor="offer-title" className={LABEL}>
+        <label htmlFor="opportunity-title" className={LABEL}>
           Titre
         </label>
         <input
-          id="offer-title"
+          id="opportunity-title"
           name="title"
           required
           minLength={3}
@@ -119,11 +100,11 @@ export default function OfferForm({ id, initial }: Props) {
       </div>
 
       <div>
-        <label htmlFor="offer-description" className={LABEL}>
+        <label htmlFor="opportunity-description" className={LABEL}>
           Description
         </label>
         <textarea
-          id="offer-description"
+          id="opportunity-description"
           name="description"
           rows={4}
           maxLength={5000}
@@ -133,11 +114,11 @@ export default function OfferForm({ id, initial }: Props) {
       </div>
 
       <div>
-        <label htmlFor="offer-deadline" className={LABEL}>
+        <label htmlFor="opportunity-deadline" className={LABEL}>
           Date limite (optionnel)
         </label>
         <input
-          id="offer-deadline"
+          id="opportunity-deadline"
           name="deadline"
           type="date"
           defaultValue={initial.deadline}
@@ -157,11 +138,11 @@ export default function OfferForm({ id, initial }: Props) {
 
       {!isFree && (
         <div>
-          <label htmlFor="offer-price" className={LABEL}>
+          <label htmlFor="opportunity-price" className={LABEL}>
             Prix (XOF)
           </label>
           <input
-            id="offer-price"
+            id="opportunity-price"
             name="price"
             type="number"
             min={1}

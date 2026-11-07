@@ -35,16 +35,16 @@ describe("POST /api/candidatures", () => {
   });
 
   it("saves a valid application with the normalized phone number", async () => {
-    const res = await post(valid);
-    expect(res.status).toBe(201);
+    const response = await post(valid);
+    expect(response.status).toBe(201);
     expect(db.application.create).toHaveBeenCalledWith({
       data: expect.objectContaining({ phone: "0197123456", fullName: "Jean Hounkpè" }),
     });
   });
 
   it("rejects invalid data before touching the database", async () => {
-    const res = await post({ ...valid, files: ["https://evil.com/cv.pdf"] });
-    expect(res.status).toBe(400);
+    const response = await post({ ...valid, files: ["https://evil.com/cv.pdf"] });
+    expect(response.status).toBe(400);
     expect(db.opportunity.findUnique).not.toHaveBeenCalled();
   });
 

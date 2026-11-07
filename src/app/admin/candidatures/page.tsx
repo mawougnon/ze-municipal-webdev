@@ -1,13 +1,15 @@
-import { requireAdmin } from "@/lib/admin";
-import { prisma } from "@/lib/prisma";
 import Link from "next/link";
-import CandidatureCard from "@/components/CandidatureCard";
+import AdminBackLink from "@/components/AdminBackLink";
+import ApplicationCard from "@/components/ApplicationCard";
+import { requireAdmin } from "@/lib/admin";
+import { plural } from "@/lib/format";
+import { prisma } from "@/lib/prisma";
 
 interface Props {
   searchParams: Promise<{ type?: string; opportunityId?: string }>;
 }
 
-export default async function CandidaturesPage({ searchParams }: Props) {
+export default async function AdminApplicationsPage({ searchParams }: Props) {
   await requireAdmin();
 
   const { type, opportunityId } = await searchParams;
@@ -16,7 +18,7 @@ export default async function CandidaturesPage({ searchParams }: Props) {
     orderBy: { createdAt: "desc" },
     where: {
       ...(opportunityId ? { opportunityId } : {}),
-      ...(type ? { opportunity: { type } } : {}),
+      ...(type === "JOB" || type === "TRAINING" ? { opportunity: { type } } : {}),
     },
     include: { files: true, opportunity: { select: { title: true, type: true } } },
   });
@@ -27,12 +29,13 @@ export default async function CandidaturesPage({ searchParams }: Props) {
   });
 
   return (
-    <main className="min-h-screen bg-gray-50 p-8">
+    <main className="min-h-screen bg-gray-50 p-4 md:p-8">
       <div className="mx-auto max-w-5xl">
+        <AdminBackLink />
         <div className="mb-8 flex items-center justify-between">
           <h1 className="text-2xl font-bold text-gray-800">Candidatures reçues</h1>
           <span className="rounded-full bg-gray-200 px-3 py-1 text-sm text-gray-700">
-            {applications.length} candidature(s)
+            {plural(applications.length, "candidature")}
           </span>
         </div>
 
@@ -44,17 +47,17 @@ export default async function CandidaturesPage({ searchParams }: Props) {
                 { label: "Toutes", value: "" },
                 { label: "Emploi", value: "JOB" },
                 { label: "Formation", value: "TRAINING" },
-              ].map((f) => (
+              ].map((option) => (
                 <Link
-                  key={f.value}
-                  href={`/admin/candidatures?type=${f.value}${opportunityId ? `&opportunityId=${opportunityId}` : ""}`}
+                  key={option.value}
+                  href={`/admin/candidatures?type=${option.value}${opportunityId ? `&opportunityId=${opportunityId}` : ""}`}
                   className={`rounded-lg px-3 py-1 text-sm font-medium transition ${
-                    (type || "") === f.value
+                    (type || "") === option.value
                       ? "bg-green-700 text-white"
                       : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                   }`}
                 >
-                  {f.label}
+                  {option.label}
                 </Link>
               ))}
             </div>
@@ -75,17 +78,17 @@ export default async function CandidaturesPage({ searchParams }: Props) {
               >
                 Toutes les offres
               </Link>
-              {opportunities.map((o) => (
+              {opportunities.map((opportunity) => (
                 <Link
-                  key={o.id}
-                  href={`/admin/candidatures?opportunityId=${o.id}${type ? `&type=${type}` : ""}`}
+                  key={opportunity.id}
+                  href={`/admin/candidatures?opportunityId=${opportunity.id}${type ? `&type=${type}` : ""}`}
                   className={`rounded-lg px-3 py-1 text-sm font-medium transition ${
-                    opportunityId === o.id
+                    opportunityId === opportunity.id
                       ? "bg-green-700 text-white"
                       : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                   }`}
                 >
-                  {o.title}
+                  {opportunity.title}
                 </Link>
               ))}
             </div>
@@ -98,17 +101,11 @@ export default async function CandidaturesPage({ searchParams }: Props) {
           </div>
         ) : (
           <div className="space-y-4">
-            {applications.map((a) => (
-              <CandidatureCard key={a.id} a={a} />
+            {applications.map((application) => (
+              <ApplicationCard key={application.id} application={application} />
             ))}
           </div>
         )}
-
-        <div className="mt-6">
-          <Link href="/admin" className="text-sm text-gray-500 hover:text-gray-600">
-            ← Retour au tableau de bord
-          </Link>
-        </div>
       </div>
     </main>
   );

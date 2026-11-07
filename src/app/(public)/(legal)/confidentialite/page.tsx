@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { CONTACT } from "@/lib/contact";
 
 export const metadata: Metadata = {
   title: "Politique de confidentialité",
@@ -15,8 +16,8 @@ export default function PrivacyPage() {
       <p>
         L’Association Mairie des Jeunes du Bénin (AMJB), pour la Mairie des Jeunes de Zè, Zè,
         Département de l’Atlantique, Bénin. Contact :{" "}
-        <a href="mailto:mairiedesjeunesdeze2025@gmail.com">mairiedesjeunesdeze2025@gmail.com</a> ou{" "}
-        <a href="tel:+2290198704584">+229 01 98 70 45 84</a>.
+        <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a> ou{" "}
+        <a href={CONTACT.phoneHref}>{CONTACT.phone}</a>.
       </p>
 
       <h2>Si vous consultez le site</h2>
@@ -63,7 +64,7 @@ export default function PrivacyPage() {
         <li>Candidature et documents : supprimés au plus tard 6 mois après l’envoi.</li>
         <li>Documents envoyés sans que le formulaire soit validé : supprimés après un jour.</li>
         <li>
-          Journal de sécurité (connexions et actions des administrateurs, avec leur adresse IP) :
+          Journal d’activité (connexions et actions des administrateurs, avec leur adresse IP) :
           supprimé après un an.
         </li>
       </ul>

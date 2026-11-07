@@ -1,11 +1,13 @@
-import type { Session } from "next-auth";
 import { NextResponse } from "next/server";
+import type { Session } from "next-auth";
 import { roleSchema } from "@/lib/accounts";
-import { superadminSession } from "@/lib/admin";
+import { superadminAccess } from "@/lib/admin";
 import { logAdminAction } from "@/lib/audit";
 import { prisma } from "@/lib/prisma";
 
-type Context = { params: Promise<{ id: string }> };
+interface Context {
+  params: Promise<{ id: string }>;
+}
 
 // Nobody can demote or delete their own account, so a SUPERADMIN always remains
 async function findOtherAccount(id: string, session: Session) {
@@ -25,8 +27,8 @@ async function findOtherAccount(id: string, session: Session) {
 }
 
 export async function PATCH(req: Request, { params }: Context) {
-  const session = await superadminSession();
-  if (!session) return NextResponse.json({ error: "Non autorisé." }, { status: 403 });
+  const { session, refusal: denied } = await superadminAccess();
+  if (denied) return denied;
 
   const body = await req.json().catch(() => null);
   const role = roleSchema.safeParse(body?.role);
@@ -52,8 +54,8 @@ export async function PATCH(req: Request, { params }: Context) {
 }
 
 export async function DELETE(req: Request, { params }: Context) {
-  const session = await superadminSession();
-  if (!session) return NextResponse.json({ error: "Non autorisé." }, { status: 403 });
+  const { session, refusal: denied } = await superadminAccess();
+  if (denied) return denied;
 
   const { id } = await params;
   const { account, refusal } = await findOtherAccount(id, session);

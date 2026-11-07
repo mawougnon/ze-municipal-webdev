@@ -1,8 +1,8 @@
+import { NextResponse } from "next/server";
+import { z } from "zod";
 import { auth } from "@/auth";
 import { safeFileName } from "@/lib/storage";
 import { supabaseAdmin } from "@/lib/supabase-admin";
-import { NextResponse } from "next/server";
-import { z } from "zod";
 
 const uploadSchema = z.object({
   bucket: z.enum(["photos", "documents"]),
@@ -21,7 +21,7 @@ export async function POST(req: Request) {
   const path = `${Date.now()}-${safeFileName(fileName)}`;
   const { data, error } = await supabaseAdmin.storage.from(bucket).createSignedUploadUrl(path);
   if (error) {
-    console.error("SIGNED_UPLOAD_ERROR", error.message);
+    console.error("SIGNED_UPLOAD_ERROR", error);
     return NextResponse.json({ error: "Erreur serveur." }, { status: 500 });
   }
 

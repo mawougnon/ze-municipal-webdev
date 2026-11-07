@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { CONTACT } from "@/lib/contact";
 
 export const metadata: Metadata = {
   title: "Mentions légales",
@@ -18,13 +19,12 @@ export default function LegalNoticePage() {
         (AMJB), autorisation n° 2021/029/PDO/SG/SAG/SA du 10 mai 2021.
       </p>
       <ul>
-        <li>Adresse : Zè, Département de l’Atlantique, Bénin</li>
+        <li>Adresse : {CONTACT.address}</li>
         <li>
-          Téléphone : <a href="tel:+2290198704584">+229 01 98 70 45 84</a>
+          Téléphone : <a href={CONTACT.phoneHref}>{CONTACT.phone}</a>
         </li>
         <li>
-          Email :{" "}
-          <a href="mailto:mairiedesjeunesdeze2025@gmail.com">mairiedesjeunesdeze2025@gmail.com</a>
+          Email : <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
         </li>
       </ul>
 

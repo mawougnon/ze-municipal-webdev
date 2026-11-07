@@ -1,15 +1,17 @@
-import { formatDate } from "@/lib/format";
-import { cleanArticleHtml } from "@/lib/articles";
-import sanitizeHtml from "sanitize-html";
-import { prisma } from "@/lib/prisma";
-import ArticleGallery from "@/components/ArticleGallery";
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { cache } from "react";
+import sanitizeHtml from "sanitize-html";
+import ArticleGallery from "@/components/ArticleGallery";
+import { cleanArticleHtml } from "@/lib/articles";
+import { formatDate } from "@/lib/format";
+import { prisma } from "@/lib/prisma";
 
-type Props = { params: Promise<{ id: string }> };
+interface Props {
+  params: Promise<{ id: string }>;
+}
 
 const getArticle = cache((id: string) =>
   prisma.article.findUnique({
@@ -74,7 +76,7 @@ export default async function ArticlePage({ params }: Props) {
         />
 
         {article.photos.length > 0 && (
-          <ArticleGallery photos={article.photos.map((p) => p.url)} title={article.title} />
+          <ArticleGallery photos={article.photos.map((photo) => photo.url)} title={article.title} />
         )}
 
         <div className="mt-10 border-t border-gray-100 pt-6">

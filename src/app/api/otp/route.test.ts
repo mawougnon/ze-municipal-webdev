@@ -31,12 +31,12 @@ it("answers the same way whether the account exists, does not, or the email fail
     .mockRejectedValueOnce(new Error("Resend email error"));
   vi.spyOn(console, "error").mockImplementation(() => {});
 
-  const a = await ask("admin@example.com");
-  const b = await ask("nobody@example.com");
+  const known = await ask("admin@example.com");
+  const unknown = await ask("nobody@example.com");
 
-  expect(a.status).toBe(200);
-  expect(b.status).toBe(200);
-  expect(await a.json()).toEqual(await b.json());
+  expect(known.status).toBe(200);
+  expect(unknown.status).toBe(200);
+  expect(await known.json()).toEqual(await unknown.json());
 });
 
 it("does the work after the response, with the visitor's IP", async () => {

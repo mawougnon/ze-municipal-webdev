@@ -1,25 +1,29 @@
 "use client";
 
-import { formatDate } from "@/lib/format";
-import { useRouter } from "next/navigation";
 import { Application, ApplicationFile, Opportunity } from "@prisma/client";
-import { whatsappLink } from "@/lib/phone";
+import { useRouter } from "next/navigation";
 import { FaEnvelope, FaPaperclip, FaTrash, FaWhatsapp } from "react-icons/fa";
+import { formatDate } from "@/lib/format";
+import { whatsappLink } from "@/lib/phone";
 
-type CandidatureWithOpportunity = Application & {
+type ApplicationWithOpportunity = Application & {
   opportunity: Pick<Opportunity, "title" | "type">;
   files: ApplicationFile[];
 };
 
-export default function CandidatureCard({ a }: { a: CandidatureWithOpportunity }) {
+interface Props {
+  application: ApplicationWithOpportunity;
+}
+
+export default function ApplicationCard({ application }: Props) {
   const router = useRouter();
 
   async function handleDelete() {
-    if (!confirm(`Supprimer la candidature de ${a.fullName} ?`)) return;
+    if (!confirm(`Supprimer la candidature de ${application.fullName} ?`)) return;
 
-    const res = await fetch(`/api/candidatures/${a.id}`, { method: "DELETE" });
+    const response = await fetch(`/api/candidatures/${application.id}`, { method: "DELETE" });
 
-    if (res.ok) {
+    if (response.ok) {
       router.refresh();
     } else {
       alert("La suppression a échoué. Réessayez.");
@@ -31,55 +35,55 @@ export default function CandidatureCard({ a }: { a: CandidatureWithOpportunity }
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1">
           <div className="mb-1 flex items-center gap-3">
-            <h2 className="font-semibold text-gray-800">{a.fullName}</h2>
+            <h2 className="font-semibold text-gray-800">{application.fullName}</h2>
             <span
               className={`rounded-full px-2 py-0.5 text-xs font-medium ${
-                a.opportunity.type === "JOB"
+                application.opportunity.type === "JOB"
                   ? "bg-blue-100 text-blue-700"
                   : "bg-purple-100 text-purple-700"
               }`}
             >
-              {a.opportunity.type === "JOB" ? "Emploi" : "Formation"}
+              {application.opportunity.type === "JOB" ? "Emploi" : "Formation"}
             </span>
           </div>
-          <p className="text-sm text-gray-500">{a.opportunity.title}</p>
+          <p className="text-sm text-gray-500">{application.opportunity.title}</p>
 
           <div className="mt-3 flex flex-wrap gap-4 text-sm text-gray-600">
-            {a.phone && (
+            {application.phone && (
               <a
-                href={whatsappLink(a.phone)}
+                href={whatsappLink(application.phone)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-1 text-green-600 hover:underline"
               >
-                <FaWhatsapp aria-hidden /> {a.phone} (WhatsApp)
+                <FaWhatsapp aria-hidden /> {application.phone} (WhatsApp)
               </a>
             )}
-            {a.email && (
+            {application.email && (
               <a
-                href={`mailto:${a.email}`}
-                className="flex items-center gap-1 text-blue-600 hover:underline"
+                href={`mailto:${application.email}`}
+                className="flex items-center gap-1 text-green-800 hover:underline"
               >
-                <FaEnvelope aria-hidden /> {a.email}
+                <FaEnvelope aria-hidden /> {application.email}
               </a>
             )}
           </div>
 
-          {a.message && (
+          {application.message && (
             <p className="mt-3 rounded-lg bg-gray-50 p-3 text-sm text-gray-600 italic">
-              « {a.message} »
+              « {application.message} »
             </p>
           )}
 
-          {a.files.length > 0 && (
+          {application.files.length > 0 && (
             <div className="mt-3 flex flex-wrap gap-2">
-              {a.files.map((file, i) => (
+              {application.files.map((file, i) => (
                 <a
                   key={file.path}
                   href={`/api/fichiers-candidature/${encodeURIComponent(file.path)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded-lg border border-blue-100 px-3 py-1 text-sm text-blue-600 hover:underline"
+                  className="rounded-lg border border-gray-200 px-3 py-1 text-sm text-green-800 hover:underline"
                 >
                   <FaPaperclip aria-hidden className="mr-1 inline" />
                   Document {i + 1}
@@ -91,7 +95,7 @@ export default function CandidatureCard({ a }: { a: CandidatureWithOpportunity }
 
         <div className="flex shrink-0 flex-col items-end gap-2">
           <span className="text-xs text-gray-500">
-            {formatDate(a.createdAt, {
+            {formatDate(application.createdAt, {
               day: "numeric",
               month: "long",
               year: "numeric",

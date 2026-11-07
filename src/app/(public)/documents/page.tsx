@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import PageHeader from "@/components/PageHeader";
 import { publishedDocuments } from "@/lib/documents";
 import { LONG_DATE, formatDate } from "@/lib/format";
 
@@ -12,14 +13,11 @@ export default async function DocumentsPage() {
 
   return (
     <main className="min-h-screen bg-white">
-      <section className="bg-green-700 px-6 py-12 text-center text-white">
-        <h1 className="text-3xl font-bold">Documents</h1>
-        <p className="mt-2 text-green-100">Le plan de travail et les bilans de la mairie</p>
-      </section>
+      <PageHeader title="Documents" subtitle="Le plan de travail et les bilans de la mairie" />
 
       <section className="mx-auto max-w-4xl px-6 py-12">
         {featured && (
-          <article className="mb-10 border-2 border-[#D4AF37] bg-[#FAFAF7] p-6 md:p-8">
+          <article className="mb-10 border-2 border-gold bg-cream p-6 md:p-8">
             <p className="mb-2 text-xs font-semibold tracking-widest text-green-800 uppercase">
               À la une
             </p>
@@ -32,7 +30,7 @@ export default async function DocumentsPage() {
               href={featured.fileUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-5 inline-block bg-[#D4AF37] px-6 py-3 text-sm font-semibold tracking-wide text-black uppercase transition hover:bg-[#b8962e]"
+              className="mt-5 inline-block bg-gold px-6 py-3 text-sm font-semibold tracking-wide text-black uppercase transition hover:bg-gold-hover"
             >
               Lire le document (PDF)
             </a>
@@ -40,14 +38,18 @@ export default async function DocumentsPage() {
         )}
 
         <div className="space-y-4">
-          {others.map((d) => (
-            <article key={d.id} className="rounded-xl border border-gray-100 bg-gray-50 p-6">
-              <h2 className="font-semibold break-words text-gray-800">{d.title}</h2>
-              <p className="mt-1 text-sm whitespace-pre-line text-gray-600">{d.description}</p>
+          {others.map((document) => (
+            <article key={document.id} className="rounded-xl border border-gray-100 bg-gray-50 p-6">
+              <h2 className="font-semibold break-words text-gray-800">{document.title}</h2>
+              <p className="mt-1 text-sm whitespace-pre-line text-gray-600">
+                {document.description}
+              </p>
               <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
-                <span className="text-xs text-gray-600">{formatDate(d.date, LONG_DATE)}</span>
+                <span className="text-xs text-gray-600">
+                  {formatDate(document.date, LONG_DATE)}
+                </span>
                 <a
-                  href={d.fileUrl}
+                  href={document.fileUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-sm font-medium text-green-800 hover:underline"

@@ -13,16 +13,16 @@ try {
 
   const policies = await prisma.$queryRaw`
     SELECT tablename, policyname FROM pg_policies WHERE schemaname = 'public'`;
-  for (const p of policies)
-    problems.push(`table "${p.tablename}": unexpected policy "${p.policyname}"`);
+  for (const policy of policies)
+    problems.push(`table "${policy.tablename}": unexpected policy "${policy.policyname}"`);
 
   const grants = await prisma.$queryRaw`
     SELECT grantee, table_name, string_agg(privilege_type, ', ') AS privileges
     FROM information_schema.role_table_grants
     WHERE table_schema = 'public' AND grantee IN ('anon', 'authenticated')
     GROUP BY grantee, table_name`;
-  for (const g of grants)
-    problems.push(`table "${g.table_name}": ${g.grantee} can ${g.privileges}`);
+  for (const grant of grants)
+    problems.push(`table "${grant.table_name}": ${grant.grantee} can ${grant.privileges}`);
 
   // Plain PostgreSQL has no storage schema
   const [{ storage }] =
@@ -30,7 +30,8 @@ try {
   if (storage) {
     const storagePolicies = await prisma.$queryRaw`
       SELECT policyname FROM pg_policies WHERE schemaname = 'storage' AND tablename = 'objects'`;
-    for (const p of storagePolicies) problems.push(`storage: unexpected policy "${p.policyname}"`);
+    for (const policy of storagePolicies)
+      problems.push(`storage: unexpected policy "${policy.policyname}"`);
 
     const [applications] = await prisma.$queryRaw`
       SELECT public FROM storage.buckets WHERE id = 'applications'`;

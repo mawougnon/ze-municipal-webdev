@@ -21,6 +21,11 @@ model User {
   createdAt   DateTime  @default(now())
 }
 
+enum OpportunityType {
+  JOB
+  TRAINING
+}
+
 enum Role {
   ADMIN
   SUPERADMIN
@@ -51,16 +56,16 @@ model ArticlePhoto {
 
 // Job offers and training opportunities
 model Opportunity {
-  id           String        @id @default(cuid())
-  type         String // "JOB" or "TRAINING"
+  id           String          @id @default(cuid())
+  type         OpportunityType
   title        String
   description  String
   deadline     DateTime?
-  published    Boolean       @default(false)
-  isFree       Boolean       @default(true)
-  price        Float? // XOF
+  published    Boolean         @default(false)
+  isFree       Boolean         @default(true)
+  price        Int? // XOF
   imageUrl     String?
-  createdAt    DateTime      @default(now())
+  createdAt    DateTime        @default(now())
   applications Application[]
 }
 

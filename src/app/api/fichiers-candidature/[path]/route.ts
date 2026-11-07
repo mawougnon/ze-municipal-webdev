@@ -1,10 +1,14 @@
+import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { signedReadUrl } from "@/lib/application-files";
 import { logAdminAction } from "@/lib/audit";
 import { prisma } from "@/lib/prisma";
-import { NextResponse } from "next/server";
 
-export async function GET(req: Request, { params }: { params: Promise<{ path: string }> }) {
+interface Context {
+  params: Promise<{ path: string }>;
+}
+
+export async function GET(req: Request, { params }: Context) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Non autorisé." }, { status: 401 });
 

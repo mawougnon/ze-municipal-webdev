@@ -1,9 +1,9 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import FileUpload from "@/components/FileUpload";
 import PublishButtons, { wantsPublish } from "@/components/PublishButtons";
+import { useAdminRequest } from "@/components/useAdminRequest";
 
 interface Props {
   id?: string;
@@ -21,29 +21,8 @@ const FIELD = "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm";
 const LABEL = "mb-1 block text-sm font-medium text-gray-700";
 
 export default function DocumentForm({ id, initial }: Props) {
-  const router = useRouter();
+  const { saving, error, send } = useAdminRequest("/admin/documents");
   const [fileUrl, setFileUrl] = useState(initial.fileUrl);
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState("");
-
-  async function send(url: string, method: string, body?: object) {
-    setSaving(true);
-    setError("");
-    const res = await fetch(url, {
-      method,
-      headers: { "Content-Type": "application/json" },
-      body: body && JSON.stringify(body),
-    }).catch(() => null);
-
-    if (res?.ok) {
-      router.push("/admin/documents");
-      router.refresh();
-      return;
-    }
-    const answer = await res?.json().catch(() => null);
-    setError(answer?.error ?? "L’enregistrement a échoué. Réessayez.");
-    setSaving(false);
-  }
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();

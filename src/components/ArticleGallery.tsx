@@ -5,7 +5,12 @@ import { useRef, useState } from "react";
 
 const CONTROL = "rounded-lg bg-white px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-200";
 
-export default function ArticleGallery({ photos, title }: { photos: string[]; title: string }) {
+interface Props {
+  photos: string[];
+  title: string;
+}
+
+export default function ArticleGallery({ photos, title }: Props) {
   const dialog = useRef<HTMLDialogElement>(null);
   const [current, setCurrent] = useState(0);
   const total = photos.length;

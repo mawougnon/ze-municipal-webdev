@@ -8,6 +8,8 @@ import {
   FaUsers,
   FaBullhorn,
 } from "react-icons/fa";
+import PageHeader from "@/components/PageHeader";
+import { CONTACT } from "@/lib/contact";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -16,13 +18,8 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <main className="min-h-screen bg-[#FAFAF7]">
-      <section className="bg-green-900 px-6 py-16 text-center text-white">
-        <p className="mb-3 text-xs font-semibold tracking-widest text-[#E8C547] uppercase">
-          Nous contacter
-        </p>
-        <h1 className="font-serif text-4xl font-bold">Contact</h1>
-      </section>
+    <main className="min-h-screen bg-cream">
+      <PageHeader title="Contact" eyebrow="Nous contacter" />
 
       <section className="mx-auto grid max-w-4xl grid-cols-1 gap-12 px-6 py-16 md:grid-cols-2">
         <div>
@@ -33,8 +30,8 @@ export default function ContactPage() {
               <FaPhoneAlt className="mt-1 text-xl text-green-700" />
               <div>
                 <p className="font-semibold text-gray-800">Téléphone</p>
-                <a href="tel:+2290198704584" className="text-green-700 hover:underline">
-                  +229 01 98 70 45 84
+                <a href={CONTACT.phoneHref} className="text-green-700 hover:underline">
+                  {CONTACT.phone}
                 </a>
               </div>
             </div>
@@ -44,10 +41,10 @@ export default function ContactPage() {
               <div>
                 <p className="font-semibold text-gray-800">Email</p>
                 <a
-                  href="mailto:mairiedesjeunesdeze2025@gmail.com"
+                  href={`mailto:${CONTACT.email}`}
                   className="break-all text-green-700 hover:underline"
                 >
-                  mairiedesjeunesdeze2025@gmail.com
+                  {CONTACT.email}
                 </a>
               </div>
             </div>
@@ -56,7 +53,7 @@ export default function ContactPage() {
               <FaMapMarkerAlt className="mt-1 text-xl text-green-700" />
               <div>
                 <p className="font-semibold text-gray-800">Adresse</p>
-                <p className="text-gray-600">Zè, Département de l’Atlantique, Bénin</p>
+                <p className="text-gray-600">{CONTACT.address}</p>
               </div>
             </div>
           </div>
@@ -65,7 +62,7 @@ export default function ContactPage() {
             <h3 className="mb-4 font-semibold text-gray-800">Suivez-nous</h3>
             <div className="flex flex-wrap gap-3">
               <a
-                href="https://wa.me/2290198704584"
+                href={CONTACT.whatsapp}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 rounded-lg bg-green-700 px-3 py-2 text-xs font-medium text-white transition hover:bg-green-700"
@@ -74,7 +71,7 @@ export default function ContactPage() {
               </a>
 
               <a
-                href="https://whatsapp.com/channel/0029Vb7WVZXIiRovF2vgsk0t"
+                href={CONTACT.whatsappChannel}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 rounded-lg bg-green-800 px-3 py-2 text-xs font-medium text-white transition hover:bg-green-900"
@@ -83,7 +80,7 @@ export default function ContactPage() {
               </a>
 
               <a
-                href="https://chat.whatsapp.com/KvlauYJX31kHHfBZXvqllc"
+                href={CONTACT.whatsappGroup}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 rounded-lg bg-emerald-700 px-3 py-2 text-xs font-medium text-white transition hover:bg-emerald-800"
@@ -92,7 +89,7 @@ export default function ContactPage() {
               </a>
 
               <a
-                href="https://www.facebook.com/profile.php?id=61587212746091"
+                href={CONTACT.facebook}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 rounded-lg bg-blue-700 px-3 py-2 text-xs font-medium text-white transition hover:bg-blue-800"
@@ -110,13 +107,13 @@ export default function ContactPage() {
             répondrons.
           </p>
           <a
-            href="mailto:mairiedesjeunesdeze2025@gmail.com"
+            href={`mailto:${CONTACT.email}`}
             className="flex w-full items-center justify-center gap-2 rounded-lg bg-green-700 py-3 font-semibold text-white transition hover:bg-green-800"
           >
-            <FaEnvelope /> Envoyer un e-mail
+            <FaEnvelope /> Envoyer un email
           </a>
           <a
-            href="https://wa.me/2290198704584"
+            href={CONTACT.whatsapp}
             target="_blank"
             rel="noopener noreferrer"
             className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg border border-green-700 py-3 font-semibold text-green-700 transition hover:bg-green-50"

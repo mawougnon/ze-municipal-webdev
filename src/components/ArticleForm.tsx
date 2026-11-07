@@ -1,13 +1,14 @@
 "use client";
 
-import FileUpload from "@/components/FileUpload";
-import PublishButtons, { wantsPublish } from "@/components/PublishButtons";
-import { MAX_GALLERY_PHOTOS } from "@/lib/storage";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import FileUpload from "@/components/FileUpload";
+import PublishButtons, { wantsPublish } from "@/components/PublishButtons";
+import { useAdminRequest } from "@/components/useAdminRequest";
+import { MAX_GALLERY_PHOTOS } from "@/lib/storage";
 
 interface Props {
   id?: string;
@@ -25,11 +26,10 @@ const REMOVE = "text-sm text-red-600 hover:text-red-800";
 
 export default function ArticleForm({ id, initial }: Props) {
   const router = useRouter();
+  const { saving, error, setError, send } = useAdminRequest("/admin/articles");
   const [title, setTitle] = useState(initial.title);
   const [coverImageUrl, setCoverImageUrl] = useState(initial.coverImageUrl);
   const [photos, setPhotos] = useState(initial.photos);
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState("");
 
   const editor = useEditor({
     extensions: [StarterKit],
@@ -37,25 +37,6 @@ export default function ArticleForm({ id, initial }: Props) {
     immediatelyRender: false,
     editorProps: { attributes: { "aria-label": "Contenu de l’article" } },
   });
-
-  async function send(url: string, method: string, body?: object) {
-    setSaving(true);
-    setError("");
-    const res = await fetch(url, {
-      method,
-      headers: { "Content-Type": "application/json" },
-      body: body && JSON.stringify(body),
-    }).catch(() => null);
-
-    if (res?.ok) {
-      router.push("/admin/articles");
-      router.refresh();
-      return;
-    }
-    const answer = await res?.json().catch(() => null);
-    setError(answer?.error ?? "L’enregistrement a échoué. Réessayez.");
-    setSaving(false);
-  }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -103,7 +84,7 @@ export default function ArticleForm({ id, initial }: Props) {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           required
-          className="w-full rounded-lg border border-gray-300 px-4 py-2 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          className="w-full rounded-lg border border-gray-300 px-4 py-2 text-gray-900 focus:ring-2 focus:ring-green-600 focus:outline-none"
         />
       </div>
 
@@ -155,7 +136,9 @@ export default function ArticleForm({ id, initial }: Props) {
                 </div>
                 <button
                   type="button"
-                  onClick={() => setPhotos((current) => current.filter((u) => u !== url))}
+                  onClick={() =>
+                    setPhotos((current) => current.filter((photoUrl) => photoUrl !== url))
+                  }
                   className={`mt-1 ${REMOVE}`}
                 >
                   Retirer
@@ -182,7 +165,7 @@ export default function ArticleForm({ id, initial }: Props) {
             </button>
           ))}
         </div>
-        <div className="min-h-[200px] rounded-lg border border-gray-300 bg-white p-4 focus-within:ring-2 focus-within:ring-blue-500">
+        <div className="min-h-[200px] rounded-lg border border-gray-300 bg-white p-4 focus-within:ring-2 focus-within:ring-green-600">
           <EditorContent editor={editor} />
         </div>
       </div>

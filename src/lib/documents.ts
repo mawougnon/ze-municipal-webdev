@@ -16,13 +16,13 @@ export const documentSchema = z
     featured: z.boolean().default(false),
     published: z.boolean().default(false),
   })
-  .transform((d) => ({ ...d, date: new Date(`${d.date}T00:00:00.000Z`) }));
+  .transform((document) => ({ ...document, date: new Date(`${document.date}T00:00:00.000Z`) }));
 
 export async function publishedDocuments() {
   const documents = await prisma.document.findMany({
     where: { published: true },
     orderBy: [{ date: "desc" }, { createdAt: "desc" }],
   });
-  const featured = documents.find((d) => d.featured);
-  return { featured, others: documents.filter((d) => d !== featured) };
+  const featured = documents.find((document) => document.featured);
+  return { featured, others: documents.filter((document) => document !== featured) };
 }

@@ -10,7 +10,7 @@ export async function POST(req: Request) {
     }
     return NextResponse.json(upload, { status: 201 });
   } catch (error) {
-    console.error("APPLICATION_FILE_ERROR:", error);
+    console.error("APPLICATION_FILE_ERROR", error);
     return NextResponse.json({ error: "Erreur serveur." }, { status: 500 });
   }
 }

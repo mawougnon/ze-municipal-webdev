@@ -1,5 +1,5 @@
-import { purgeExpiredData } from "@/lib/application-files";
 import { NextResponse } from "next/server";
+import { purgeExpiredData } from "@/lib/application-files";
 
 // Vercel sends CRON_SECRET in this header (see vercel.json)
 export async function GET(req: Request) {

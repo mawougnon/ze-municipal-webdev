@@ -1,9 +1,10 @@
-import { signOut } from "@/auth";
-import { requireAdmin } from "@/lib/admin";
 import Link from "next/link";
 import { FaBriefcase, FaFileAlt, FaInbox, FaLock, FaNewspaper, FaUsers } from "react-icons/fa";
-import { prisma } from "@/lib/prisma";
+import { signOut } from "@/auth";
 import { ROLE_LABELS } from "@/lib/accounts";
+import { requireAdmin } from "@/lib/admin";
+import { plural } from "@/lib/format";
+import { prisma } from "@/lib/prisma";
 
 export default async function AdminPage() {
   const session = await requireAdmin();
@@ -39,16 +40,16 @@ export default async function AdminPage() {
       stat: `${publishedDocuments}/${documentCount} publiés`,
     },
     {
-      label: "Offres & Formations",
+      label: "Offres et formations",
       href: "/admin/opportunites",
       icon: <FaBriefcase />,
-      stat: `${opportunityCount} offre(s)`,
+      stat: plural(opportunityCount, "offre"),
     },
     {
       label: "Candidatures reçues",
       href: "/admin/candidatures",
       icon: <FaInbox />,
-      stat: `${applicationCount} candidature(s)`,
+      stat: plural(applicationCount, "candidature"),
     },
     ...(session.user.role === "SUPERADMIN"
       ? [
@@ -56,7 +57,7 @@ export default async function AdminPage() {
             label: "Comptes",
             href: "/admin/comptes",
             icon: <FaUsers />,
-            stat: `${accountCount} compte(s)`,
+            stat: plural(accountCount, "compte"),
           },
           {
             label: "Journal d’activité",
@@ -107,7 +108,7 @@ export default async function AdminPage() {
             Bonjour, {session?.user?.name}
           </h1>
           <p className="mt-1 text-sm text-gray-500">
-            Mairie des Jeunes de Zè · Espace Administration
+            Mairie des Jeunes de Zè · Espace d’administration
           </p>
         </div>
 
@@ -132,31 +133,31 @@ export default async function AdminPage() {
               color: "text-green-700",
               bg: "bg-green-50",
             },
-          ].map((s) => (
+          ].map((stat) => (
             <div
-              key={s.label}
-              className={`${s.bg} rounded-xl border border-gray-100 p-5 text-center`}
+              key={stat.label}
+              className={`${stat.bg} rounded-xl border border-gray-100 p-5 text-center`}
             >
-              <p className={`text-3xl font-bold ${s.color}`}>{s.value}</p>
-              <p className="mt-1 text-xs tracking-wide text-gray-700 uppercase">{s.label}</p>
+              <p className={`text-3xl font-bold ${stat.color}`}>{stat.value}</p>
+              <p className="mt-1 text-xs tracking-wide text-gray-700 uppercase">{stat.label}</p>
             </div>
           ))}
         </div>
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          {sections.map((s) => (
+          {sections.map((section) => (
             <Link
-              key={s.href}
-              href={s.href}
+              key={section.href}
+              href={section.href}
               className="group rounded-xl border border-gray-100 bg-white p-6 transition hover:border-green-300 hover:shadow-md"
             >
               <div className="flex items-start justify-between">
                 <div>
-                  <span className="mb-3 block text-2xl text-green-800">{s.icon}</span>
+                  <span className="mb-3 block text-2xl text-green-800">{section.icon}</span>
                   <h3 className="font-semibold text-gray-800 transition group-hover:text-green-700">
-                    {s.label}
+                    {section.label}
                   </h3>
-                  <p className="mt-1 text-sm text-gray-500">{s.stat}</p>
+                  <p className="mt-1 text-sm text-gray-500">{section.stat}</p>
                 </div>
                 <span className="text-xl text-gray-500 transition group-hover:text-green-600">
                   →

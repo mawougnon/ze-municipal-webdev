@@ -3,7 +3,11 @@ import DocumentForm from "@/components/DocumentForm";
 import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
 
-export default async function EditDocumentPage({ params }: { params: Promise<{ id: string }> }) {
+interface Props {
+  params: Promise<{ id: string }>;
+}
+
+export default async function EditDocumentPage({ params }: Props) {
   await requireAdmin();
 
   const { id } = await params;

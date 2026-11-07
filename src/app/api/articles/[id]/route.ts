@@ -1,11 +1,15 @@
-import { prisma } from "@/lib/prisma";
-import { auth } from "@/auth";
 import { NextResponse } from "next/server";
+import { auth } from "@/auth";
 import { articleSchema } from "@/lib/articles";
 import { logAdminAction } from "@/lib/audit";
+import { prisma } from "@/lib/prisma";
 import { removePublicFile } from "@/lib/supabase-admin";
 
-export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
+interface Context {
+  params: Promise<{ id: string }>;
+}
+
+export async function PUT(req: Request, { params }: Context) {
   const session = await auth();
 
   if (!session) {
@@ -39,18 +43,18 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
       return { article: updated, previous };
     });
     const kept = new Set([article.coverImageUrl, ...result.data.photos]);
-    const before = [previous.coverImageUrl, ...previous.photos.map((p) => p.url)];
+    const before = [previous.coverImageUrl, ...previous.photos.map((photo) => photo.url)];
     await Promise.all(
       before.filter((url) => !kept.has(url)).map((url) => removePublicFile("photos", url)),
     );
 
     return NextResponse.json(article);
   } catch {
-    return NextResponse.json({ error: "Échec de la mise à jour de l'article." }, { status: 500 });
+    return NextResponse.json({ error: "Article introuvable." }, { status: 500 });
   }
 }
 
-export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(req: Request, { params }: Context) {
   const session = await auth();
 
   if (!session) {
@@ -65,11 +69,11 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
       await logAdminAction(tx, session, req, "ARTICLE_DELETED", article.title);
       return article;
     });
-    const files = [deleted.coverImageUrl, ...deleted.photos.map((p) => p.url)];
+    const files = [deleted.coverImageUrl, ...deleted.photos.map((photo) => photo.url)];
     await Promise.all(files.map((url) => removePublicFile("photos", url)));
 
     return NextResponse.json({ success: true });
   } catch {
-    return NextResponse.json({ error: "Article introuvable ou déjà supprimé." }, { status: 404 });
+    return NextResponse.json({ error: "Article introuvable." }, { status: 404 });
   }
 }

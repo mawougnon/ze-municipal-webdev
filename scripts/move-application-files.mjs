@@ -14,7 +14,7 @@ async function listAll(bucket) {
   for (let offset = 0; ; offset += 1000) {
     const { data, error } = await storage.from(bucket).list("", { limit: 1000, offset });
     if (error) throw new Error(`${bucket}: ${error.message}`);
-    names.push(...data.filter((f) => f.id).map((f) => f.name));
+    names.push(...data.filter((file) => file.id).map((file) => file.name));
     if (data.length < 1000) return names;
   }
 }
@@ -46,21 +46,24 @@ try {
     select: { coverImageUrl: true, photos: { select: { url: true } } },
   });
   const documents = await prisma.document.findMany({ select: { fileUrl: true } });
-  const offers = await prisma.opportunity.findMany({ select: { imageUrl: true } });
+  const opportunities = await prisma.opportunity.findMany({ select: { imageUrl: true } });
   const used = {
     photos: [
-      ...articles.flatMap((a) => [a.coverImageUrl, ...a.photos.map((p) => p.url)]),
-      ...offers.map((o) => o.imageUrl),
+      ...articles.flatMap((article) => [
+        article.coverImageUrl,
+        ...article.photos.map((photo) => photo.url),
+      ]),
+      ...opportunities.map((opportunity) => opportunity.imageUrl),
     ],
-    documents: documents.map((d) => d.fileUrl),
+    documents: documents.map((document) => document.fileUrl),
   };
 
   for (const bucket of ["photos", "documents"]) {
     const prefix = `${url.replace(/\/+$/, "")}/storage/v1/object/public/${bucket}/`;
     const kept = new Set(
       used[bucket]
-        .filter((u) => u?.startsWith(prefix))
-        .map((u) => decodeURIComponent(u.slice(prefix.length))),
+        .filter((fileUrl) => fileUrl?.startsWith(prefix))
+        .map((fileUrl) => decodeURIComponent(fileUrl.slice(prefix.length))),
     );
     // Never delete a document that could not be moved
     if (bucket === "documents") notMoved.forEach((name) => kept.add(name));

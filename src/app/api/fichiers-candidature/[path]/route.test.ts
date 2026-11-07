@@ -36,9 +36,9 @@ it("answers 404 for a file that belongs to no application", async () => {
 
 it("redirects an admin to a short lived link and records the reading", async () => {
   db.applicationFile.findUnique.mockResolvedValue({ applicationId: "c1" });
-  const res = await open();
-  expect(res.status).toBe(307);
-  expect(res.headers.get("location")).toBe("https://project.supabase.co/signed/a.pdf");
+  const response = await open();
+  expect(response.status).toBe(307);
+  expect(response.headers.get("location")).toBe("https://project.supabase.co/signed/a.pdf");
   expect(db.auditLog.create.mock.calls[0][0].data).toMatchObject({
     action: "APPLICATION_FILE_OPENED",
     target: "c1",

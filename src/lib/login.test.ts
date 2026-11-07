@@ -120,10 +120,10 @@ describe("verifyLoginCode", () => {
 
     const guesses = Array.from({ length: 20 }, (_, i) => String(100000 + i));
     const results = await Promise.all(
-      guesses.map((g) => verifyLoginCode("admin@example.com", g, null)),
+      guesses.map((guess) => verifyLoginCode("admin@example.com", guess, null)),
     );
 
-    expect(results.every((r) => r === null)).toBe(true);
-    expect(actions().filter((a) => a === "LOGIN_OTP_FAILED")).toHaveLength(MAX_ATTEMPTS);
+    expect(results.every((result) => result === null)).toBe(true);
+    expect(actions().filter((action) => action === "LOGIN_OTP_FAILED")).toHaveLength(MAX_ATTEMPTS);
   });
 });

@@ -1,5 +1,6 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
+import { plural } from "@/lib/format";
 import { prisma } from "@/lib/prisma";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 
@@ -57,7 +58,7 @@ export async function purgeExpiredData(now = Date.now()) {
     select: { path: true },
     take: 1000,
   });
-  await removeFiles(orphans.map((f) => f.path));
+  await removeFiles(orphans.map((orphan) => orphan.path));
 
   const { count: logs } = await prisma.auditLog.deleteMany({
     where: { createdAt: { lt: new Date(now - LOG_RETENTION_MS) } },
@@ -67,7 +68,11 @@ export async function purgeExpiredData(now = Date.now()) {
     await prisma.auditLog.create({
       data: {
         action: "RETENTION_PURGE",
-        target: `${applications} candidature(s), ${orphans.length} fichier(s), ${logs} ligne(s) du journal`,
+        target: [
+          plural(applications, "candidature"),
+          plural(orphans.length, "fichier"),
+          plural(logs, "ligne"),
+        ].join(", "),
         userEmail: "tâche automatique",
       },
     });
