@@ -1,7 +1,7 @@
 import { after, NextResponse } from "next/server";
-import { z } from "zod";
 import { requestLoginCode } from "@/lib/login";
 import { clientIp } from "@/lib/request";
+import { z } from "@/lib/zod";
 
 const bodySchema = z.object({ email: z.email() });
 

@@ -1,6 +1,6 @@
 import "server-only";
-import { z } from "zod";
 import { isProjectFile } from "@/lib/storage";
+import { z } from "@/lib/zod";
 
 // A deadline is midnight UTC of the chosen day, and that day ends 23 hours later in Benin (UTC+1)
 const DAY_END_MS = 23 * 60 * 60 * 1000;

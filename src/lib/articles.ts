@@ -1,7 +1,7 @@
 import "server-only";
 import sanitizeHtml from "sanitize-html";
-import { z } from "zod";
 import { isProjectFile, MAX_GALLERY_PHOTOS } from "@/lib/storage";
+import { z } from "@/lib/zod";
 
 export const articleSchema = z.object({
   title: z.string().trim().min(3, "Titre trop court.").max(300, "Titre trop long."),

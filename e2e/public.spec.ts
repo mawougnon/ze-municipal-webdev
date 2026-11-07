@@ -1,5 +1,5 @@
 import AxeBuilder from "@axe-core/playwright";
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 
 const PAGES = [
   "/",
@@ -12,6 +12,21 @@ const PAGES = [
   "/confidentialite",
 ];
 
+async function collectBrowserErrors(page: Page) {
+  const errors: string[] = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  page.on("console", (message) => {
+    if (message.type() === "error") errors.push(message.text());
+  });
+  // A refused attempt caught by the page leaves no other trace
+  await page.addInitScript(() => {
+    document.addEventListener("securitypolicyviolation", (event) => {
+      console.error(`Content policy: ${event.violatedDirective}`);
+    });
+  });
+  return errors;
+}
+
 for (const path of PAGES) {
   test.describe(path, () => {
     test("needs no cookie and carries a strict content policy", async ({ page }) => {
@@ -23,11 +38,7 @@ for (const path of PAGES) {
     });
 
     test("loads without error in the browser", async ({ page }) => {
-      const errors: string[] = [];
-      page.on("pageerror", (error) => errors.push(error.message));
-      page.on("console", (message) => {
-        if (message.type() === "error") errors.push(message.text());
-      });
+      const errors = await collectBrowserErrors(page);
       await page.goto(path, { waitUntil: "networkidle" });
       expect(errors).toEqual([]);
     });
@@ -58,6 +69,7 @@ for (const path of PAGES) {
 test("the page of an opportunity and its form have no serious accessibility problem", async ({
   page,
 }) => {
+  const errors = await collectBrowserErrors(page);
   await page.goto("/opportunites");
   const opportunity = page.locator('main a[href^="/opportunites/"]').first();
   test.skip((await opportunity.count()) === 0, "No opportunity online");
@@ -69,6 +81,7 @@ test("the page of an opportunity and its form have no serious accessibility prob
     (violation) => violation.impact === "serious" || violation.impact === "critical",
   );
   expect(serious.map((violation) => violation.id)).toEqual([]);
+  expect(errors).toEqual([]);
 });
 
 test("the admin area and the login page have no public address", async ({ page }) => {

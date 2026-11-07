@@ -1,5 +1,5 @@
-import { z } from "zod";
 import { BENIN_PHONE, normalizeBeninPhone } from "@/lib/phone";
+import { z } from "@/lib/zod";
 
 export const applicationSchema = z.object({
   opportunityId: z.string().min(1),
